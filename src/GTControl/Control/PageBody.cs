@@ -20,11 +20,16 @@ namespace GTControl
             Margin = new Padding(0);
             Dock = DockStyle.Fill;
             IsEditMode = false;
+            PageItems = new List<PageItem>();
         }
         #endregion
 
         #region Properties
         public bool IsEditMode { get; set; }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<PageItem> PageItems { get; set; }
         #endregion
 
         #region Protected Method

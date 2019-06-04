@@ -29,11 +29,15 @@
         private void InitializeComponent()
         {
             this.panel_background = new System.Windows.Forms.Panel();
-            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.panel_container = new System.Windows.Forms.Panel();
+            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.pageBody = new GTControl.PageBody();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.menuItem_add = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_delete = new System.Windows.Forms.ToolStripMenuItem();
             this.panel_background.SuspendLayout();
             this.panel_container.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel_background
@@ -41,22 +45,10 @@
             this.panel_background.AutoScroll = true;
             this.panel_background.Controls.Add(this.panel_container);
             this.panel_background.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_background.Location = new System.Drawing.Point(0, 0);
+            this.panel_background.Location = new System.Drawing.Point(0, 24);
             this.panel_background.Name = "panel_background";
-            this.panel_background.Size = new System.Drawing.Size(587, 450);
+            this.panel_background.Size = new System.Drawing.Size(587, 426);
             this.panel_background.TabIndex = 0;
-            // 
-            // propertyGrid
-            // 
-            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Right;
-            this.propertyGrid.HelpVisible = false;
-            this.propertyGrid.Location = new System.Drawing.Point(587, 0);
-            this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-            this.propertyGrid.Size = new System.Drawing.Size(250, 450);
-            this.propertyGrid.TabIndex = 1;
-            this.propertyGrid.ToolbarVisible = false;
-            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // panel_container
             // 
@@ -65,6 +57,18 @@
             this.panel_container.Name = "panel_container";
             this.panel_container.Size = new System.Drawing.Size(400, 200);
             this.panel_container.TabIndex = 0;
+            // 
+            // propertyGrid
+            // 
+            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Right;
+            this.propertyGrid.HelpVisible = false;
+            this.propertyGrid.Location = new System.Drawing.Point(587, 24);
+            this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
+            this.propertyGrid.Size = new System.Drawing.Size(250, 426);
+            this.propertyGrid.TabIndex = 1;
+            this.propertyGrid.ToolbarVisible = false;
+            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // pageBody
             // 
@@ -98,6 +102,36 @@
             this.pageBody.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.pageBody.Size = new System.Drawing.Size(400, 200);
             this.pageBody.TabIndex = 2;
+            this.pageBody.Paint += new System.Windows.Forms.PaintEventHandler(this.pageBody_Paint);
+            this.pageBody.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pageBody_MouseDown);
+            this.pageBody.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pageBody_MouseMove);
+            this.pageBody.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pageBody_MouseUp);
+            this.pageBody.Resize += new System.EventHandler(this.pageBody_Resize);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_add,
+            this.menuItem_delete});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(837, 24);
+            this.menuStrip1.TabIndex = 2;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // menuItem_add
+            // 
+            this.menuItem_add.Name = "menuItem_add";
+            this.menuItem_add.Size = new System.Drawing.Size(45, 20);
+            this.menuItem_add.Text = "ADD";
+            this.menuItem_add.Click += new System.EventHandler(this.menuItem_add_Click);
+            // 
+            // menuItem_delete
+            // 
+            this.menuItem_delete.Name = "menuItem_delete";
+            this.menuItem_delete.Size = new System.Drawing.Size(58, 20);
+            this.menuItem_delete.Text = "DELETE";
+            this.menuItem_delete.Click += new System.EventHandler(this.menuItem_delete_Click);
             // 
             // LayoutSettingForm
             // 
@@ -106,6 +140,7 @@
             this.ClientSize = new System.Drawing.Size(837, 450);
             this.Controls.Add(this.panel_background);
             this.Controls.Add(this.propertyGrid);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -116,7 +151,10 @@
             this.Load += new System.EventHandler(this.LayoutSettingForm_Load);
             this.panel_background.ResumeLayout(false);
             this.panel_container.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -126,5 +164,8 @@
         private System.Windows.Forms.PropertyGrid propertyGrid;
         private System.Windows.Forms.Panel panel_container;
         private PageBody pageBody;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_add;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_delete;
     }
 }

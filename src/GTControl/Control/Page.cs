@@ -73,30 +73,6 @@ namespace GTControl
         }
 
         [Category("Page Option")]
-        public SizeMode SizeModeWidth
-        {
-            get
-            {
-                var container = Parent as PageContainer;
-                if (container == null) return SizeMode.Small;
-
-                return container.SizeModeWidth;
-            }
-        }
-
-        [Category("Page Option")]
-        public SizeMode SizeModeHeight
-        {
-            get
-            {
-                var container = Parent as PageContainer;
-                if (container == null) return SizeMode.Small;
-
-                return container.SizeModeHeight;
-            }
-        }
-
-        [Category("Page Option")]
         public PageCloseMode CloseMode { get; set; }
         #endregion
 

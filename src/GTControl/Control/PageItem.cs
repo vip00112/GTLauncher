@@ -12,6 +12,8 @@ namespace GTControl
 {
     public partial class PageItem : UserControl
     {
+        public MouseEventHandler OnMouseDown;
+
         private Image _backgroundImage;
 
         #region Constructor
@@ -78,11 +80,21 @@ namespace GTControl
         /// </summary>
         [Category("Page Option")]
         public string Arguments { get; set; }
+
+        [Browsable(false)]
+        public bool IsEditMode { get; set; }
         #endregion
 
         #region Control Event
         private void PageItem_Paint(object sender, PaintEventArgs e)
         {
+            if (IsEditMode)
+            {
+                using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
+                {
+                    e.Graphics.FillRectangle(b, new Rectangle(0, 0, Width, Height));
+                }
+            }
             if (BackgroundImage != null)
             {
                 e.Graphics.DrawImage(BackgroundImage, 0, 0, Width, Height);
@@ -97,6 +109,11 @@ namespace GTControl
         private void label_MouseLeave(object sender, EventArgs e)
         {
             label.BackColor = Color.Transparent;
+        }
+
+        private void label_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (OnMouseDown != null) OnMouseDown(this, e);
         }
         #endregion
     }
