@@ -1,0 +1,35 @@
+# User-specific files
+*.suo
+*.user
+.vs/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+[Bb]uild/
+[Bb]in/
+[Bb]in/x64/
+[Bb]in/x86/
+[Oo]bj/
+
+# Roslyn stuff
+*.sln.ide
+*.ide/
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+
+# Nuget Packages
+*.nupkg
+**/packages/*
+
+# Windows image file caches
+Thumbs.db
+enthumbs.db
+
+# OSX
+.DS_Store
