@@ -41,6 +41,18 @@ namespace GTControl
         }
         #endregion
 
+        #region Properties
+        public PageItem SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                _selectedItem = value;
+                propertyGrid.SelectedObject = value;
+            }
+        }
+        #endregion
+
         #region Control Event
         private void LayoutSettingForm_Load(object sender, EventArgs e)
         {
@@ -54,7 +66,7 @@ namespace GTControl
 
         private void menuItem_add_Click(object sender, EventArgs e)
         {
-            if (_selectedItem != null) return;
+            if (SelectedItem != null) return;
 
             var selectedCells = _cells.Where(o => o.IsSelected).ToList();
             if (selectedCells.Count == 0) return;
@@ -68,37 +80,39 @@ namespace GTControl
             item.IsEditMode = true;
             item.OnMouseDown += pageItem_MouseDown;
 
+            // TODO : 추가할 공간이 없을시 예외 처리
             pageBody.Controls.Add(item, minCol, minRow);
             pageBody.SetColumnSpan(item, maxCol - minCol + 1);
             pageBody.SetRowSpan(item, maxRow - minRow + 1);
+
+            SelectedItem = item;
 
             _cells.ForEach(o => o.IsSelected = false);
         }
 
         private void menuItem_delete_Click(object sender, EventArgs e)
         {
-            if (_selectedItem == null) return;
+            if (SelectedItem == null) return;
 
-            pageBody.Controls.Remove(_selectedItem);
-            _selectedItem.Dispose();
-            _selectedItem = null;
+            pageBody.Controls.Remove(SelectedItem);
+            SelectedItem.Dispose();
+            SelectedItem = null;
         }
 
         private void pageItem_MouseDown(object sender, MouseEventArgs e)
         {
-            _selectedItem = sender as PageItem;
+            SelectedItem = sender as PageItem;
 
             // TODO : TableLayoutPanel 속성 표기 방법
             // TODO : 필요한 속성만 표기 방법 or LayoutSetting 전용 Entity 추가
             // TODO : Folder용 Page셋팅 화면 (ClickMode가 Folder일시 사용하기 위함)
             // TODO : PageItem에 Folder용Page 연결할 속성 추가
-            propertyGrid.SelectedObject = _selectedItem;
         }
 
         private void pageBody_MouseDown(object sender, MouseEventArgs e)
         {
             _cells.ForEach(o => o.IsSelected = false);
-            _selectedItem = null;
+            SelectedItem = null;
 
             _startCell = _cells.FirstOrDefault(o => o.IsInLocation(e.Location));
             _endCell = _startCell;
