@@ -36,6 +36,8 @@ namespace GTControl
                 SizeModeWidth = Setting.SizeModeWidth,
                 SizeModeHeight = Setting.SizeModeHeight,
             };
+            panel_container.Width = Setting.GetWidth(Setting.SizeModeWidth);
+            panel_container.Height = Setting.GetHeight(Setting.SizeModeHeight);
         }
         #endregion
 
@@ -80,19 +82,6 @@ namespace GTControl
             pageBody.Controls.Remove(_selectedItem);
             _selectedItem.Dispose();
             _selectedItem = null;
-        }
-
-        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-        {
-            switch (e.ChangedItem.Label)
-            {
-                case "SizeModeWidth":
-                    panel_container.Width = Setting.GetWidth((SizeMode) e.ChangedItem.Value);
-                    break;
-                case "SizeModeHeight":
-                    panel_container.Height = Setting.GetHeight((SizeMode) e.ChangedItem.Value);
-                    break;
-            }
         }
 
         private void pageItem_MouseDown(object sender, MouseEventArgs e)
@@ -171,6 +160,19 @@ namespace GTControl
         private void pageBody_Resize(object sender, EventArgs e)
         {
             ResetCells();
+        }
+
+        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            switch (e.ChangedItem.Label)
+            {
+                case "SizeModeWidth":
+                    panel_container.Width = Setting.GetWidth((SizeMode) e.ChangedItem.Value);
+                    break;
+                case "SizeModeHeight":
+                    panel_container.Height = Setting.GetHeight((SizeMode) e.ChangedItem.Value);
+                    break;
+            }
         }
         #endregion
 
