@@ -14,11 +14,14 @@ namespace GTControl
     {
         public class Property
         {
+            [Category("Page Option")]
             public SizeMode SizeModeWidth { get; set; }
 
+            [Category("Page Option")]
             public SizeMode SizeModeHeight { get; set; }
         }
 
+        private Property _background;
         private Cell _startCell;
         private Cell _endCell;
         private List<Cell> _cells;
@@ -29,13 +32,15 @@ namespace GTControl
         {
             InitializeComponent();
 
-            _cells = new List<Cell>();
-
-            propertyGrid.SelectedObject = new Property()
+            _background = new Property()
             {
                 SizeModeWidth = Setting.SizeModeWidth,
                 SizeModeHeight = Setting.SizeModeHeight,
             };
+            _cells = new List<Cell>();
+
+            propertyGrid.BrowsableAttributes = new AttributeCollection(new Attribute[] { new CategoryAttribute("Page Option") });
+            propertyGrid.SelectedObject = _background;
             panel_container.Width = Setting.GetWidth(Setting.SizeModeWidth);
             panel_container.Height = Setting.GetHeight(Setting.SizeModeHeight);
         }
@@ -48,7 +53,15 @@ namespace GTControl
             set
             {
                 _selectedItem = value;
-                propertyGrid.SelectedObject = value;
+
+                if (_selectedItem != null)
+                {
+                    propertyGrid.SelectedObject = _selectedItem;
+                }
+                else
+                {
+                    propertyGrid.SelectedObject = _background;
+                }
             }
         }
         #endregion
@@ -78,7 +91,7 @@ namespace GTControl
 
             var item = new PageItem();
             item.IsEditMode = true;
-            item.OnMouseDown += pageItem_MouseDown;
+            item.OnMouseDownEvent += pageItem_MouseDown;
 
             // TODO : 추가할 공간이 없을시 예외 처리
             pageBody.Controls.Add(item, minCol, minRow);
@@ -102,6 +115,10 @@ namespace GTControl
         private void pageItem_MouseDown(object sender, MouseEventArgs e)
         {
             SelectedItem = sender as PageItem;
+            if (SelectedItem == null) return;
+
+            _cells.ForEach(o => o.IsSelected = false);
+            pageBody.Invalidate();
 
             // TODO : TableLayoutPanel 속성 표기 방법
             // TODO : 필요한 속성만 표기 방법 or LayoutSetting 전용 Entity 추가

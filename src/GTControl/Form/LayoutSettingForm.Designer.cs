@@ -30,8 +30,8 @@
         {
             this.panel_background = new System.Windows.Forms.Panel();
             this.panel_container = new System.Windows.Forms.Panel();
-            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.pageBody = new GTControl.PageBody();
+            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuItem_add = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_delete = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,18 +57,6 @@
             this.panel_container.Name = "panel_container";
             this.panel_container.Size = new System.Drawing.Size(400, 200);
             this.panel_container.TabIndex = 0;
-            // 
-            // propertyGrid
-            // 
-            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Right;
-            this.propertyGrid.HelpVisible = false;
-            this.propertyGrid.Location = new System.Drawing.Point(587, 24);
-            this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-            this.propertyGrid.Size = new System.Drawing.Size(250, 426);
-            this.propertyGrid.TabIndex = 1;
-            this.propertyGrid.ToolbarVisible = false;
-            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // pageBody
             // 
@@ -107,6 +95,18 @@
             this.pageBody.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pageBody_MouseMove);
             this.pageBody.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pageBody_MouseUp);
             this.pageBody.Resize += new System.EventHandler(this.pageBody_Resize);
+            // 
+            // propertyGrid
+            // 
+            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Right;
+            this.propertyGrid.HelpVisible = false;
+            this.propertyGrid.Location = new System.Drawing.Point(587, 24);
+            this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            this.propertyGrid.Size = new System.Drawing.Size(250, 426);
+            this.propertyGrid.TabIndex = 1;
+            this.propertyGrid.ToolbarVisible = false;
+            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // menuStrip1
             // 

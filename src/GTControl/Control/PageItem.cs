@@ -7,12 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
+using System.Collections;
 
 namespace GTControl
 {
     public partial class PageItem : UserControl
     {
-        public MouseEventHandler OnMouseDown;
+        public MouseEventHandler OnMouseDownEvent;
 
         private Image _backgroundImage;
 
@@ -82,7 +84,88 @@ namespace GTControl
         public string Arguments { get; set; }
 
         [Browsable(false)]
+        [Category("Page Option")]
         public bool IsEditMode { get; set; }
+
+        [Category("Page Option")]
+        public int Column
+        {
+            get
+            {
+                var body = Parent as PageBody;
+                if (body == null) return 0;
+
+                return body.GetColumn(this);
+            }
+            set
+            {
+                var body = Parent as PageBody;
+                if (body == null) return;
+
+                body.SetColumn(this, value);
+            }
+        }
+
+        [Category("Page Option")]
+        public int Row
+        {
+            get
+            {
+                var body = Parent as PageBody;
+                if (body == null) return 0;
+
+                return body.GetRow(this);
+            }
+            set
+            {
+                var body = Parent as PageBody;
+                if (body == null) return;
+
+                body.SetRow(this, value);
+            }
+        }
+
+        [Category("Page Option")]
+        public int ColumnSpan
+        {
+            get
+            {
+                var body = Parent as PageBody;
+                if (body == null) return 0;
+
+                return body.GetColumnSpan(this);
+            }
+            set
+            {
+                if (value < 1) return;
+
+                var body = Parent as PageBody;
+                if (body == null) return;
+
+                body.SetColumnSpan(this, value);
+            }
+        }
+
+        [Category("Page Option")]
+        public int RowSpan
+        {
+            get
+            {
+                var body = Parent as PageBody;
+                if (body == null) return 0;
+
+                return body.GetRowSpan(this);
+            }
+            set
+            {
+                if (value < 1) return;
+
+                var body = Parent as PageBody;
+                if (body == null) return;
+
+                body.SetRowSpan(this, value);
+            }
+        }
         #endregion
 
         #region Control Event
@@ -113,7 +196,7 @@ namespace GTControl
 
         private void label_MouseDown(object sender, MouseEventArgs e)
         {
-            if (OnMouseDown != null) OnMouseDown(this, e);
+            if (OnMouseDownEvent != null) OnMouseDownEvent(this, e);
         }
         #endregion
     }
