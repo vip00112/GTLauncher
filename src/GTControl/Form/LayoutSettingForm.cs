@@ -12,15 +12,6 @@ namespace GTControl
 {
     public partial class LayoutSettingForm : Form
     {
-        public class Property
-        {
-            [Category("Page Option")]
-            public SizeMode SizeModeWidth { get; set; }
-
-            [Category("Page Option")]
-            public SizeMode SizeModeHeight { get; set; }
-        }
-
         private Property _background;
         private Cell _startCell;
         private Cell _endCell;
@@ -93,13 +84,19 @@ namespace GTControl
             item.IsEditMode = true;
             item.OnMouseDownEvent += pageItem_MouseDown;
 
-            // TODO : 추가할 공간이 없을시 예외 처리
-            pageBody.Controls.Add(item, minCol, minRow);
-            pageBody.SetColumnSpan(item, maxCol - minCol + 1);
-            pageBody.SetRowSpan(item, maxRow - minRow + 1);
-
-            SelectedItem = item;
-
+            try
+            {
+                pageBody.Controls.Add(item, minCol, minRow);
+                pageBody.SetColumnSpan(item, maxCol - minCol + 1);
+                pageBody.SetRowSpan(item, maxRow - minRow + 1);
+                SelectedItem = item;
+            }
+            catch
+            {
+                pageBody.Controls.Remove(item);
+                item.Dispose();
+                SelectedItem = null;
+            }
             _cells.ForEach(o => o.IsSelected = false);
         }
 
@@ -112,6 +109,11 @@ namespace GTControl
             SelectedItem = null;
         }
 
+        private void menuItem_save_Click(object sender, EventArgs e)
+        {
+            // TODO : 레이아웃 정보 저장 (XML? Json?)
+        }
+
         private void pageItem_MouseDown(object sender, MouseEventArgs e)
         {
             SelectedItem = sender as PageItem;
@@ -120,8 +122,6 @@ namespace GTControl
             _cells.ForEach(o => o.IsSelected = false);
             pageBody.Invalidate();
 
-            // TODO : TableLayoutPanel 속성 표기 방법
-            // TODO : 필요한 속성만 표기 방법 or LayoutSetting 전용 Entity 추가
             // TODO : Folder용 Page셋팅 화면 (ClickMode가 Folder일시 사용하기 위함)
             // TODO : PageItem에 Folder용Page 연결할 속성 추가
         }
@@ -230,6 +230,17 @@ namespace GTControl
                     _cells.Add(cell);
                 }
             }
+        }
+        #endregion
+
+        #region Inner Class
+        private class Property
+        {
+            [Category("Page Option")]
+            public SizeMode SizeModeWidth { get; set; }
+
+            [Category("Page Option")]
+            public SizeMode SizeModeHeight { get; set; }
         }
         #endregion
     }

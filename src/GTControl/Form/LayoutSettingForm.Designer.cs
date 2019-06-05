@@ -35,6 +35,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuItem_add = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_delete = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_save = new System.Windows.Forms.ToolStripMenuItem();
             this.panel_background.SuspendLayout();
             this.panel_container.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -112,7 +113,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItem_add,
-            this.menuItem_delete});
+            this.menuItem_delete,
+            this.menuItem_save});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(837, 24);
@@ -132,6 +134,13 @@
             this.menuItem_delete.Size = new System.Drawing.Size(58, 20);
             this.menuItem_delete.Text = "DELETE";
             this.menuItem_delete.Click += new System.EventHandler(this.menuItem_delete_Click);
+            // 
+            // menuItem_save
+            // 
+            this.menuItem_save.Name = "menuItem_save";
+            this.menuItem_save.Size = new System.Drawing.Size(48, 20);
+            this.menuItem_save.Text = "SAVE";
+            this.menuItem_save.Click += new System.EventHandler(this.menuItem_save_Click);
             // 
             // LayoutSettingForm
             // 
@@ -167,5 +176,6 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menuItem_add;
         private System.Windows.Forms.ToolStripMenuItem menuItem_delete;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_save;
     }
 }
