@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.page_main = new GTControl.Page();
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
-            // page_main
+            // notifyIcon
             // 
-            this.page_main.CloseMode = GTControl.PageCloseMode.Hide;
-            this.page_main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_main.Location = new System.Drawing.Point(0, 0);
-            this.page_main.Name = "page_main";
-            this.page_main.Size = new System.Drawing.Size(800, 400);
-            this.page_main.TabIndex = 0;
-            this.page_main.VisibleBackButton = false;
-            this.page_main.VisibleOptionButton = true;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "GTLauncher";
+            this.notifyIcon.Visible = true;
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 400);
-            this.Controls.Add(this.page_main);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Location = new System.Drawing.Point(0, 0);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";
+            this.ShowInTaskbar = false;
             this.SizeModeHeight = GTControl.SizeMode.Medium;
             this.SizeModeWidth = GTControl.SizeMode.Medium;
             this.Text = "MainForm";
@@ -61,7 +61,7 @@
 
         #endregion
 
-        private GTControl.Page page_main;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
     }
 }
 

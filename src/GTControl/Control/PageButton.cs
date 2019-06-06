@@ -8,17 +8,17 @@ using System.Windows.Forms;
 
 namespace GTControl
 {
-    public class PageButton : Button
+    public class PageButton : Label
     {
         #region Constructor
         public PageButton()
         {
             DoubleBuffered = true;
 
+            AutoSize = false;
             Margin = new Padding(5);
             FlatStyle = FlatStyle.Flat;
-            FlatAppearance.BorderSize = 0;
-            FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+            TextAlign = ContentAlignment.MiddleCenter;
             Cursor = Cursors.Hand;
         }
         #endregion
@@ -28,6 +28,7 @@ namespace GTControl
         {
             base.OnMouseEnter(e);
 
+            if (Setting.IsEditMode) return;
             BackColor = Setting.GetBackColorHover(Setting.Theme);
             ForeColor = Setting.GetForeColorHover(Setting.Theme);
         }
@@ -36,6 +37,7 @@ namespace GTControl
         {
             base.OnMouseLeave(e);
 
+            if (Setting.IsEditMode) return;
             BackColor = Setting.GetBackColorCommon(Setting.Theme);
             ForeColor = Setting.GetForeColorCommon(Setting.Theme);
         }

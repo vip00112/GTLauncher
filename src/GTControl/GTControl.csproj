@@ -30,8 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -42,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Form\CreatePageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\CreatePageForm.Designer.cs">
+      <DependentUpon>CreatePageForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\LayoutSettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,7 +82,9 @@
     <Compile Include="Control\PageItem.Designer.cs">
       <DependentUpon>PageItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Cell.cs" />
     <Compile Include="Model\Enums.cs" />
+    <Compile Include="Model\MessageBoxUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -88,6 +100,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Form\CreatePageForm.resx">
+      <DependentUpon>CreatePageForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\LayoutSettingForm.resx">
       <DependentUpon>LayoutSettingForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -107,6 +122,9 @@
     <EmbeddedResource Include="Form\SettingForm.resx">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

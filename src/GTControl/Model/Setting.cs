@@ -1,6 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +14,10 @@ namespace GTControl
 {
     public static class Setting
     {
-        private static Theme _theme;
+        private static List<Page> _pages;
+        private static List<PageItem> _pageItems;
 
+        #region Properties
         /// <summary>
         /// 런처 Window의 이동 가능 여부
         /// </summary>
@@ -20,21 +26,7 @@ namespace GTControl
         /// <summary>
         /// 모든 Control의 테마
         /// </summary>
-        public static Theme Theme
-        {
-            get { return _theme; }
-            set
-            {
-                bool changed = _theme != value;
-                _theme = value;
-
-                // 기존 테마에서 변경시 Update
-                if (changed)
-                {
-                    ChangeTheme(_theme);
-                }
-            }
-        }
+        public static Theme Theme { get; set; }
 
         /// <summary>
         /// 런처 넓이
@@ -46,15 +38,42 @@ namespace GTControl
         /// </summary>
         public static SizeMode SizeModeHeight { get; set; }
 
-        #region Public Method
-        public static void ChangeTheme(Theme theme)
+        /// <summary>
+        /// 동적 생성한 페이지
+        /// </summary>
+        public static List<Page> Pages
         {
-            foreach (Form form in Application.OpenForms)
+            get { return _pages; }
+            set
             {
-                SetTheme(form, theme);
+                if (_pages != null)
+                {
+                    _pages.ForEach(o => o.Dispose());
+                }
+                _pages = value;
             }
         }
 
+        /// <summary>
+        /// 동적 생성한 아이템
+        /// </summary>
+        public static List<PageItem> PageItems
+        {
+            get { return _pageItems; }
+            set
+            {
+                if (_pageItems != null)
+                {
+                    _pageItems.ForEach(o => o.Dispose());
+                }
+                _pageItems = value;
+            }
+        }
+
+        public static bool IsEditMode { get; set; }
+        #endregion
+
+        #region Public Method
         public static void SetTheme(Control control, Theme theme)
         {
             if (control is Label)
@@ -157,6 +176,221 @@ namespace GTControl
                 default:
                     return GetHeight(SizeMode.Medium);
             }
+        }
+
+        public static void Save()
+        {
+            try
+            {
+                var properties = new Dictionary<string, object>();
+                properties.Add("CanMove", CanMove);
+                properties.Add("Theme", Theme.ToString());
+                properties.Add("SizeModeWidth", SizeModeWidth.ToString());
+                properties.Add("SizeModeHeight", SizeModeHeight.ToString());
+
+                var pageProperties = new List<Dictionary<string, object>>();
+                foreach (var page in Pages)
+                {
+                    var props = new Dictionary<string, object>();
+                    props.Add("PageName", page.PageName);
+                    props.Add("Title", page.Title);
+                    props.Add("VisibleTitle", page.VisibleTitle);
+                    props.Add("VisibleHeader", page.VisibleHeader);
+                    props.Add("VisibleBackButton", page.VisibleBackButton);
+                    props.Add("CloseMode", page.CloseMode.ToString());
+                    pageProperties.Add(props);
+                }
+                properties.Add("PageProperties", pageProperties);
+
+                var pageItemProperties = new List<Dictionary<string, object>>();
+                foreach (var pageItem in PageItems)
+                {
+                    var props = new Dictionary<string, object>();
+                    props.Add("PageName", pageItem.PageName);
+                    props.Add("BackgroundImage", ToBase64(pageItem.BackgroundImage));
+                    props.Add("TextContent", pageItem.TextContent);
+                    props.Add("TextAlign", pageItem.TextAlign.ToString());
+
+                    props.Add("TextFont_Name", pageItem.TextFont.Name);
+                    props.Add("TextFont_Size", pageItem.TextFont.Size);
+                    props.Add("TextFont_Bold", pageItem.TextFont.Bold);
+                    props.Add("TextFont_Italic", pageItem.TextFont.Italic);
+                    props.Add("TextFont_Strikeout", pageItem.TextFont.Strikeout);
+                    props.Add("TextFont_Underline", pageItem.TextFont.Underline);
+
+                    props.Add("ClickMode", pageItem.ClickMode.ToString());
+                    props.Add("FilePath", pageItem.FilePath);
+                    props.Add("Arguments", pageItem.Arguments);
+                    props.Add("LinkPageName", pageItem.LinkPageName);
+                    props.Add("Column", pageItem.Column);
+                    props.Add("Row", pageItem.Row);
+                    props.Add("ColumnSpan", pageItem.ColumnSpan);
+                    props.Add("RowSpan", pageItem.RowSpan);
+                    pageItemProperties.Add(props);
+                }
+                properties.Add("PageItemProperties", pageItemProperties);
+
+                string json = JsonConvert.SerializeObject(properties, Formatting.Indented);
+                File.WriteAllText("Setting.json", json);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                Invalidate();
+            }
+        }
+
+        public static void Load()
+        {
+            try
+            {
+                if (!File.Exists("Setting.json")) return;
+
+                string json = File.ReadAllText("Setting.json");
+                var properties = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                CanMove = (bool) properties["CanMove"];
+                Theme = (Theme) Enum.Parse(typeof(Theme), properties["Theme"] as string);
+                SizeModeWidth = (SizeMode) Enum.Parse(typeof(SizeMode), properties["SizeModeWidth"] as string);
+                SizeModeHeight = (SizeMode) Enum.Parse(typeof(SizeMode), properties["SizeModeHeight"] as string);
+
+                LoadPages(properties);
+                LoadPageItems(properties);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                Invalidate();
+            }
+        }
+        #endregion
+
+        #region Private Method
+        private static void LoadPages(Dictionary<string, object> properties)
+        {
+
+            if (!properties.ContainsKey("PageProperties")) return;
+
+            var array = properties["PageProperties"] as JArray;
+            if (array == null) return;
+
+            var pageProperties = array.ToObject<List<Dictionary<string, object>>>();
+            if (pageProperties == null && pageProperties.Count == 0) return;
+
+            Pages = new List<Page>();
+            foreach (var props in pageProperties)
+            {
+                string pageName = props["PageName"] as string;
+                var page = new Page(pageName);
+                page.Title = props["Title"] as string;
+                page.VisibleTitle = (bool) props["VisibleTitle"];
+                page.VisibleHeader = (bool) props["VisibleHeader"];
+                page.VisibleBackButton = (bool) props["VisibleBackButton"];
+                page.CloseMode = (PageCloseMode) Enum.Parse(typeof(PageCloseMode), props["CloseMode"] as string);
+
+                Pages.Add(page);
+            }
+        }
+
+        private static void LoadPageItems(Dictionary<string, object> properties)
+        {
+            if (!properties.ContainsKey("PageItemProperties")) return;
+
+            var array = properties["PageItemProperties"] as JArray;
+            if (array == null) return;
+
+            var pageItemProperties = array.ToObject<List<Dictionary<string, object>>>();
+            if (pageItemProperties == null && pageItemProperties.Count == 0) return;
+
+            PageItems = new List<PageItem>();
+            foreach (var props in pageItemProperties)
+            {
+                var item = new PageItem();
+                item.PageName = props["PageName"] as string;
+                item.BackgroundImage = FromBase64(props["BackgroundImage"] as string);
+                item.TextContent = props["TextContent"] as string;
+                item.TextAlign = (ContentAlignment) Enum.Parse(typeof(ContentAlignment), props["TextAlign"] as string);
+
+                string fontName = props["TextFont_Name"] as string;
+                int size = (int) (double) props["TextFont_Size"];
+                bool bold = (bool) props["TextFont_Bold"];
+                bool italic = (bool) props["TextFont_Italic"];
+                bool strikeout = (bool) props["TextFont_Strikeout"];
+                bool underline = (bool) props["TextFont_Underline"];
+
+                FontStyle style = FontStyle.Regular;
+                if (bold) style = FontStyle.Bold;
+                if (italic) style |= FontStyle.Italic;
+                if (strikeout) style |= FontStyle.Strikeout;
+                if (underline) style |= FontStyle.Underline;
+                Font font = new Font(fontName, size, style);
+                item.TextFont = font;
+
+                item.ClickMode = (ClickMode) Enum.Parse(typeof(ClickMode), props["ClickMode"] as string);
+                item.FilePath = props["FilePath"] as string;
+                item.Arguments = props["Arguments"] as string;
+                item.LinkPageName = props["LinkPageName"] as string;
+                item.Column = (int) (long) props["Column"];
+                item.Row = (int) (long) props["Row"];
+                item.ColumnSpan = (int) (long) props["ColumnSpan"];
+                item.RowSpan = (int) (long) props["RowSpan"];
+
+                PageItems.Add(item);
+            }
+        }
+
+        private static void Invalidate()
+        {
+            if (Pages == null)
+            {
+                Pages = new List<Page>();
+                Pages.Add(new Page("Main"));
+            }
+            if (PageItems == null)
+            {
+                PageItems = new List<PageItem>();
+            }
+
+            foreach (Form form in Application.OpenForms)
+            {
+                var container = form as PageContainer;
+                if (container == null) return;
+
+                container.ResetLayout(SizeModeWidth, SizeModeHeight);
+                SetTheme(form, Theme);
+            }
+        }
+
+        private static string ToBase64(Image img)
+        {
+            if (img == null) return null;
+
+            byte[] data = null;
+            using (var ms = new MemoryStream())
+            {
+                img.Save(ms, ImageFormat.Png);
+                data = ms.ToArray();
+            }
+            return Convert.ToBase64String(data);
+        }
+
+        private static Image FromBase64(string base64)
+        {
+            if (string.IsNullOrWhiteSpace(base64)) return null;
+
+            Image img = null;
+            byte[] data = Convert.FromBase64String(base64.Replace("\n", ""));
+            using (var ms = new MemoryStream(data, 0, data.Length))
+            {
+                ms.Position = 0;
+                img = Image.FromStream(ms, true);
+            }
+            return img;
         }
         #endregion
     }

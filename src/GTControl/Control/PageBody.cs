@@ -19,12 +19,44 @@ namespace GTControl
             Padding = new Padding(0);
             Margin = new Padding(0);
             Dock = DockStyle.Fill;
-            IsEditMode = false;
+
+            ColumnCount = 10;
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+
+            RowCount = 10;
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
         }
         #endregion
 
         #region Properties
-        public bool IsEditMode { get; set; }
+        public string PageName
+        {
+            get
+            {
+                var page = Parent as Page;
+                if (page == null) return null;
+
+                return page.PageName;
+            }
+        }
         #endregion
 
         #region Protected Method
@@ -32,7 +64,7 @@ namespace GTControl
         {
             base.OnPaint(e);
 
-            if (IsEditMode)
+            if (Setting.IsEditMode)
             {
                 DrawLine(e.Graphics);
             }
