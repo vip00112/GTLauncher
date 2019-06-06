@@ -82,13 +82,14 @@
             // pageButton_option
             // 
             this.pageButton_option.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pageButton_option.Dock = System.Windows.Forms.DockStyle.Right;
             this.pageButton_option.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.pageButton_option.FlatAppearance.BorderSize = 0;
             this.pageButton_option.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.pageButton_option.Location = new System.Drawing.Point(775, 5);
+            this.pageButton_option.Location = new System.Drawing.Point(770, 0);
             this.pageButton_option.Margin = new System.Windows.Forms.Padding(5);
             this.pageButton_option.Name = "pageButton_option";
-            this.pageButton_option.Size = new System.Drawing.Size(20, 20);
+            this.pageButton_option.Size = new System.Drawing.Size(30, 30);
             this.pageButton_option.TabIndex = 1;
             this.pageButton_option.Text = "▤";
             this.pageButton_option.UseVisualStyleBackColor = true;
@@ -97,13 +98,14 @@
             // pageButton_back
             // 
             this.pageButton_back.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pageButton_back.Dock = System.Windows.Forms.DockStyle.Left;
             this.pageButton_back.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.pageButton_back.FlatAppearance.BorderSize = 0;
             this.pageButton_back.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.pageButton_back.Location = new System.Drawing.Point(5, 5);
+            this.pageButton_back.Location = new System.Drawing.Point(0, 0);
             this.pageButton_back.Margin = new System.Windows.Forms.Padding(5);
             this.pageButton_back.Name = "pageButton_back";
-            this.pageButton_back.Size = new System.Drawing.Size(20, 20);
+            this.pageButton_back.Size = new System.Drawing.Size(30, 30);
             this.pageButton_back.TabIndex = 1;
             this.pageButton_back.Text = "◀";
             this.pageButton_back.UseVisualStyleBackColor = true;

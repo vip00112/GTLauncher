@@ -41,6 +41,9 @@ namespace GTControl
 
         #region Properties
         [Category("Page Option")]
+        public string PageName { get; set; }
+
+        [Category("Page Option")]
         new public Image BackgroundImage
         {
             get { return _backgroundImage; }

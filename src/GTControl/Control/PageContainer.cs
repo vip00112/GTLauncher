@@ -20,8 +20,6 @@ namespace GTControl
         #region Constuctor
         public PageContainer()
         {
-            InitSetting();
-
             DoubleBuffered = true;
 
             _pages = new List<Page>();
@@ -42,6 +40,7 @@ namespace GTControl
             {
                 _sizeModeWidth = value;
                 Width = Setting.GetWidth(value);
+                InitLocation();
             }
         }
 
@@ -53,6 +52,7 @@ namespace GTControl
             {
                 _sizeModeHeight = value;
                 Height = Setting.GetHeight(value);
+                InitLocation();
             }
         }
         #endregion
@@ -63,8 +63,8 @@ namespace GTControl
             base.OnLoad(e);
             if (DesignMode) return;
 
+            Setting.Load();
             InitLocation();
-            Setting.SetTheme(this, Setting.Theme);
         }
 
         protected override void OnControlAdded(ControlEventArgs e)
@@ -91,18 +91,11 @@ namespace GTControl
             if (page == null) return;
 
             _pages.Remove(page);
+            page.Dispose();
         }
         #endregion
 
         #region Private Method
-        private void InitSetting()
-        {
-            Setting.CanMove = true;
-            Setting.Theme = Theme.Dark;
-            Setting.SizeModeWidth = SizeMode.Medium;
-            Setting.SizeModeHeight = SizeMode.Medium;
-        }
-
         private void InitLocation()
         {
             var screen = Screen.AllScreens[0];
@@ -148,6 +141,46 @@ namespace GTControl
         private void MouseUpEvent(object sender, MouseEventArgs e)
         {
             _isMouseDown = false;
+        }
+        #endregion
+
+        #region Public Method
+        public void ResetLayout(SizeMode width, SizeMode height)
+        {
+            SizeModeWidth = width;
+            SizeModeHeight = height;
+
+            // 기존 페이지 삭제
+            var pages = _pages.ToArray();
+            foreach (var page in pages)
+            {
+                Controls.Remove(page);
+            }
+
+            // 페이지 등록
+            foreach (var p in Setting.Pages)
+            {
+                var page = new Page();
+                page.PageName = p.Name;
+                page.VisibleHeader = p.VisibleHeader;
+                page.VisibleBackButton = p.VisibleBackButton;
+                page.VisibleOptionButton = p.VisibleOptionButton;
+                page.CloseMode = p.CloseMode;
+                if (page.CloseMode == PageCloseMode.Dispose)
+                {
+                    page.OnDisposed += delegate (object o, EventArgs e) { Close(); };
+                }
+
+                // 해당 페이지의 아이템 등록
+                var items = Setting.PageItems.Where(o => o.PageName == p.PageName);
+                foreach (var item in items)
+                {
+                    item.IsEditMode = false;
+                    page.AddItem(item);
+                }
+
+                Controls.Add(page);
+            }
         }
         #endregion
     }

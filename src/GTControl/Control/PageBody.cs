@@ -20,16 +20,35 @@ namespace GTControl
             Margin = new Padding(0);
             Dock = DockStyle.Fill;
             IsEditMode = false;
-            PageItems = new List<PageItem>();
+
+            ColumnCount = 10;
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+            ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10F));
+
+            RowCount = 10;
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
         }
         #endregion
 
         #region Properties
         public bool IsEditMode { get; set; }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<PageItem> PageItems { get; set; }
         #endregion
 
         #region Protected Method
