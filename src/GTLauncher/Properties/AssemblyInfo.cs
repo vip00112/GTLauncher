@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // 제어됩니다. 어셈블리와 관련된 정보를 수정하려면
 // 이러한 특성 값을 변경하세요.
 [assembly: AssemblyTitle("GTLauncher")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("GTLauncher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("GTLauncher")]
 [assembly: AssemblyProduct("GTLauncher")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
