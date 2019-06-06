@@ -51,7 +51,7 @@
             this.propertyGrid_page.Location = new System.Drawing.Point(0, 149);
             this.propertyGrid_page.Name = "propertyGrid_page";
             this.propertyGrid_page.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid_page.Size = new System.Drawing.Size(200, 277);
+            this.propertyGrid_page.Size = new System.Drawing.Size(250, 277);
             this.propertyGrid_page.TabIndex = 1;
             this.propertyGrid_page.ToolbarVisible = false;
             this.propertyGrid_page.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
@@ -80,14 +80,16 @@
             // menuItem_addPage
             // 
             this.menuItem_addPage.Name = "menuItem_addPage";
-            this.menuItem_addPage.Size = new System.Drawing.Size(100, 22);
+            this.menuItem_addPage.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D1)));
+            this.menuItem_addPage.Size = new System.Drawing.Size(180, 22);
             this.menuItem_addPage.Text = "Page";
             this.menuItem_addPage.Click += new System.EventHandler(this.menuItem_addPage_Click);
             // 
             // menuItem_addItem
             // 
             this.menuItem_addItem.Name = "menuItem_addItem";
-            this.menuItem_addItem.Size = new System.Drawing.Size(100, 22);
+            this.menuItem_addItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D2)));
+            this.menuItem_addItem.Size = new System.Drawing.Size(180, 22);
             this.menuItem_addItem.Text = "Item";
             this.menuItem_addItem.Click += new System.EventHandler(this.menuItem_addItem_Click);
             // 
@@ -103,20 +105,23 @@
             // menuItem_deletePage
             // 
             this.menuItem_deletePage.Name = "menuItem_deletePage";
-            this.menuItem_deletePage.Size = new System.Drawing.Size(100, 22);
+            this.menuItem_deletePage.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D3)));
+            this.menuItem_deletePage.Size = new System.Drawing.Size(180, 22);
             this.menuItem_deletePage.Text = "Page";
             this.menuItem_deletePage.Click += new System.EventHandler(this.menuItem_deletePage_Click);
             // 
             // menuItem_deleteItem
             // 
             this.menuItem_deleteItem.Name = "menuItem_deleteItem";
-            this.menuItem_deleteItem.Size = new System.Drawing.Size(100, 22);
+            this.menuItem_deleteItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D4)));
+            this.menuItem_deleteItem.Size = new System.Drawing.Size(180, 22);
             this.menuItem_deleteItem.Text = "Item";
             this.menuItem_deleteItem.Click += new System.EventHandler(this.menuItem_deleteItem_Click);
             // 
             // menuItem_save
             // 
             this.menuItem_save.Name = "menuItem_save";
+            this.menuItem_save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.menuItem_save.Size = new System.Drawing.Size(48, 20);
             this.menuItem_save.Text = "SAVE";
             this.menuItem_save.Click += new System.EventHandler(this.menuItem_save_Click);
@@ -127,7 +132,7 @@
             this.tabControl_pages.Location = new System.Drawing.Point(0, 24);
             this.tabControl_pages.Name = "tabControl_pages";
             this.tabControl_pages.SelectedIndex = 0;
-            this.tabControl_pages.Size = new System.Drawing.Size(637, 426);
+            this.tabControl_pages.Size = new System.Drawing.Size(587, 426);
             this.tabControl_pages.TabIndex = 1;
             this.tabControl_pages.SelectedIndexChanged += new System.EventHandler(this.tabControl_pages_SelectedIndexChanged);
             // 
@@ -136,9 +141,9 @@
             this.panel1.Controls.Add(this.propertyGrid_page);
             this.panel1.Controls.Add(this.propertyGrid_layout);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(637, 24);
+            this.panel1.Location = new System.Drawing.Point(587, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 426);
+            this.panel1.Size = new System.Drawing.Size(250, 426);
             this.panel1.TabIndex = 3;
             // 
             // propertyGrid_layout
@@ -148,7 +153,7 @@
             this.propertyGrid_layout.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid_layout.Name = "propertyGrid_layout";
             this.propertyGrid_layout.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid_layout.Size = new System.Drawing.Size(200, 149);
+            this.propertyGrid_layout.Size = new System.Drawing.Size(250, 149);
             this.propertyGrid_layout.TabIndex = 1;
             this.propertyGrid_layout.ToolbarVisible = false;
             this.propertyGrid_layout.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);

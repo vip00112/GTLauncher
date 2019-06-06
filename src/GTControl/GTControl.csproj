@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Form\CreatePageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\CreatePageForm.Designer.cs">
+      <DependentUpon>CreatePageForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\LayoutSettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,6 +100,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Form\CreatePageForm.resx">
+      <DependentUpon>CreatePageForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\LayoutSettingForm.resx">
       <DependentUpon>LayoutSettingForm.cs</DependentUpon>
     </EmbeddedResource>

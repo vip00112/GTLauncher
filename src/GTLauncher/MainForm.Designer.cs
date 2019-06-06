@@ -28,27 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.page_main = new GTControl.Page();
             this.SuspendLayout();
-            // 
-            // page_main
-            // 
-            this.page_main.CloseMode = GTControl.PageCloseMode.Hide;
-            this.page_main.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_main.Location = new System.Drawing.Point(0, 0);
-            this.page_main.Name = "page_main";
-            this.page_main.Size = new System.Drawing.Size(800, 400);
-            this.page_main.TabIndex = 0;
-            this.page_main.VisibleBackButton = false;
-            this.page_main.VisibleOptionButton = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 400);
-            this.Controls.Add(this.page_main);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Location = new System.Drawing.Point(0, 0);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";
@@ -60,8 +48,6 @@
         }
 
         #endregion
-
-        private GTControl.Page page_main;
     }
 }
 

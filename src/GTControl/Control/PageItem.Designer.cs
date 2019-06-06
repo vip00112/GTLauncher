@@ -42,6 +42,7 @@
             this.label.TabIndex = 0;
             this.label.Text = "Text";
             this.label.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label.Click += new System.EventHandler(this.label_Click);
             this.label.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label_MouseDown);
             this.label.MouseEnter += new System.EventHandler(this.label_MouseEnter);
             this.label.MouseLeave += new System.EventHandler(this.label_MouseLeave);

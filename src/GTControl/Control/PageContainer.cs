@@ -98,6 +98,8 @@ namespace GTControl
         #region Private Method
         private void InitLocation()
         {
+            if (DesignMode) return;
+
             var screen = Screen.AllScreens[0];
             Left = (screen.WorkingArea.Width / 2) - (Width / 2);
             Top = screen.WorkingArea.Height - Height - 20;
@@ -160,27 +162,43 @@ namespace GTControl
             // 페이지 등록
             foreach (var p in Setting.Pages)
             {
-                var page = new Page();
-                page.PageName = p.Name;
+                var page = new Page(p.PageName);
+                page.Title = p.Title;
+                page.VisibleTitle = p.VisibleTitle;
                 page.VisibleHeader = p.VisibleHeader;
                 page.VisibleBackButton = p.VisibleBackButton;
-                page.VisibleOptionButton = p.VisibleOptionButton;
                 page.CloseMode = p.CloseMode;
                 if (page.CloseMode == PageCloseMode.Dispose)
                 {
-                    page.OnDisposed += delegate (object o, EventArgs e) { Close(); };
+                    page.OnDisposed += delegate (object sender, EventArgs e) { Application.Exit(); };
                 }
 
                 // 해당 페이지의 아이템 등록
-                var items = Setting.PageItems.Where(o => o.PageName == p.PageName);
-                foreach (var item in items)
+                var pageItems = Setting.PageItems.Where(o => o.PageName == p.PageName);
+                foreach (var pageItem in pageItems)
                 {
-                    item.IsEditMode = false;
-                    page.AddItem(item);
+                    var item = page.AddItem(pageItem);
+                    if (item != null)
+                    {
+                        item.OnFolderClickEvent += delegate (object sender, EventArgs e)
+                        {
+                            string pageName = item.LinkPageName;
+                            if (string.IsNullOrWhiteSpace(pageName)) return;
+
+                            var linkPage = _pages.FirstOrDefault(o => o.PageName == pageName);
+                            if (linkPage == null) return;
+
+                            linkPage.Show();
+                            linkPage.BringToFront();
+                        };
+                    }
                 }
 
                 Controls.Add(page);
             }
+
+            var main = _pages.FirstOrDefault(o => o.PageName == "Main");
+            if (main != null) main.BringToFront();
         }
         #endregion
     }

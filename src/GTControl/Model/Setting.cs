@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -68,6 +69,8 @@ namespace GTControl
                 _pageItems = value;
             }
         }
+
+        public static bool IsEditMode { get; set; }
         #endregion
 
         #region Public Method
@@ -190,9 +193,10 @@ namespace GTControl
                 {
                     var props = new Dictionary<string, object>();
                     props.Add("PageName", page.PageName);
+                    props.Add("Title", page.Title);
+                    props.Add("VisibleTitle", page.VisibleTitle);
                     props.Add("VisibleHeader", page.VisibleHeader);
                     props.Add("VisibleBackButton", page.VisibleBackButton);
-                    props.Add("VisibleOptionButton", page.VisibleOptionButton);
                     props.Add("CloseMode", page.CloseMode.ToString());
                     pageProperties.Add(props);
                 }
@@ -217,6 +221,7 @@ namespace GTControl
                     props.Add("ClickMode", pageItem.ClickMode.ToString());
                     props.Add("FilePath", pageItem.FilePath);
                     props.Add("Arguments", pageItem.Arguments);
+                    props.Add("LinkPageName", pageItem.LinkPageName);
                     props.Add("Column", pageItem.Column);
                     props.Add("Row", pageItem.Row);
                     props.Add("ColumnSpan", pageItem.ColumnSpan);
@@ -280,11 +285,12 @@ namespace GTControl
             Pages = new List<Page>();
             foreach (var props in pageProperties)
             {
-                var page = new Page();
-                page.PageName = props["PageName"] as string;
+                string pageName = props["PageName"] as string;
+                var page = new Page(pageName);
+                page.Title = props["Title"] as string;
+                page.VisibleTitle = (bool) props["VisibleTitle"];
                 page.VisibleHeader = (bool) props["VisibleHeader"];
                 page.VisibleBackButton = (bool) props["VisibleBackButton"];
-                page.VisibleOptionButton = (bool) props["VisibleOptionButton"];
                 page.CloseMode = (PageCloseMode) Enum.Parse(typeof(PageCloseMode), props["CloseMode"] as string);
 
                 Pages.Add(page);
@@ -317,9 +323,18 @@ namespace GTControl
                 bool strikeout = (bool) props["TextFont_Strikeout"];
                 bool underline = (bool) props["TextFont_Underline"];
 
+                FontStyle style = FontStyle.Regular;
+                if (bold) style = FontStyle.Bold;
+                if (italic) style |= FontStyle.Italic;
+                if (strikeout) style |= FontStyle.Strikeout;
+                if (underline) style |= FontStyle.Underline;
+                Font font = new Font(fontName, size, style);
+                item.TextFont = font;
+
                 item.ClickMode = (ClickMode) Enum.Parse(typeof(ClickMode), props["ClickMode"] as string);
                 item.FilePath = props["FilePath"] as string;
                 item.Arguments = props["Arguments"] as string;
+                item.LinkPageName = props["LinkPageName"] as string;
                 item.Column = (int) (long) props["Column"];
                 item.Row = (int) (long) props["Row"];
                 item.ColumnSpan = (int) (long) props["ColumnSpan"];
@@ -334,14 +349,7 @@ namespace GTControl
             if (Pages == null)
             {
                 Pages = new List<Page>();
-
-                var page = new Page();
-                page.PageName = "Main";
-                page.VisibleHeader = true;
-                page.VisibleBackButton = false;
-                page.VisibleOptionButton = true;
-                page.CloseMode = PageCloseMode.Dispose;
-                Pages.Add(page);
+                Pages.Add(new Page("Main"));
             }
             if (PageItems == null)
             {
@@ -362,22 +370,27 @@ namespace GTControl
         {
             if (img == null) return null;
 
+            byte[] data = null;
             using (var ms = new MemoryStream())
             {
-                img.Save(ms, img.RawFormat);
-                byte[] imageBytes = ms.ToArray();
-                return Convert.ToBase64String(imageBytes);
+                img.Save(ms, ImageFormat.Png);
+                data = ms.ToArray();
             }
+            return Convert.ToBase64String(data);
         }
 
         private static Image FromBase64(string base64)
         {
             if (string.IsNullOrWhiteSpace(base64)) return null;
 
-            using (var ms = new MemoryStream(Convert.FromBase64String(base64)))
+            Image img = null;
+            byte[] data = Convert.FromBase64String(base64.Replace("\n", ""));
+            using (var ms = new MemoryStream(data, 0, data.Length))
             {
-                return Image.FromStream(ms);
+                ms.Position = 0;
+                img = Image.FromStream(ms, true);
             }
+            return img;
         }
         #endregion
     }

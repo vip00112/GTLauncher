@@ -110,13 +110,12 @@ namespace GTControl
                 panel.Height = Setting.GetHeight(Setting.SizeModeHeight);
                 tabPage.Controls.Add(panel);
 
-                var page = new Page();
-                page.PageName = p.PageName;
+                var page = new Page(p.PageName);
+                page.Title = p.Title;
+                page.VisibleTitle = p.VisibleTitle;
                 page.VisibleHeader = p.VisibleHeader;
                 page.VisibleBackButton = p.VisibleBackButton;
-                page.VisibleOptionButton = p.VisibleOptionButton;
                 page.CloseMode = p.CloseMode;
-                page.PageBody.IsEditMode = true;
                 page.PageBody.MouseDown += pageBody_MouseDown;
                 page.PageBody.MouseMove += pageBody_MouseMove;
                 page.PageBody.MouseUp += pageBody_MouseUp;
@@ -130,7 +129,6 @@ namespace GTControl
                     var item = page.AddItem(pageItem);
                     if (item != null)
                     {
-                        item.IsEditMode = true;
                         item.OnMouseDownEvent += pageItem_MouseDown;
                     }
                 }
@@ -145,7 +143,40 @@ namespace GTControl
 
         private void menuItem_addPage_Click(object sender, EventArgs e)
         {
+            var pageNames = new List<string>();
+            foreach (TabPage tabPage in tabControl_pages.TabPages)
+            {
+                pageNames.Add(tabPage.Text);
+            }
+            using (var dialog = new CreatePageForm(pageNames))
+            {
+                if (dialog.ShowDialog() != DialogResult.OK) return;
 
+                string pageName = dialog.PageName;
+                var tabPage = new TabPage();
+                tabPage.Text = pageName;
+                tabControl_pages.TabPages.Add(tabPage);
+
+                var panel = new Panel();
+                panel.Name = pageName;
+                panel.Location = new Point(0, 0);
+                panel.Width = Setting.GetWidth(Setting.SizeModeWidth);
+                panel.Height = Setting.GetHeight(Setting.SizeModeHeight);
+                tabPage.Controls.Add(panel);
+
+                var page = new Page(pageName);
+                page.Title = "Title";
+                page.VisibleTitle = true;
+                page.VisibleHeader = true;
+                page.VisibleBackButton = true;
+                page.CloseMode = PageCloseMode.Hide;
+                page.PageBody.MouseDown += pageBody_MouseDown;
+                page.PageBody.MouseMove += pageBody_MouseMove;
+                page.PageBody.MouseUp += pageBody_MouseUp;
+                page.PageBody.Paint += pageBody_Paint;
+                page.PageBody.Resize += pageBody_Resize;
+                panel.Controls.Add(page);
+            }
         }
 
         private void menuItem_addItem_Click(object sender, EventArgs e)
@@ -167,7 +198,6 @@ namespace GTControl
             var item = SelectedPage.AddItem(new PageItem()
             {
                 PageName = SelectedPage.PageName,
-                IsEditMode = true,
                 Column = minCol,
                 Row = minRow,
                 ColumnSpan = colSpan,
@@ -186,7 +216,24 @@ namespace GTControl
         private void menuItem_deletePage_Click(object sender, EventArgs e)
         {
             if (SelectedPage == null) return;
+            if (SelectedPage.PageName == "Main")
+            {
+                MessageBoxUtil.Error("Can't remove Main page.");
+                return;
+            }
             if (!MessageBoxUtil.Confirm("Are you sure you want to delete page?")) return;
+
+            var items = SelectedPage.PageItems.ToArray();
+            foreach (var item in items)
+            {
+                SelectedPage.RemoveItem(item);
+            }
+
+            var tab = tabControl_pages.SelectedTab;
+            if (tab == null) return;
+
+            tabControl_pages.TabPages.Remove(tab);
+            tab.Dispose();
         }
 
         private void menuItem_deleteItem_Click(object sender, EventArgs e)
@@ -242,7 +289,7 @@ namespace GTControl
             if (SelectedItem == null) return;
 
             _cells.ForEach(o => o.IsSelected = false);
-            SelectedPage.Invalidate();
+            SelectedPage.PageBody.Invalidate();
         }
 
         private void pageBody_MouseDown(object sender, MouseEventArgs e)
@@ -329,6 +376,18 @@ namespace GTControl
                     break;
                 case "SizeModeHeight":
                     SelectedPage.Parent.Height = Setting.GetHeight((SizeMode) e.ChangedItem.Value);
+                    break;
+                case "PageName":
+                    var tab = tabControl_pages.SelectedTab;
+                    if (tab == null) return;
+
+                    string pageName = e.ChangedItem.Value as string;
+                    if (string.IsNullOrWhiteSpace(pageName)) return;
+                    if (pageName == "Main") return;
+
+                    tab.Text = pageName;
+                    SelectedPage.PageName = pageName;
+                    SelectedPage.PageItems.ForEach(o => o.PageName = pageName);
                     break;
             }
         }

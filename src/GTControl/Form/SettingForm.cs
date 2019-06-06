@@ -17,11 +17,16 @@ namespace GTControl
         private List<Page> _pages;
         private List<PageItem> _pageItems;
 
+        #region Constructor
         public SettingForm()
         {
             InitializeComponent();
-        }
 
+            Setting.IsEditMode = true;
+        }
+        #endregion
+
+        #region Control Event
         private void SettingForm_Load(object sender, EventArgs e)
         {
             if (DesignMode) return;
@@ -33,6 +38,11 @@ namespace GTControl
             checkBox_canMove.Checked = Setting.CanMove;
             comboBox_theme.DataSource = Enum.GetValues(typeof(Theme));
             comboBox_theme.SelectedItem = Setting.Theme;
+        }
+
+        private void SettingForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Setting.IsEditMode = false;
         }
 
         private void button_save_Click(object sender, EventArgs e)
@@ -55,7 +65,9 @@ namespace GTControl
                 _pageItems = dialog.PageItems;
             }
         }
+        #endregion
 
+        #region Public Method
         public void SaveSetting()
         {
             Setting.CanMove = checkBox_canMove.Checked;
@@ -67,5 +79,6 @@ namespace GTControl
 
             Setting.Save();
         }
+        #endregion
     }
 }
