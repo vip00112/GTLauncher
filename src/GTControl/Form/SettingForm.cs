@@ -12,6 +12,8 @@ namespace GTControl
 {
     public partial class SettingForm : Form
     {
+        private List<PageItem> _pageItems;
+
         public SettingForm()
         {
             InitializeComponent();
@@ -34,9 +36,12 @@ namespace GTControl
 
         private void button_layout_Click(object sender, EventArgs e)
         {
-            using (var dialog = new LayoutSettingForm())
+            using (var dialog = new LayoutSettingForm(_pageItems))
             {
-                dialog.ShowDialog();
+                if (dialog.ShowDialog() != DialogResult.OK) return;
+                if (dialog.PageItems == null) return;
+
+                _pageItems = dialog.PageItems;
             }
         }
 
@@ -44,6 +49,9 @@ namespace GTControl
         {
             Setting.CanMove = checkBox_canMove.Checked;
             Setting.Theme = (Theme) comboBox_theme.SelectedItem;
+            Setting.PageItems = _pageItems;
+
+            Setting.Save();
         }
     }
 }

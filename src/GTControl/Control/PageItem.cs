@@ -17,6 +17,10 @@ namespace GTControl
         public MouseEventHandler OnMouseDownEvent;
 
         private Image _backgroundImage;
+        private int _column;
+        private int _row;
+        private int _columnSpan;
+        private int _rowSpan;
 
         #region Constructor
         public PageItem()
@@ -90,80 +94,54 @@ namespace GTControl
         [Category("Page Option")]
         public int Column
         {
-            get
-            {
-                var body = Parent as PageBody;
-                if (body == null) return 0;
-
-                return body.GetColumn(this);
-            }
+            get { return _column; }
             set
             {
-                var body = Parent as PageBody;
-                if (body == null) return;
+                _column = value;
 
-                body.SetColumn(this, value);
+                var body = Parent as PageBody;
+                if (body != null) body.SetColumn(this, value);
             }
         }
 
         [Category("Page Option")]
         public int Row
         {
-            get
-            {
-                var body = Parent as PageBody;
-                if (body == null) return 0;
-
-                return body.GetRow(this);
-            }
+            get { return _row; }
             set
             {
-                var body = Parent as PageBody;
-                if (body == null) return;
+                _row = value;
 
-                body.SetRow(this, value);
+                var body = Parent as PageBody;
+                if (body != null) body.SetRow(this, value);
             }
         }
 
         [Category("Page Option")]
         public int ColumnSpan
         {
-            get
-            {
-                var body = Parent as PageBody;
-                if (body == null) return 0;
-
-                return body.GetColumnSpan(this);
-            }
+            get { return _columnSpan; }
             set
             {
                 if (value < 1) return;
+                _columnSpan = value;
 
                 var body = Parent as PageBody;
-                if (body == null) return;
-
-                body.SetColumnSpan(this, value);
+                if (body != null) body.SetColumnSpan(this, value);
             }
         }
 
         [Category("Page Option")]
         public int RowSpan
         {
-            get
-            {
-                var body = Parent as PageBody;
-                if (body == null) return 0;
-
-                return body.GetRowSpan(this);
-            }
+            get { return _rowSpan; }
             set
             {
                 if (value < 1) return;
+                _rowSpan = value;
 
                 var body = Parent as PageBody;
-                if (body == null) return;
-
-                body.SetRowSpan(this, value);
+                if (body != null) body.SetRowSpan(this, value);
             }
         }
         #endregion

@@ -19,7 +19,7 @@ namespace GTControl
         private PageItem _selectedItem;
 
         #region Constructor
-        public LayoutSettingForm()
+        private LayoutSettingForm()
         {
             InitializeComponent();
 
@@ -29,11 +29,18 @@ namespace GTControl
                 SizeModeHeight = Setting.SizeModeHeight,
             };
             _cells = new List<Cell>();
+        }
 
-            propertyGrid.BrowsableAttributes = new AttributeCollection(new Attribute[] { new CategoryAttribute("Page Option") });
-            propertyGrid.SelectedObject = _background;
-            panel_container.Width = Setting.GetWidth(Setting.SizeModeWidth);
-            panel_container.Height = Setting.GetHeight(Setting.SizeModeHeight);
+        public LayoutSettingForm(List<PageItem> pageItems) : this()
+        {
+            if (pageItems != null)
+            {
+                PageItems = pageItems;
+            }
+            else
+            {
+                PageItems = Setting.PageItems;
+            }
         }
         #endregion
 
@@ -55,6 +62,8 @@ namespace GTControl
                 }
             }
         }
+
+        public List<PageItem> PageItems { get; private set; }
         #endregion
 
         #region Control Event
@@ -64,6 +73,41 @@ namespace GTControl
             MinimumSize = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
             MaximumSize = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
             Size = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
+
+            propertyGrid.BrowsableAttributes = new AttributeCollection(new Attribute[] { new CategoryAttribute("Page Option") });
+            propertyGrid.SelectedObject = _background;
+            panel_container.Width = Setting.GetWidth(Setting.SizeModeWidth);
+            panel_container.Height = Setting.GetHeight(Setting.SizeModeHeight);
+
+            if (PageItems != null)
+            {
+                foreach (var pageItem in PageItems)
+                {
+                    var item = new PageItem();
+                    item.BackgroundImage = pageItem.BackgroundImage;
+                    item.TextContent = pageItem.TextContent;
+                    item.TextAlign = pageItem.TextAlign;
+                    item.TextFont = pageItem.TextFont;
+                    item.ClickMode = pageItem.ClickMode;
+                    item.FilePath = pageItem.FilePath;
+                    item.Arguments = pageItem.Arguments;
+                    item.IsEditMode = true;
+                    item.OnMouseDownEvent += pageItem_MouseDown;
+                    try
+                    {
+                        pageBody.Controls.Add(item);
+                        item.Column = pageItem.Column;
+                        item.Row = pageItem.Row;
+                        item.ColumnSpan = pageItem.ColumnSpan;
+                        item.RowSpan = pageItem.RowSpan;
+                    }
+                    catch
+                    {
+                        pageBody.Controls.Remove(item);
+                        item.Dispose();
+                    }
+                }
+            }
 
             ResetCells();
         }
@@ -83,12 +127,13 @@ namespace GTControl
             var item = new PageItem();
             item.IsEditMode = true;
             item.OnMouseDownEvent += pageItem_MouseDown;
-
             try
             {
-                pageBody.Controls.Add(item, minCol, minRow);
-                pageBody.SetColumnSpan(item, maxCol - minCol + 1);
-                pageBody.SetRowSpan(item, maxRow - minRow + 1);
+                pageBody.Controls.Add(item);
+                item.Column = minCol;
+                item.Row = minRow;
+                item.ColumnSpan = maxCol - minCol + 1;
+                item.RowSpan = maxRow - minRow + 1;
                 SelectedItem = item;
             }
             catch
@@ -111,7 +156,15 @@ namespace GTControl
 
         private void menuItem_save_Click(object sender, EventArgs e)
         {
-            // TODO : 레이아웃 정보 저장 (XML? Json?)
+            PageItems = new List<PageItem>();
+            foreach (Control control in pageBody.Controls)
+            {
+                var item = control as PageItem;
+                if (item == null) continue;
+
+                PageItems.Add(item);
+            }
+            DialogResult = DialogResult.OK;
         }
 
         private void pageItem_MouseDown(object sender, MouseEventArgs e)

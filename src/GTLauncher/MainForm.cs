@@ -16,6 +16,8 @@ namespace GTLauncher
         public MainForm()
         {
             InitializeComponent();
+
+            Setting.Load();
         }
     }
 }
