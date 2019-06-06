@@ -142,6 +142,9 @@ namespace GTControl
         }
 
         [Browsable(false)]
+        public PageHeader PageHeader { get { return pageHeader; } }
+
+        [Browsable(false)]
         public PageBody PageBody { get { return pageBody; } }
 
         [Browsable(false)]

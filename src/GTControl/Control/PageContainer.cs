@@ -77,8 +77,7 @@ namespace GTControl
             if (page == null) return;
 
             _pages.Add(page);
-            Setting.SetTheme(page, Setting.Theme);
-            SetMoveEvent(page);
+            SetMoveEvent(page.PageHeader);
         }
 
         protected override void OnControlRemoved(ControlEventArgs e)
@@ -113,7 +112,7 @@ namespace GTControl
 
             foreach (Control child in control.Controls)
             {
-                if (child is PageHeader)
+                if (child is Label)
                 {
                     SetMoveEvent(child);
                 }
