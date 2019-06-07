@@ -251,10 +251,10 @@ namespace GTControl
 
                 string json = File.ReadAllText("Setting.json");
                 var properties = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-                CanMove = (bool) properties["CanMove"];
-                Theme = (Theme) Enum.Parse(typeof(Theme), properties["Theme"] as string);
-                SizeModeWidth = (SizeMode) Enum.Parse(typeof(SizeMode), properties["SizeModeWidth"] as string);
-                SizeModeHeight = (SizeMode) Enum.Parse(typeof(SizeMode), properties["SizeModeHeight"] as string);
+                CanMove = GetValue<bool>(properties, "CanMove");
+                Theme = GetValue<Theme>(properties, "Theme");
+                SizeModeWidth = GetValue<SizeMode>(properties, "SizeModeWidth");
+                SizeModeHeight = GetValue<SizeMode>(properties, "SizeModeHeight");
 
                 LoadPages(properties);
                 LoadPageItems(properties);
@@ -271,6 +271,28 @@ namespace GTControl
         #endregion
 
         #region Private Method
+        private static T GetValue<T>(Dictionary<string, object> properties, string key)
+        {
+            if (!properties.ContainsKey(key)) return default(T);
+
+            try
+            {
+                var value = properties[key];
+                if (typeof(T).IsEnum)
+                {
+                    return (T) Enum.Parse(typeof(T), value as string);
+                }
+
+                // string, bool, doule, long
+                return (T) value;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return default(T);
+        }
+
         private static void LoadPages(Dictionary<string, object> properties)
         {
 
@@ -285,13 +307,13 @@ namespace GTControl
             Pages = new List<Page>();
             foreach (var props in pageProperties)
             {
-                string pageName = props["PageName"] as string;
+                string pageName = GetValue<string>(props, "PageName");
                 var page = new Page(pageName);
-                page.Title = props["Title"] as string;
-                page.VisibleTitle = (bool) props["VisibleTitle"];
-                page.VisibleHeader = (bool) props["VisibleHeader"];
-                page.VisibleBackButton = (bool) props["VisibleBackButton"];
-                page.CloseMode = (PageCloseMode) Enum.Parse(typeof(PageCloseMode), props["CloseMode"] as string);
+                page.Title = GetValue<string>(props, "Title");
+                page.VisibleTitle = GetValue<bool>(props, "VisibleTitle");
+                page.VisibleHeader = GetValue<bool>(props, "VisibleHeader");
+                page.VisibleBackButton = GetValue<bool>(props, "VisibleBackButton");
+                page.CloseMode = GetValue<PageCloseMode>(props, "CloseMode");
 
                 Pages.Add(page);
             }
@@ -311,17 +333,17 @@ namespace GTControl
             foreach (var props in pageItemProperties)
             {
                 var item = new PageItem();
-                item.PageName = props["PageName"] as string;
+                item.PageName = GetValue<string>(props, "PageName");
                 item.BackgroundImage = FromBase64(props["BackgroundImage"] as string);
-                item.TextContent = props["TextContent"] as string;
-                item.TextAlign = (ContentAlignment) Enum.Parse(typeof(ContentAlignment), props["TextAlign"] as string);
+                item.TextContent = GetValue<string>(props, "TextContent");
+                item.TextAlign = GetValue<ContentAlignment>(props, "TextAlign");
 
-                string fontName = props["TextFont_Name"] as string;
-                int size = (int) (double) props["TextFont_Size"];
-                bool bold = (bool) props["TextFont_Bold"];
-                bool italic = (bool) props["TextFont_Italic"];
-                bool strikeout = (bool) props["TextFont_Strikeout"];
-                bool underline = (bool) props["TextFont_Underline"];
+                string fontName = GetValue<string>(props, "TextFont_Name");
+                int size = (int) GetValue<double>(props, "TextFont_Size");
+                bool bold = GetValue<bool>(props, "TextFont_Bold");
+                bool italic = GetValue<bool>(props, "TextFont_Italic");
+                bool strikeout = GetValue<bool>(props, "TextFont_Strikeout");
+                bool underline = GetValue<bool>(props, "TextFont_Underline");
 
                 FontStyle style = FontStyle.Regular;
                 if (bold) style = FontStyle.Bold;
@@ -331,14 +353,14 @@ namespace GTControl
                 Font font = new Font(fontName, size, style);
                 item.TextFont = font;
 
-                item.ClickMode = (ClickMode) Enum.Parse(typeof(ClickMode), props["ClickMode"] as string);
-                item.FilePath = props["FilePath"] as string;
-                item.Arguments = props["Arguments"] as string;
-                item.LinkPageName = props["LinkPageName"] as string;
-                item.Column = (int) (long) props["Column"];
-                item.Row = (int) (long) props["Row"];
-                item.ColumnSpan = (int) (long) props["ColumnSpan"];
-                item.RowSpan = (int) (long) props["RowSpan"];
+                item.ClickMode = GetValue<ClickMode>(props, "ClickMode");
+                item.FilePath = GetValue<string>(props, "FilePath");
+                item.Arguments = GetValue<string>(props, "Arguments");
+                item.LinkPageName = GetValue<string>(props, "LinkPageName");
+                item.Column = (int) GetValue<long>(props, "Column");
+                item.Row = (int) GetValue<long>(props, "Row");
+                item.ColumnSpan = (int) GetValue<long>(props, "ColumnSpan");
+                item.RowSpan = (int) GetValue<long>(props, "RowSpan");
 
                 PageItems.Add(item);
             }
