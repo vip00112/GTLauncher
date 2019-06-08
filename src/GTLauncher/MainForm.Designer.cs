@@ -31,14 +31,32 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuItem_exit = new System.Windows.Forms.ToolStripMenuItem();
+            this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // notifyIcon
             // 
+            this.notifyIcon.ContextMenuStrip = this.notifyIconMenu;
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "GTLauncher";
             this.notifyIcon.Visible = true;
             this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
+            // 
+            // notifyIconMenu
+            // 
+            this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_exit});
+            this.notifyIconMenu.Name = "notifyIconMenu";
+            this.notifyIconMenu.Size = new System.Drawing.Size(181, 48);
+            // 
+            // menuItem_exit
+            // 
+            this.menuItem_exit.Name = "menuItem_exit";
+            this.menuItem_exit.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_exit.Text = "Exit";
+            this.menuItem_exit.Click += new System.EventHandler(this.menuItem_exit_Click);
             // 
             // MainForm
             // 
@@ -55,6 +73,7 @@
             this.SizeModeHeight = GTControl.SizeMode.Medium;
             this.SizeModeWidth = GTControl.SizeMode.Medium;
             this.Text = "MainForm";
+            this.notifyIconMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -62,6 +81,8 @@
         #endregion
 
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ContextMenuStrip notifyIconMenu;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_exit;
     }
 }
 

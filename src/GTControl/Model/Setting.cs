@@ -334,7 +334,7 @@ namespace GTControl
             {
                 var item = new PageItem();
                 item.PageName = GetValue<string>(props, "PageName");
-                item.BackgroundImage = FromBase64(props["BackgroundImage"] as string);
+                item.BackgroundImage = FromBase64(GetValue<string>(props, "BackgroundImage"));
                 item.TextContent = GetValue<string>(props, "TextContent");
                 item.TextAlign = GetValue<ContentAlignment>(props, "TextAlign");
 
