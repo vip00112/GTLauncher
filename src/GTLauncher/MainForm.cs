@@ -1,5 +1,5 @@
-﻿using GTControl;
-using GTCapture;
+﻿using GTCapture;
+using GTControl;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,12 +20,16 @@ namespace GTLauncher
         {
             InitializeComponent();
 
+            var form = new GTCapture.SettingForm();
+            form.ShowDialog();
+
             _capture = new Capture(Handle);
 
             var modifier = KeyModifiers.Control | KeyModifiers.Shift;
             _capture.RegisterHotKey(CaptureMode.FullScreen, modifier, Keys.N);
         }
 
+        #region Control Event
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Activate();
@@ -35,7 +39,9 @@ namespace GTLauncher
         {
             Close();
         }
+        #endregion
 
+        #region Protected Method
         protected override void WndProc(ref Message m)
         {
             if (_capture != null)
@@ -44,6 +50,7 @@ namespace GTLauncher
             }
             base.WndProc(ref m);
         }
+        #endregion
 
     }
 }

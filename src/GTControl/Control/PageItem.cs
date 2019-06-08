@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Collections;
 using System.Diagnostics;
+using GTUtil;
 
 namespace GTControl
 {

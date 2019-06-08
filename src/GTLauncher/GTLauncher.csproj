@@ -97,7 +97,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GTUtil\GTCapture.csproj">
+    <ProjectReference Include="..\GTCapture\GTCapture.csproj">
       <Project>{b47c9b70-2295-428b-a006-e3aa9c08d8fd}</Project>
       <Name>GTCapture</Name>
     </ProjectReference>
