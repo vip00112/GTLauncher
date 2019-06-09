@@ -33,6 +33,8 @@ namespace GTCapture
             textBox_fullScreen.Tag = CaptureMode.FullScreen;
             textBox_activeProcess.Tag = CaptureMode.ActiveProcess;
             textBox_region.Tag = CaptureMode.Region;
+
+            // TODO : CaptureMode별 핫키 등록 후 TextBox에 표기
         }
 
         private void textBox_hotKey_Click(object sender, EventArgs e)
@@ -48,19 +50,19 @@ namespace GTCapture
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
                 // TODO : 동일한 핫키 삭제
-                var added = _hotKeys.FirstOrDefault(o => o.Value.Modifier == hotKey.Modifier && o.Value.Key == hotKey.Key);
+                var added = _hotKeys.FirstOrDefault(o => o.Value.Modifiers == hotKey.Modifiers && o.Value.Key == hotKey.Key);
                 if (added.Value != null)
                 {
                     var owner = _textBoxs.FirstOrDefault(o => (CaptureMode) o.Tag == added.Key);
                     if (owner != null) owner.Text = "";
 
-                    added.Value.Modifier = KeyModifiers.None;
+                    added.Value.Modifiers = KeyModifiers.None;
                     added.Value.Key = Keys.None;
                 }
 
-                hotKey.Modifier = dialog.Modifiers;
-                hotKey.Key = dialog.Key;
-                textBox.Text = dialog.Result;
+                hotKey.Modifiers = dialog.HotKey.Modifiers;
+                hotKey.Key = dialog.HotKey.Key;
+                textBox.Text = dialog.HotKey.ToString();
             }
         }
 

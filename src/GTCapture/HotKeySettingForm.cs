@@ -14,6 +14,7 @@ namespace GTCapture
     public partial class HotKeySettingForm : Form
     {
         private List<CheckBox> _checkBoxs;
+        private HotKey _hotKey;
 
         #region Constructor
         private HotKeySettingForm()
@@ -39,28 +40,32 @@ namespace GTCapture
         {
             if (hotKey == null) return;
 
-            if (hotKey.Modifier.HasFlag(KeyModifiers.Alt))
-            {
-                checkBox_alt.Checked = true;
-            }
-            if (hotKey.Modifier.HasFlag(KeyModifiers.Control))
-            {
-                checkBox_control.Checked = true;
-            }
-            if (hotKey.Modifier.HasFlag(KeyModifiers.Shift))
-            {
-                checkBox_shift.Checked = true;
-            }
-            comboBox_key.SelectedItem = hotKey.Key;
+            HotKey = hotKey;
         }
         #endregion
 
         #region Properties
-        public KeyModifiers Modifiers { get; private set; }
-
-        public Keys Key { get; private set; }
-
-        public string Result { get; set; }
+        public HotKey HotKey
+        {
+            get { return _hotKey; }
+            private set
+            {
+                _hotKey = value;
+                if (_hotKey.Modifiers.HasFlag(KeyModifiers.Alt))
+                {
+                    checkBox_alt.Checked = true;
+                }
+                if (_hotKey.Modifiers.HasFlag(KeyModifiers.Control))
+                {
+                    checkBox_control.Checked = true;
+                }
+                if (_hotKey.Modifiers.HasFlag(KeyModifiers.Shift))
+                {
+                    checkBox_shift.Checked = true;
+                }
+                comboBox_key.SelectedItem = _hotKey.Key;
+            }
+        }
         #endregion
 
         #region Control Event
@@ -71,29 +76,21 @@ namespace GTCapture
                 MessageBoxUtil.Error("You must select key.");
                 return;
             }
+            if (!MessageBoxUtil.Confirm("Are you save this setting?")) return;
 
-            Result = null;
             if (checkBox_alt.Checked)
             {
-                Result += "Alt + ";
-                Modifiers |= KeyModifiers.Alt;
+                HotKey.Modifiers |= KeyModifiers.Alt;
             }
             if (checkBox_control.Checked)
             {
-                Result += "Control + ";
-                Modifiers |= KeyModifiers.Control;
+                HotKey.Modifiers |= KeyModifiers.Control;
             }
             if (checkBox_shift.Checked)
             {
-                Result += "Shift + ";
-                Modifiers |= KeyModifiers.Shift;
+                HotKey.Modifiers |= KeyModifiers.Shift;
             }
-            var key = (Keys) comboBox_key.SelectedItem;
-            Key = key;
-            Result += key.ToString();
-
-            string msg = string.Format("Are you save this setting?\r\n({0})", Result);
-            if (!MessageBoxUtil.Confirm(msg)) return;
+            HotKey.Key = (Keys) comboBox_key.SelectedItem;
 
             DialogResult = DialogResult.OK;
         }

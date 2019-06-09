@@ -78,7 +78,7 @@ namespace GTCapture
 
         public bool IsExistHotKey(KeyModifiers modifiers, Keys key)
         {
-            return _hotKeys.Values.Any(o => o.Modifier == modifiers && o.Key == key);
+            return _hotKeys.Values.Any(o => o.Modifiers == modifiers && o.Key == key);
         }
 
         public void RegisterHotKey(CaptureMode mode, KeyModifiers modifiers, Keys key)
@@ -91,9 +91,9 @@ namespace GTCapture
                 UnregisterHotKey(mode);
             }
 
-            hotKey.Modifier = modifiers;
+            hotKey.Modifiers = modifiers;
             hotKey.Key = key;
-            if (WindowsAPI.RegisterHotKey(_hWnd, (int) mode, hotKey.Modifier, hotKey.Key))
+            if (WindowsAPI.RegisterHotKey(_hWnd, (int) mode, hotKey.Modifiers, hotKey.Key))
             {
                 hotKey.IsRegistered = true;
             }
@@ -117,7 +117,7 @@ namespace GTCapture
             foreach (var id in _hotKeys.Keys)
             {
                 var hotKey = _hotKeys[id];
-                if (hotKey.Modifier == modifiers && hotKey.Key == key)
+                if (hotKey.Modifiers == modifiers && hotKey.Key == key)
                 {
                     return id;
                 }
