@@ -61,6 +61,7 @@
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\WindowsAPI.cs" />
+    <Compile Include="Structures.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form\HotKeySettingForm.resx">
