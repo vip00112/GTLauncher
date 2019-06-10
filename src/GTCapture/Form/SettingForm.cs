@@ -14,17 +14,15 @@ namespace GTCapture
     public partial class SettingForm : Form
     {
         private List<TextBox> _textBoxs;
-        public Dictionary<CaptureMode, HotKey> _hotKeys;
+        private Dictionary<CaptureMode, HotKey> _hotKeys;
+        private static int _timer;
+        private static string _saveDirectory;
+        private static string _saveImageFormat;
 
         #region Constructor
         internal SettingForm()
         {
             InitializeComponent();
-
-            _textBoxs = new List<TextBox>();
-            _textBoxs.Add(textBox_fullScreen);
-            _textBoxs.Add(textBox_activeProcess);
-            _textBoxs.Add(textBox_region);
         }
         #endregion
 
@@ -32,6 +30,11 @@ namespace GTCapture
         private void SettingForm_Load(object sender, EventArgs e)
         {
             if (DesignMode) return;
+
+            _textBoxs = new List<TextBox>();
+            _textBoxs.Add(textBox_fullScreen);
+            _textBoxs.Add(textBox_activeProcess);
+            _textBoxs.Add(textBox_region);
 
             textBox_fullScreen.Tag = CaptureMode.FullScreen;
             textBox_activeProcess.Tag = CaptureMode.ActiveProcess;
@@ -45,6 +48,19 @@ namespace GTCapture
 
                 owner.Text = _hotKeys[mode].ToString();
             }
+
+            _timer = Setting.Timer;
+            numericUpDown_timer.Value = _timer;
+
+            _saveDirectory = Setting.SaveDirectory;
+            textBox_dirPath.Text = _saveDirectory;
+
+            _saveImageFormat = Setting.SaveImageFormat;
+            foreach (string format in Setting.ImageFormats)
+            {
+                comboBox_imageFormat.Items.Add(format);
+            }
+            comboBox_imageFormat.SelectedItem = _saveImageFormat;
         }
 
         private void textBox_hotKey_Click(object sender, EventArgs e)
@@ -78,11 +94,35 @@ namespace GTCapture
             }
         }
 
+        private void numericUpDown_timer_ValueChanged(object sender, EventArgs e)
+        {
+            _timer = (int) numericUpDown_timer.Value;
+        }
+
+        private void comboBox_imageFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _saveImageFormat = (string) comboBox_imageFormat.SelectedItem;
+        }
+
+        private void button_dirPath_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fb = new FolderBrowserDialog();
+            fb.RootFolder = Environment.SpecialFolder.Desktop;
+            fb.SelectedPath = _saveDirectory;
+            if (fb.ShowDialog() != DialogResult.OK) return;
+
+            _saveDirectory = fb.SelectedPath;
+            textBox_dirPath.Text = _saveDirectory;
+        }
+
         private void button_save_Click(object sender, EventArgs e)
         {
             if (!MessageBoxUtil.Confirm("Are you sure you want to save setting?")) return;
 
             Setting.HotKeys = _hotKeys;
+            Setting.Timer = _timer;
+            Setting.SaveDirectory = _saveDirectory;
+            Setting.SaveImageFormat = _saveImageFormat;
 
             Setting.Save();
 

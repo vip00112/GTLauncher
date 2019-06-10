@@ -1,6 +1,7 @@
 ﻿using GTUtil;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace GTCapture
     public static class Setting
     {
         private const string SaveFile = "Setting.Capture.json";
+        public static readonly string[] ImageFormats = new string[] { "jpg", "png", "gif", "bmp" };
 
         #region Properties
         public static IntPtr Handle { get; set; }
@@ -19,6 +21,10 @@ namespace GTCapture
         public static Dictionary<CaptureMode, HotKey> HotKeys { get; set; }
 
         public static int Timer { get; set; }
+
+        public static string SaveDirectory { get; set; }
+
+        public static string SaveImageFormat { get; set; }
         #endregion
 
         #region Public Method
@@ -28,6 +34,8 @@ namespace GTCapture
             {
                 var properties = new Dictionary<string, object>();
                 properties.Add("Timer", Timer);
+                properties.Add("SaveDirectory", SaveDirectory);
+                properties.Add("SaveImageFormat", SaveImageFormat);
 
                 var hotKeyProperties = new List<Dictionary<string, object>>();
                 foreach (var hotKey in HotKeys.Values)
@@ -62,6 +70,8 @@ namespace GTCapture
                 string json = File.ReadAllText(SaveFile);
                 var properties = JsonUtil.FromJson(json);
                 Timer = (int) JsonUtil.GetValue<long>(properties, "Timer");
+                SaveDirectory = JsonUtil.GetValue<string>(properties, "SaveDirectory");
+                SaveImageFormat = JsonUtil.GetValue<string>(properties, "SaveImageFormat");
 
                 LoadHotKeys(properties);
             }
@@ -79,6 +89,18 @@ namespace GTCapture
         {
             var hotKey = HotKeys.FirstOrDefault(o => o.Value.Modifiers == modifiers && o.Value.Key == key);
             return (hotKey.Value != null) ? hotKey.Key : CaptureMode.None;
+        }
+
+        public static ImageFormat GetImageFormat()
+        {
+            switch (SaveImageFormat)
+            {
+                case "jpg": return ImageFormat.Jpeg;
+                case "png": return ImageFormat.Png;
+                case "gif": return ImageFormat.Gif;
+                case "bmp": return ImageFormat.Bmp;
+                default: return ImageFormat.Jpeg;
+            }
         }
         #endregion
 
@@ -137,6 +159,14 @@ namespace GTCapture
 
         private static void SetDefault()
         {
+            if (string.IsNullOrWhiteSpace(SaveDirectory))
+            {
+                SaveDirectory = Path.Combine(Application.StartupPath, "Capture");
+            }
+            if (string.IsNullOrWhiteSpace(SaveImageFormat))
+            {
+                SaveImageFormat = ImageFormats[0];
+            }
             if (HotKeys == null)
             {
                 HotKeys = new Dictionary<CaptureMode, HotKey>();

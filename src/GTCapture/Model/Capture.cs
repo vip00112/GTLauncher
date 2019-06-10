@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -51,25 +52,15 @@ namespace GTCapture
             };
             _bw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
             {
-                Image img = e.Result as Image;
-                if (img == null) return;
+                using (var img = e.Result as Image)
+                {
+                    if (img == null) return;
 
-                // TODO : 캡쳐 후 처리 (클립보드, 뷰화면, 파일로저장 등등)
-                Clipboard.SetImage(img);
-                img.Save("Capture.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                    SaveImage(img);
+                }
                 _bw = null;
             };
             _bw.RunWorkerAsync();
-        }
-
-        private void _bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void _bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            throw new NotImplementedException();
         }
         #endregion
 
@@ -108,6 +99,8 @@ namespace GTCapture
 
         private Image CaptureWindow(IntPtr handle, int x, int y, int width, int height)
         {
+            // TODO : 작은 윈도우 핸들로 캡쳐시 테두리가 더 큼
+            // TODO : 폴더브라우저 캡쳐시 타이틀이 검은색으로 표시됨
             Image img = null;
             IntPtr srcDC = IntPtr.Zero;
             IntPtr memoryDC = IntPtr.Zero;
@@ -144,6 +137,26 @@ namespace GTCapture
             }
 
             return img;
+        }
+
+        private void SaveImage(Image img)
+        {
+            if (img == null) return;
+            try
+            {
+                if (!Directory.Exists(Setting.SaveDirectory))
+                {
+                    Directory.CreateDirectory(Setting.SaveDirectory);
+                }
+                string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"), Setting.SaveImageFormat);
+                string savePath = Path.Combine(Setting.SaveDirectory, fileName);
+                img.Save(savePath, Setting.GetImageFormat());
+                Clipboard.SetImage(img);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
         }
         #endregion
     }

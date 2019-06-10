@@ -85,9 +85,9 @@
             this.label2.Location = new System.Drawing.Point(10, 79);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(461, 12);
+            this.label2.Size = new System.Drawing.Size(301, 12);
             this.label2.TabIndex = 4;
-            this.label2.Text = "If you checkd this option then Launcher can move when mouse click on header.";
+            this.label2.Text = "- Launcher can move when mouse click on header.";
             // 
             // label3
             // 
@@ -95,9 +95,9 @@
             this.label3.Location = new System.Drawing.Point(12, 127);
             this.label3.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(432, 12);
+            this.label3.Size = new System.Drawing.Size(264, 12);
             this.label3.TabIndex = 4;
-            this.label3.Text = "If you changed this option then Launcher change color by selected Theme.";
+            this.label3.Text = "- Launcher change color by selected Theme.";
             // 
             // button_layout
             // 
@@ -115,15 +115,15 @@
             this.label4.Location = new System.Drawing.Point(12, 178);
             this.label4.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(275, 12);
+            this.label4.Size = new System.Drawing.Size(133, 12);
             this.label4.TabIndex = 4;
-            this.label4.Text = "If you want change layout then click this button.";
+            this.label4.Text = "- Change main layout.";
             // 
             // SettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(479, 203);
+            this.ClientSize = new System.Drawing.Size(319, 203);
             this.Controls.Add(this.button_layout);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
