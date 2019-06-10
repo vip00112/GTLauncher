@@ -78,6 +78,7 @@ namespace GTCapture
             }
             if (!MessageBoxUtil.Confirm("Are you save this setting?")) return;
 
+            HotKey.Modifiers = KeyModifiers.None;
             if (checkBox_alt.Checked)
             {
                 HotKey.Modifiers |= KeyModifiers.Alt;

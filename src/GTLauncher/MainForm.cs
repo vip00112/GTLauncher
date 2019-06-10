@@ -20,13 +20,9 @@ namespace GTLauncher
         {
             InitializeComponent();
 
-            var form = new GTCapture.SettingForm();
-            form.ShowDialog();
-
             _capture = new Capture(Handle);
+            _capture.ShowSettingForm();
 
-            var modifier = KeyModifiers.Control | KeyModifiers.Shift;
-            _capture.RegisterHotKey(CaptureMode.FullScreen, modifier, Keys.N);
         }
 
         #region Control Event
@@ -38,17 +34,6 @@ namespace GTLauncher
         private void menuItem_exit_Click(object sender, EventArgs e)
         {
             Close();
-        }
-        #endregion
-
-        #region Protected Method
-        protected override void WndProc(ref Message m)
-        {
-            if (_capture != null)
-            {
-                _capture.OnWndProc(ref m);
-            }
-            base.WndProc(ref m);
         }
         #endregion
 

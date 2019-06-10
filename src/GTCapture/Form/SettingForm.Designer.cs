@@ -42,9 +42,10 @@
             this.button_save.Location = new System.Drawing.Point(12, 12);
             this.button_save.Name = "button_save";
             this.button_save.Size = new System.Drawing.Size(75, 23);
-            this.button_save.TabIndex = 1;
+            this.button_save.TabIndex = 0;
             this.button_save.Text = "SAVE";
             this.button_save.UseVisualStyleBackColor = true;
+            this.button_save.Click += new System.EventHandler(this.button_save_Click);
             // 
             // label1
             // 
@@ -62,7 +63,8 @@
             this.textBox_fullScreen.Name = "textBox_fullScreen";
             this.textBox_fullScreen.ReadOnly = true;
             this.textBox_fullScreen.Size = new System.Drawing.Size(150, 21);
-            this.textBox_fullScreen.TabIndex = 3;
+            this.textBox_fullScreen.TabIndex = 0;
+            this.textBox_fullScreen.TabStop = false;
             this.textBox_fullScreen.Click += new System.EventHandler(this.textBox_hotKey_Click);
             // 
             // label2
@@ -81,7 +83,8 @@
             this.textBox_activeProcess.Name = "textBox_activeProcess";
             this.textBox_activeProcess.ReadOnly = true;
             this.textBox_activeProcess.Size = new System.Drawing.Size(150, 21);
-            this.textBox_activeProcess.TabIndex = 3;
+            this.textBox_activeProcess.TabIndex = 0;
+            this.textBox_activeProcess.TabStop = false;
             this.textBox_activeProcess.Click += new System.EventHandler(this.textBox_hotKey_Click);
             // 
             // label3
@@ -100,14 +103,15 @@
             this.textBox_region.Name = "textBox_region";
             this.textBox_region.ReadOnly = true;
             this.textBox_region.Size = new System.Drawing.Size(150, 21);
-            this.textBox_region.TabIndex = 3;
+            this.textBox_region.TabIndex = 0;
+            this.textBox_region.TabStop = false;
             this.textBox_region.Click += new System.EventHandler(this.textBox_hotKey_Click);
             // 
             // SettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(267, 450);
+            this.ClientSize = new System.Drawing.Size(267, 147);
             this.Controls.Add(this.textBox_region);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox_activeProcess);
@@ -122,6 +126,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Capture Setting";
+            this.Load += new System.EventHandler(this.SettingForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

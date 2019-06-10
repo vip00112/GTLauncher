@@ -197,8 +197,6 @@ namespace GTControl
             using (var dialog = new SettingForm())
             {
                 if (dialog.ShowDialog() != DialogResult.OK) return;
-
-                dialog.SaveSetting();
             }
         }
         #endregion

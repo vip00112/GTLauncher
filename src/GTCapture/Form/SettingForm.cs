@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GTUtil;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,9 +14,10 @@ namespace GTCapture
     public partial class SettingForm : Form
     {
         private List<TextBox> _textBoxs;
-        private Dictionary<CaptureMode, HotKey> _hotKeys;
+        public Dictionary<CaptureMode, HotKey> _hotKeys;
 
-        public SettingForm()
+        #region Constructor
+        internal SettingForm()
         {
             InitializeComponent();
 
@@ -23,18 +25,26 @@ namespace GTCapture
             _textBoxs.Add(textBox_fullScreen);
             _textBoxs.Add(textBox_activeProcess);
             _textBoxs.Add(textBox_region);
+        }
+        #endregion
 
-            _hotKeys = new Dictionary<CaptureMode, HotKey>();
-            foreach (CaptureMode mode in Enum.GetValues(typeof(CaptureMode)))
-            {
-                _hotKeys.Add(mode, new HotKey());
-            }
+        #region Control Event
+        private void SettingForm_Load(object sender, EventArgs e)
+        {
+            if (DesignMode) return;
 
             textBox_fullScreen.Tag = CaptureMode.FullScreen;
             textBox_activeProcess.Tag = CaptureMode.ActiveProcess;
             textBox_region.Tag = CaptureMode.Region;
 
-            // TODO : CaptureMode별 핫키 등록 후 TextBox에 표기
+            _hotKeys = Setting.HotKeys.ToDictionary(o => o.Key, o => o.Value);
+            foreach (var mode in _hotKeys.Keys)
+            {
+                var owner = _textBoxs.FirstOrDefault(o => (CaptureMode) o.Tag == mode);
+                if (owner == null) continue;
+
+                owner.Text = _hotKeys[mode].ToString();
+            }
         }
 
         private void textBox_hotKey_Click(object sender, EventArgs e)
@@ -48,11 +58,12 @@ namespace GTCapture
             using (var dialog = new HotKeySettingForm(hotKey))
             {
                 if (dialog.ShowDialog() != DialogResult.OK) return;
-
-                // TODO : 동일한 핫키 삭제
-                var added = _hotKeys.FirstOrDefault(o => o.Value.Modifiers == hotKey.Modifiers && o.Value.Key == hotKey.Key);
-                if (added.Value != null)
+                
+                var addeds = _hotKeys.Where(o => o.Value.Modifiers == hotKey.Modifiers && o.Value.Key == hotKey.Key);
+                foreach (var added in addeds)
                 {
+                    if (added.Value == hotKey) continue;
+
                     var owner = _textBoxs.FirstOrDefault(o => (CaptureMode) o.Tag == added.Key);
                     if (owner != null) owner.Text = "";
 
@@ -63,8 +74,20 @@ namespace GTCapture
                 hotKey.Modifiers = dialog.HotKey.Modifiers;
                 hotKey.Key = dialog.HotKey.Key;
                 textBox.Text = dialog.HotKey.ToString();
+                button_save.Focus();
             }
         }
 
+        private void button_save_Click(object sender, EventArgs e)
+        {
+            if (!MessageBoxUtil.Confirm("Are you sure you want to save setting?")) return;
+
+            Setting.HotKeys = _hotKeys;
+
+            Setting.Save();
+
+            DialogResult = DialogResult.OK;
+        }
+        #endregion
     }
 }
