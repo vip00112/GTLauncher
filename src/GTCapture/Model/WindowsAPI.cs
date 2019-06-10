@@ -16,6 +16,7 @@ namespace GTCapture
         public const int WM_KEYUP = 0x101;
         public const int WM_SYSKEYUP = 0x105;
         public const int SRCCOPY = 0x00CC0020;
+        public const int CAPTUREBLT = 0x40000000;
 
         #region User32
         [DllImport("user32.dll")]
@@ -33,6 +34,9 @@ namespace GTCapture
 
         [DllImport("user32.dll")]
         public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetDesktopWindow();

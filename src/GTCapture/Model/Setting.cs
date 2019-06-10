@@ -17,6 +17,8 @@ namespace GTCapture
         public static IntPtr Handle { get; set; }
 
         public static Dictionary<CaptureMode, HotKey> HotKeys { get; set; }
+
+        public static int Timer { get; set; }
         #endregion
 
         #region Public Method
@@ -25,6 +27,7 @@ namespace GTCapture
             try
             {
                 var properties = new Dictionary<string, object>();
+                properties.Add("Timer", Timer);
 
                 var hotKeyProperties = new List<Dictionary<string, object>>();
                 foreach (var hotKey in HotKeys.Values)
@@ -42,7 +45,7 @@ namespace GTCapture
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             finally
             {
@@ -58,12 +61,13 @@ namespace GTCapture
 
                 string json = File.ReadAllText(SaveFile);
                 var properties = JsonUtil.FromJson(json);
+                Timer = (int) JsonUtil.GetValue<long>(properties, "Timer");
 
                 LoadHotKeys(properties);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             finally
             {

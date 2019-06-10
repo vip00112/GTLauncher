@@ -1,8 +1,11 @@
-﻿using System;
+﻿using GTUtil;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,6 +13,8 @@ namespace GTCapture
 {
     public class Capture : NativeWindow
     {
+        private BackgroundWorker _bw;
+
         #region Constructor
         public Capture(IntPtr hWnd)
         {
@@ -25,6 +30,7 @@ namespace GTCapture
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
+            if (_bw != null) return;
 
             var modifier = (KeyModifiers) ((int) m.LParam & 0xFFFF);
             var key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
@@ -32,23 +38,38 @@ namespace GTCapture
             CaptureMode mode = Setting.GetCaptureMode(modifier, key);
             if (mode == CaptureMode.None) return;
 
-            Image img = null;
-            switch (mode)
+            _bw = new BackgroundWorker();
+            _bw.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
-                case CaptureMode.FullScreen:
-                    img = CaptureWindow(0, 0, 0, 0);
-                    break;
-                case CaptureMode.ActiveProcess:
-                    // TODO : 활성화 프로세스 화면 캡쳐
-                    break;
-                case CaptureMode.Region:
-                    // TODO : 선택 영역 캡쳐
-                    break;
-            }
-            if (img == null) return;
+                int delay = Setting.Timer;
+                while (delay > 0)
+                {
+                    Thread.Sleep(1000);
+                    delay--;
+                }
+                e.Result = CaptureWindow(mode);
+            };
+            _bw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
+            {
+                Image img = e.Result as Image;
+                if (img == null) return;
 
-            // TODO : 캡쳐 후 처리 (클립보드, 뷰화면, 파일로저장 등등)
-            img.Save("Capture.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                // TODO : 캡쳐 후 처리 (클립보드, 뷰화면, 파일로저장 등등)
+                Clipboard.SetImage(img);
+                img.Save("Capture.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                _bw = null;
+            };
+            _bw.RunWorkerAsync();
+        }
+
+        private void _bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void _bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -63,18 +84,38 @@ namespace GTCapture
         #endregion
 
         #region Private Method
-        public Image CaptureWindow(int x, int y, int width, int height)
+        private Image CaptureWindow(CaptureMode mode)
         {
             Image img = null;
             IntPtr handle = IntPtr.Zero;
-            IntPtr src = IntPtr.Zero;
-            IntPtr hdcDest = IntPtr.Zero;
-            IntPtr hBitmap = IntPtr.Zero;
+            switch (mode)
+            {
+                case CaptureMode.FullScreen:
+                    handle = WindowsAPI.GetDesktopWindow();
+                    img = CaptureWindow(handle, 0, 0, 0, 0);
+                    break;
+                case CaptureMode.ActiveProcess:
+                    handle = WindowsAPI.GetForegroundWindow();
+                    img = CaptureWindow(handle, 0, 0, 0, 0);
+                    break;
+                case CaptureMode.Region:
+                    // TODO : 선택 영역 캡쳐
+                    break;
+                default: return null;
+            }
+            return img;
+        }
+
+        private Image CaptureWindow(IntPtr handle, int x, int y, int width, int height)
+        {
+            Image img = null;
+            IntPtr srcDC = IntPtr.Zero;
+            IntPtr memoryDC = IntPtr.Zero;
+            IntPtr bitmap = IntPtr.Zero;
             try
             {
-                handle = WindowsAPI.GetDesktopWindow();
-                src = WindowsAPI.GetWindowDC(handle);
-                hdcDest = WindowsAPI.CreateCompatibleDC(src);
+                srcDC = WindowsAPI.GetWindowDC(handle);
+                memoryDC = WindowsAPI.CreateCompatibleDC(srcDC);
 
                 if (width == 0 || height == 0)
                 {
@@ -83,23 +124,23 @@ namespace GTCapture
                     if (width == 0 ) width = rec.Right - rec.Left;
                     if (height == 0 ) height = rec.Bottom - rec.Top;
                 }
-                hBitmap = WindowsAPI.CreateCompatibleBitmap(src, width, height);
+                bitmap = WindowsAPI.CreateCompatibleBitmap(srcDC, width, height);
 
-                IntPtr hOld = WindowsAPI.SelectObject(hdcDest, hBitmap);
-                WindowsAPI.BitBlt(hdcDest, 0, 0, width, height, src, x, y, WindowsAPI.SRCCOPY);
-                WindowsAPI.SelectObject(hdcDest, hOld);
+                IntPtr oldBitmap = WindowsAPI.SelectObject(memoryDC, bitmap);
+                WindowsAPI.BitBlt(memoryDC, 0, 0, width, height, srcDC, x, y, WindowsAPI.SRCCOPY | WindowsAPI.CAPTUREBLT);
+                WindowsAPI.SelectObject(memoryDC, oldBitmap);
 
-                img = Image.FromHbitmap(hBitmap);
+                img = Image.FromHbitmap(bitmap);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             finally
             {
-                WindowsAPI.DeleteObject(hBitmap);
-                WindowsAPI.DeleteDC(hdcDest);
-                WindowsAPI.ReleaseDC(handle, src);
+                WindowsAPI.DeleteObject(bitmap);
+                WindowsAPI.DeleteDC(memoryDC);
+                WindowsAPI.ReleaseDC(handle, srcDC);
             }
 
             return img;

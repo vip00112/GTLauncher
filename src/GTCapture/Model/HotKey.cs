@@ -51,11 +51,11 @@ namespace GTCapture
                 case CaptureMode.None:
                     return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.None, Key = Keys.None };
                 case CaptureMode.FullScreen:
-                    return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.F1 };
+                    return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.D1 };
                 case CaptureMode.ActiveProcess:
-                    return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.F2 };
+                    return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.D2 };
                 case CaptureMode.Region:
-                    return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.F3 };
+                    return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.D3 };
                 default: return null;
             }
         }

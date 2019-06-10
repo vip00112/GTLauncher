@@ -236,7 +236,7 @@ namespace GTControl
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             finally
             {
@@ -262,7 +262,7 @@ namespace GTControl
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             finally
             {

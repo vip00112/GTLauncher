@@ -18,7 +18,7 @@ namespace GTUtil
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             return null;
         }
@@ -31,7 +31,7 @@ namespace GTUtil
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             return null;
         }
@@ -48,7 +48,7 @@ namespace GTUtil
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             return null;
         }
@@ -72,7 +72,7 @@ namespace GTUtil
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Logger.Error(e);
                 }
                 return default(T);
             }
