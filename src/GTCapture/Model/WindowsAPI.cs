@@ -48,6 +48,9 @@ namespace GTCapture
         public static extern IntPtr ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
         [DllImport("user32.dll")]
+        public static extern bool GetClientRect(IntPtr hWnd, ref WinStructRect rect);
+
+        [DllImport("user32.dll")]
         public static extern IntPtr GetWindowRect(IntPtr hWnd, ref WinStructRect rect);
         #endregion
 
@@ -74,6 +77,9 @@ namespace GTCapture
 
         [DllImport("gdi32.dll")]
         public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
+
+        [DllImport("gdi32.dll")]
+        public static extern int GetDeviceCaps(IntPtr hDC, int nIndex);
         #endregion
     }
 

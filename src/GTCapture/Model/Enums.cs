@@ -15,4 +15,9 @@ namespace GTCapture
     {
         None, FullScreen, ActiveProcess, Region
     }
+
+    public enum DeviceCap
+    {
+        VERTRES = 10, DESKTOPVERTRES = 117,
+    }
 }

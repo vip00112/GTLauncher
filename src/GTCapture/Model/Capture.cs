@@ -14,6 +14,8 @@ namespace GTCapture
 {
     public class Capture : NativeWindow
     {
+        public EventHandler OnCaptured;
+
         private BackgroundWorker _bw;
 
         #region Constructor
@@ -52,13 +54,24 @@ namespace GTCapture
             };
             _bw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
             {
-                using (var img = e.Result as Image)
+                try
                 {
-                    if (img == null) return;
+                    using (var img = e.Result as Image)
+                    {
+                        if (img == null) return;
 
-                    SaveImage(img);
+                        if (OnCaptured != null) OnCaptured(this, EventArgs.Empty);
+                        SaveImage(img);
+                    }
                 }
-                _bw = null;
+                catch (Exception ex)
+                {
+                    Logger.Error(ex);
+                }
+                finally
+                {
+                    _bw = null;
+                }
             };
             _bw.RunWorkerAsync();
         }
@@ -90,7 +103,14 @@ namespace GTCapture
                     img = CaptureWindow(handle, 0, 0, 0, 0);
                     break;
                 case CaptureMode.Region:
-                    // TODO : 선택 영역 캡쳐
+                    using (var dialog = new CaptureRegionForm())
+                    {
+                        if (dialog.ShowDialog() != DialogResult.OK) return null;
+
+                        handle = WindowsAPI.GetDesktopWindow();
+                        var region = dialog.SelectedRegion;
+                        img = CaptureWindow(handle, region.X, region.Y, region.Width, region.Height);
+                    }
                     break;
                 default: return null;
             }
@@ -99,24 +119,46 @@ namespace GTCapture
 
         private Image CaptureWindow(IntPtr handle, int x, int y, int width, int height)
         {
-            // TODO : 작은 윈도우 핸들로 캡쳐시 테두리가 더 큼
-            // TODO : 폴더브라우저 캡쳐시 타이틀이 검은색으로 표시됨
             Image img = null;
             IntPtr srcDC = IntPtr.Zero;
             IntPtr memoryDC = IntPtr.Zero;
             IntPtr bitmap = IntPtr.Zero;
             try
             {
-                srcDC = WindowsAPI.GetWindowDC(handle);
-                memoryDC = WindowsAPI.CreateCompatibleDC(srcDC);
-
+                // 해당 Handle의 크기 취득
                 if (width == 0 || height == 0)
                 {
-                    var rec = new WinStructRect();
-                    WindowsAPI.GetWindowRect(handle, ref rec);
-                    if (width == 0 ) width = rec.Right - rec.Left;
-                    if (height == 0 ) height = rec.Bottom - rec.Top;
+                    var windowRect = new WinStructRect();
+                    var clientRect = new WinStructRect();
+                    WindowsAPI.GetWindowRect(handle, ref windowRect);
+                    WindowsAPI.GetClientRect(handle, ref clientRect);
+                    if (x == 0) x = windowRect.Left;
+                    if (y == 0) y = windowRect.Top;
+                    if (width == 0) width = clientRect.Width;
+                    if (height == 0) height = windowRect.Height;
+
+                    // Border 사이즈 제외
+                    int diff = windowRect.Width - clientRect.Width;
+                    if (diff > 0)
+                    {
+                        int borderSize = diff / 2;
+                        x += borderSize;
+                        y += borderSize;
+                        height -= borderSize * 2;
+                    }
                 }
+
+                // 해상도 스케일에 의한 크기 변경
+                float scale = CalcScale();
+                if (scale > 1)
+                {
+                    width = (int) (width * scale);
+                    height = (int) (height * scale);
+                }
+
+                handle = WindowsAPI.GetDesktopWindow();
+                srcDC = WindowsAPI.GetWindowDC(handle);
+                memoryDC = WindowsAPI.CreateCompatibleDC(srcDC);
                 bitmap = WindowsAPI.CreateCompatibleBitmap(srcDC, width, height);
 
                 IntPtr oldBitmap = WindowsAPI.SelectObject(memoryDC, bitmap);
@@ -137,6 +179,17 @@ namespace GTCapture
             }
 
             return img;
+        }
+
+        private float CalcScale()
+        {
+            using (var g = Graphics.FromHwnd(IntPtr.Zero))
+            {
+                IntPtr desktop = g.GetHdc();
+                int logicalScreenHeight = WindowsAPI.GetDeviceCaps(desktop, (int) DeviceCap.VERTRES);
+                int physicalScreenHeight = WindowsAPI.GetDeviceCaps(desktop, (int) DeviceCap.DESKTOPVERTRES);
+                return (float) physicalScreenHeight / logicalScreenHeight;
+            }
         }
 
         private void SaveImage(Image img)
