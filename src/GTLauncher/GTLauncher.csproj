@@ -108,6 +108,10 @@
       <Project>{35b70dba-e58c-4dcf-b0cd-addc0aab15fe}</Project>
       <Name>GTControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GTUtil\GTUtil.csproj">
+      <Project>{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}</Project>
+      <Name>GTUtil</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\icon.ico" />
