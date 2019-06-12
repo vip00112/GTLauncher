@@ -1,5 +1,6 @@
 ﻿using GTCapture;
 using GTControl;
+using GTUtil;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,6 +38,8 @@ namespace GTLauncher
 
         private void menuItem_exit_Click(object sender, EventArgs e)
         {
+            if (!MessageBoxUtil.Confirm("Are you sure you want to close?")) return;
+
             Close();
         }
 
