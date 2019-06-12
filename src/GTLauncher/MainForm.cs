@@ -19,14 +19,17 @@ namespace GTLauncher
         public MainForm()
         {
             InitializeComponent();
-
-            _capture = new Capture(Handle);
-            _capture.OnCaptured += OnCaptured;
-            _capture.ShowSettingForm();
-
         }
 
         #region Control Event
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            if (DesignMode) return;
+
+            _capture = new Capture(Handle);
+            _capture.OnCaptured += OnCaptured;
+        }
+
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Activate();
@@ -37,6 +40,11 @@ namespace GTLauncher
             Close();
         }
 
+        private void menuItem_captureSetting_Click(object sender, EventArgs e)
+        {
+            _capture.ShowSettingForm();
+        }
+
         private void OnCaptured(object sender, EventArgs e)
         {
             notifyIcon.BalloonTipText = "Capture completed.";
@@ -44,6 +52,5 @@ namespace GTLauncher
             notifyIcon.ShowBalloonTip(500);
         }
         #endregion
-
     }
 }

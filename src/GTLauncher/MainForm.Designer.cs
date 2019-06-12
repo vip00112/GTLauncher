@@ -33,6 +33,7 @@
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItem_exit = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_captureSetting = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,9 +48,10 @@
             // notifyIconMenu
             // 
             this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_captureSetting,
             this.menuItem_exit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(181, 48);
+            this.notifyIconMenu.Size = new System.Drawing.Size(181, 70);
             // 
             // menuItem_exit
             // 
@@ -57,6 +59,13 @@
             this.menuItem_exit.Size = new System.Drawing.Size(180, 22);
             this.menuItem_exit.Text = "Exit";
             this.menuItem_exit.Click += new System.EventHandler(this.menuItem_exit_Click);
+            // 
+            // menuItem_captureSetting
+            // 
+            this.menuItem_captureSetting.Name = "menuItem_captureSetting";
+            this.menuItem_captureSetting.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_captureSetting.Text = "Capture";
+            this.menuItem_captureSetting.Click += new System.EventHandler(this.menuItem_captureSetting_Click);
             // 
             // MainForm
             // 
@@ -73,6 +82,7 @@
             this.SizeModeHeight = GTControl.SizeMode.Medium;
             this.SizeModeWidth = GTControl.SizeMode.Medium;
             this.Text = "MainForm";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.notifyIconMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -83,6 +93,7 @@
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.ContextMenuStrip notifyIconMenu;
         private System.Windows.Forms.ToolStripMenuItem menuItem_exit;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_captureSetting;
     }
 }
 

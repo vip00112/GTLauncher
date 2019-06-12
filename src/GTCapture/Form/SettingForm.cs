@@ -31,6 +31,10 @@ namespace GTCapture
         {
             if (DesignMode) return;
 
+            Screen screen = Screen.AllScreens[0];
+            Left = screen.WorkingArea.Right - Width;
+            Top = screen.WorkingArea.Bottom - Height;
+
             _textBoxs = new List<TextBox>();
             _textBoxs.Add(textBox_fullScreen);
             _textBoxs.Add(textBox_activeProcess);
