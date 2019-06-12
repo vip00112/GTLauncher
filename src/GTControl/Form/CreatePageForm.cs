@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GTUtil;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,18 +15,23 @@ namespace GTControl
     {
         private List<string> _pageNames;
 
+        #region Constructor
         private CreatePageForm()
         {
             InitializeComponent();
         }
 
-        public CreatePageForm(List<string> pageNames) : this()
+        internal CreatePageForm(List<string> pageNames) : this()
         {
             _pageNames = pageNames;
         }
+        #endregion
 
+        #region Properties
         public string PageName { get; private set; }
+        #endregion
 
+        #region Control Event
         private void button_create_Click(object sender, EventArgs e)
         {
             string pageName = textBox_pageName.Text;
@@ -43,5 +49,6 @@ namespace GTControl
             PageName = pageName;
             DialogResult = DialogResult.OK;
         }
+        #endregion
     }
 }

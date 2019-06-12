@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GTUtil;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,7 +19,7 @@ namespace GTControl
         private List<PageItem> _pageItems;
 
         #region Constructor
-        public SettingForm()
+        internal SettingForm()
         {
             InitializeComponent();
 
@@ -33,8 +34,8 @@ namespace GTControl
 
             _sizeModeWidth = Setting.SizeModeWidth;
             _sizeModeHeight = Setting.SizeModeHeight;
-            _pages = Setting.Pages;
-            _pageItems = Setting.PageItems;
+            _pages = Setting.Pages.ToList();
+            _pageItems = Setting.PageItems.ToList();
             checkBox_canMove.Checked = Setting.CanMove;
             comboBox_theme.DataSource = Enum.GetValues(typeof(Theme));
             comboBox_theme.SelectedItem = Setting.Theme;
@@ -48,6 +49,15 @@ namespace GTControl
         private void button_save_Click(object sender, EventArgs e)
         {
             if (!MessageBoxUtil.Confirm("Are you sure you want to save setting?")) return;
+
+            Setting.CanMove = checkBox_canMove.Checked;
+            Setting.Theme = (Theme) comboBox_theme.SelectedItem;
+            Setting.SizeModeWidth = _sizeModeWidth;
+            Setting.SizeModeHeight = _sizeModeHeight;
+            Setting.Pages = _pages;
+            Setting.PageItems = _pageItems;
+
+            Setting.Save();
 
             DialogResult = DialogResult.OK;
         }
@@ -64,20 +74,6 @@ namespace GTControl
                 _pages = dialog.Pages;
                 _pageItems = dialog.PageItems;
             }
-        }
-        #endregion
-
-        #region Public Method
-        public void SaveSetting()
-        {
-            Setting.CanMove = checkBox_canMove.Checked;
-            Setting.Theme = (Theme) comboBox_theme.SelectedItem;
-            Setting.SizeModeWidth = _sizeModeWidth;
-            Setting.SizeModeHeight = _sizeModeHeight;
-            Setting.Pages = _pages;
-            Setting.PageItems = _pageItems;
-
-            Setting.Save();
         }
         #endregion
     }

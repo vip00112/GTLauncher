@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using GTUtil;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,6 +13,8 @@ namespace GTControl
 {
     public static class Setting
     {
+        private const string SaveFile = "Setting.General.json";
+
         private static List<Page> _pages;
         private static List<PageItem> _pageItems;
 
@@ -230,12 +231,12 @@ namespace GTControl
                 }
                 properties.Add("PageItemProperties", pageItemProperties);
 
-                string json = JsonConvert.SerializeObject(properties, Formatting.Indented);
-                File.WriteAllText("Setting.json", json);
+                string json = JsonUtil.FromProperties(properties);
+                File.WriteAllText(SaveFile, json);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             finally
             {
@@ -247,21 +248,21 @@ namespace GTControl
         {
             try
             {
-                if (!File.Exists("Setting.json")) return;
+                if (!File.Exists(SaveFile)) return;
 
-                string json = File.ReadAllText("Setting.json");
-                var properties = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-                CanMove = (bool) properties["CanMove"];
-                Theme = (Theme) Enum.Parse(typeof(Theme), properties["Theme"] as string);
-                SizeModeWidth = (SizeMode) Enum.Parse(typeof(SizeMode), properties["SizeModeWidth"] as string);
-                SizeModeHeight = (SizeMode) Enum.Parse(typeof(SizeMode), properties["SizeModeHeight"] as string);
+                string json = File.ReadAllText(SaveFile);
+                var properties = JsonUtil.FromJson(json);
+                CanMove = JsonUtil.GetValue<bool>(properties, "CanMove");
+                Theme = JsonUtil.GetValue<Theme>(properties, "Theme");
+                SizeModeWidth = JsonUtil.GetValue<SizeMode>(properties, "SizeModeWidth");
+                SizeModeHeight = JsonUtil.GetValue<SizeMode>(properties, "SizeModeHeight");
 
                 LoadPages(properties);
                 LoadPageItems(properties);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             finally
             {
@@ -276,22 +277,19 @@ namespace GTControl
 
             if (!properties.ContainsKey("PageProperties")) return;
 
-            var array = properties["PageProperties"] as JArray;
-            if (array == null) return;
-
-            var pageProperties = array.ToObject<List<Dictionary<string, object>>>();
+            var pageProperties = JsonUtil.FromJarray(properties["PageProperties"]);
             if (pageProperties == null && pageProperties.Count == 0) return;
 
             Pages = new List<Page>();
             foreach (var props in pageProperties)
             {
-                string pageName = props["PageName"] as string;
+                string pageName = JsonUtil.GetValue<string>(props, "PageName");
                 var page = new Page(pageName);
-                page.Title = props["Title"] as string;
-                page.VisibleTitle = (bool) props["VisibleTitle"];
-                page.VisibleHeader = (bool) props["VisibleHeader"];
-                page.VisibleBackButton = (bool) props["VisibleBackButton"];
-                page.CloseMode = (PageCloseMode) Enum.Parse(typeof(PageCloseMode), props["CloseMode"] as string);
+                page.Title = JsonUtil.GetValue<string>(props, "Title");
+                page.VisibleTitle = JsonUtil.GetValue<bool>(props, "VisibleTitle");
+                page.VisibleHeader = JsonUtil.GetValue<bool>(props, "VisibleHeader");
+                page.VisibleBackButton = JsonUtil.GetValue<bool>(props, "VisibleBackButton");
+                page.CloseMode = JsonUtil.GetValue<PageCloseMode>(props, "CloseMode");
 
                 Pages.Add(page);
             }
@@ -301,27 +299,24 @@ namespace GTControl
         {
             if (!properties.ContainsKey("PageItemProperties")) return;
 
-            var array = properties["PageItemProperties"] as JArray;
-            if (array == null) return;
-
-            var pageItemProperties = array.ToObject<List<Dictionary<string, object>>>();
+            var pageItemProperties = JsonUtil.FromJarray(properties["PageItemProperties"]);
             if (pageItemProperties == null && pageItemProperties.Count == 0) return;
 
             PageItems = new List<PageItem>();
             foreach (var props in pageItemProperties)
             {
                 var item = new PageItem();
-                item.PageName = props["PageName"] as string;
-                item.BackgroundImage = FromBase64(props["BackgroundImage"] as string);
-                item.TextContent = props["TextContent"] as string;
-                item.TextAlign = (ContentAlignment) Enum.Parse(typeof(ContentAlignment), props["TextAlign"] as string);
+                item.PageName = JsonUtil.GetValue<string>(props, "PageName");
+                item.BackgroundImage = FromBase64(JsonUtil.GetValue<string>(props, "BackgroundImage"));
+                item.TextContent = JsonUtil.GetValue<string>(props, "TextContent");
+                item.TextAlign = JsonUtil.GetValue<ContentAlignment>(props, "TextAlign");
 
-                string fontName = props["TextFont_Name"] as string;
-                int size = (int) (double) props["TextFont_Size"];
-                bool bold = (bool) props["TextFont_Bold"];
-                bool italic = (bool) props["TextFont_Italic"];
-                bool strikeout = (bool) props["TextFont_Strikeout"];
-                bool underline = (bool) props["TextFont_Underline"];
+                string fontName = JsonUtil.GetValue<string>(props, "TextFont_Name");
+                int size = (int) JsonUtil.GetValue<double>(props, "TextFont_Size");
+                bool bold = JsonUtil.GetValue<bool>(props, "TextFont_Bold");
+                bool italic = JsonUtil.GetValue<bool>(props, "TextFont_Italic");
+                bool strikeout = JsonUtil.GetValue<bool>(props, "TextFont_Strikeout");
+                bool underline = JsonUtil.GetValue<bool>(props, "TextFont_Underline");
 
                 FontStyle style = FontStyle.Regular;
                 if (bold) style = FontStyle.Bold;
@@ -331,20 +326,34 @@ namespace GTControl
                 Font font = new Font(fontName, size, style);
                 item.TextFont = font;
 
-                item.ClickMode = (ClickMode) Enum.Parse(typeof(ClickMode), props["ClickMode"] as string);
-                item.FilePath = props["FilePath"] as string;
-                item.Arguments = props["Arguments"] as string;
-                item.LinkPageName = props["LinkPageName"] as string;
-                item.Column = (int) (long) props["Column"];
-                item.Row = (int) (long) props["Row"];
-                item.ColumnSpan = (int) (long) props["ColumnSpan"];
-                item.RowSpan = (int) (long) props["RowSpan"];
+                item.ClickMode = JsonUtil.GetValue<ClickMode>(props, "ClickMode");
+                item.FilePath = JsonUtil.GetValue<string>(props, "FilePath");
+                item.Arguments = JsonUtil.GetValue<string>(props, "Arguments");
+                item.LinkPageName = JsonUtil.GetValue<string>(props, "LinkPageName");
+                item.Column = (int) JsonUtil.GetValue<long>(props, "Column");
+                item.Row = (int) JsonUtil.GetValue<long>(props, "Row");
+                item.ColumnSpan = (int) JsonUtil.GetValue<long>(props, "ColumnSpan");
+                item.RowSpan = (int) JsonUtil.GetValue<long>(props, "RowSpan");
 
                 PageItems.Add(item);
             }
         }
 
         private static void Invalidate()
+        {
+            SetDefault();
+
+            foreach (Form form in Application.OpenForms)
+            {
+                var container = form as PageContainer;
+                if (container == null) return;
+
+                container.ResetLayout(SizeModeWidth, SizeModeHeight);
+                SetTheme(form, Theme);
+            }
+        }
+
+        private static void SetDefault()
         {
             if (Pages == null)
             {
@@ -354,15 +363,6 @@ namespace GTControl
             if (PageItems == null)
             {
                 PageItems = new List<PageItem>();
-            }
-
-            foreach (Form form in Application.OpenForms)
-            {
-                var container = form as PageContainer;
-                if (container == null) return;
-
-                container.ResetLayout(SizeModeWidth, SizeModeHeight);
-                SetTheme(form, Theme);
             }
         }
 

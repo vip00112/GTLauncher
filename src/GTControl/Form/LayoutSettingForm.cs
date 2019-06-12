@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GTUtil;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -32,16 +33,16 @@ namespace GTControl
             _cells = new List<Cell>();
         }
 
-        public LayoutSettingForm(SizeMode width, SizeMode height, List<Page> pages, List<PageItem> pageItems) : this()
+        internal LayoutSettingForm(SizeMode width, SizeMode height, List<Page> pages, List<PageItem> pageItems) : this()
         {
             SizeModeWidth = width;
             SizeModeHeight = height;
 
             if (pages != null) Pages = pages;
-            else Pages = Setting.Pages;
+            else Pages = Setting.Pages.ToList();
 
             if (pageItems != null) PageItems = pageItems;
-            else PageItems = Setting.PageItems;
+            else PageItems = Setting.PageItems.ToList();
         }
         #endregion
 

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GTUtil;
 
 namespace GTControl
 {
@@ -196,8 +197,6 @@ namespace GTControl
             using (var dialog = new SettingForm())
             {
                 if (dialog.ShowDialog() != DialogResult.OK) return;
-
-                dialog.SaveSetting();
             }
         }
         #endregion

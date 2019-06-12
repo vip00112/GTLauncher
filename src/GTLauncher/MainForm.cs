@@ -1,4 +1,6 @@
-﻿using GTControl;
+﻿using GTCapture;
+using GTControl;
+using GTUtil;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,18 +15,45 @@ namespace GTLauncher
 {
     public partial class MainForm : PageContainer
     {
+        private Capture _capture;
+
         public MainForm()
         {
             InitializeComponent();
+        }
 
-            ContextMenu ctx = new ContextMenu();
-            ctx.MenuItems.Add(new MenuItem("종료", new EventHandler((s, e) => Close())));
-            notifyIcon.ContextMenu = ctx;
+        #region Control Event
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            if (DesignMode) return;
+
+            _capture = new Capture(Handle);
+            _capture.OnCaptured += OnCaptured;
         }
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Activate();
         }
+
+        private void menuItem_exit_Click(object sender, EventArgs e)
+        {
+            if (!MessageBoxUtil.Confirm("Are you sure you want to close?")) return;
+
+            Close();
+        }
+
+        private void menuItem_captureSetting_Click(object sender, EventArgs e)
+        {
+            _capture.ShowSettingForm();
+        }
+
+        private void OnCaptured(object sender, EventArgs e)
+        {
+            notifyIcon.BalloonTipText = "Capture completed.";
+            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            notifyIcon.ShowBalloonTip(500);
+        }
+        #endregion
     }
 }

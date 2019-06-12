@@ -81,7 +81,7 @@
             // 
             this.menuItem_addPage.Name = "menuItem_addPage";
             this.menuItem_addPage.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D1)));
-            this.menuItem_addPage.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_addPage.Size = new System.Drawing.Size(141, 22);
             this.menuItem_addPage.Text = "Page";
             this.menuItem_addPage.Click += new System.EventHandler(this.menuItem_addPage_Click);
             // 
@@ -89,7 +89,7 @@
             // 
             this.menuItem_addItem.Name = "menuItem_addItem";
             this.menuItem_addItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D2)));
-            this.menuItem_addItem.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_addItem.Size = new System.Drawing.Size(141, 22);
             this.menuItem_addItem.Text = "Item";
             this.menuItem_addItem.Click += new System.EventHandler(this.menuItem_addItem_Click);
             // 
@@ -106,7 +106,7 @@
             // 
             this.menuItem_deletePage.Name = "menuItem_deletePage";
             this.menuItem_deletePage.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D3)));
-            this.menuItem_deletePage.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_deletePage.Size = new System.Drawing.Size(141, 22);
             this.menuItem_deletePage.Text = "Page";
             this.menuItem_deletePage.Click += new System.EventHandler(this.menuItem_deletePage_Click);
             // 
@@ -114,7 +114,7 @@
             // 
             this.menuItem_deleteItem.Name = "menuItem_deleteItem";
             this.menuItem_deleteItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D4)));
-            this.menuItem_deleteItem.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_deleteItem.Size = new System.Drawing.Size(141, 22);
             this.menuItem_deleteItem.Text = "Item";
             this.menuItem_deleteItem.Click += new System.EventHandler(this.menuItem_deleteItem_Click);
             // 
@@ -172,7 +172,7 @@
             this.Name = "LayoutSettingForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "LayoutSettingForm";
+            this.Text = "Layout Setting";
             this.Load += new System.EventHandler(this.LayoutSettingForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
