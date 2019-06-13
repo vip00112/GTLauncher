@@ -147,6 +147,8 @@ namespace GTControl
 
         private void menuItem_addPage_Click(object sender, EventArgs e)
         {
+            _isPressedCtrl = false;
+
             var pageNames = new List<string>();
             foreach (TabPage tabPage in tabControl_pages.TabPages)
             {
@@ -185,6 +187,8 @@ namespace GTControl
 
         private void menuItem_addItem_Click(object sender, EventArgs e)
         {
+            _isPressedCtrl = false;
+
             if (SelectedPage == null) return;
             if (_ancherItems.Count > 0) return;
 
@@ -219,6 +223,8 @@ namespace GTControl
 
         private void menuItem_deletePage_Click(object sender, EventArgs e)
         {
+            _isPressedCtrl = false;
+
             if (SelectedPage == null) return;
             if (SelectedPage.PageName == "Main")
             {
@@ -242,6 +248,8 @@ namespace GTControl
 
         private void menuItem_deleteItem_Click(object sender, EventArgs e)
         {
+            _isPressedCtrl = false;
+
             if (SelectedPage == null) return;
             if (_ancherItems.Count == 0) return;
             if (!MessageBoxUtil.Confirm("Are you sure you want to delete item?")) return;
@@ -255,6 +263,8 @@ namespace GTControl
 
         private void menuItem_save_Click(object sender, EventArgs e)
         {
+            _isPressedCtrl = false;
+
             if (!MessageBoxUtil.Confirm("Are you sure you want to save layout?")) return;
 
             SizeModeWidth = _layout.SizeModeWidth;
@@ -281,6 +291,8 @@ namespace GTControl
 
         private void tabControl_pages_SelectedIndexChanged(object sender, EventArgs e)
         {
+            _isPressedCtrl = false;
+
             if (tabControl_pages.SelectedTab == null) return;
 
             var pages = tabControl_pages.SelectedTab.Controls[0].Controls.OfType<Page>().ToArray();
