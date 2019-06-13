@@ -17,6 +17,7 @@ namespace GTControl
     public partial class PageItem : UserControl
     {
         public MouseEventHandler OnMouseDownEvent;
+        public PaintEventHandler OnPaintEvent;
         public EventHandler OnFolderClickEvent;
 
         private string _pageName;
@@ -174,6 +175,12 @@ namespace GTControl
                 if (body != null) body.SetRowSpan(this, value);
             }
         }
+
+        [Category("Page Option")]
+        public int ItemWidth { get { return Width; } }
+
+        [Category("Page Option")]
+        public int ItemHeight { get { return Height; } }
         #endregion
 
         #region Control Event
@@ -190,6 +197,7 @@ namespace GTControl
             {
                 e.Graphics.DrawImage(BackgroundImage, 0, 0, Width, Height);
             }
+            if (OnPaintEvent != null) OnPaintEvent(this, e);
         }
 
         private void label_MouseEnter(object sender, EventArgs e)

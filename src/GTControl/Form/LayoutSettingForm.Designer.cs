@@ -53,7 +53,6 @@
             this.propertyGrid_page.PropertySort = System.Windows.Forms.PropertySort.NoSort;
             this.propertyGrid_page.Size = new System.Drawing.Size(250, 277);
             this.propertyGrid_page.TabIndex = 1;
-            this.propertyGrid_page.ToolbarVisible = false;
             this.propertyGrid_page.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // menuStrip1
@@ -167,6 +166,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "LayoutSettingForm";
@@ -174,6 +174,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Layout Setting";
             this.Load += new System.EventHandler(this.LayoutSettingForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LayoutSettingForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LayoutSettingForm_KeyUp);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);

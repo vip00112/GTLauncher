@@ -17,8 +17,9 @@ namespace GTControl
         private Cell _startCell;
         private Cell _endCell;
         private List<Cell> _cells;
+        private List<PageItem> _ancherItems;
         private Page _selectedPage;
-        private PageItem _selectedItem;
+        private bool _isPressedCtrl;
 
         #region Constructor
         private LayoutSettingForm()
@@ -31,6 +32,7 @@ namespace GTControl
                 SizeModeHeight = Setting.SizeModeHeight,
             };
             _cells = new List<Cell>();
+            _ancherItems = new List<PageItem>();
         }
 
         internal LayoutSettingForm(SizeMode width, SizeMode height, List<Page> pages, List<PageItem> pageItems) : this()
@@ -54,24 +56,6 @@ namespace GTControl
             {
                 _selectedPage = value;
                 if (_selectedPage != null)
-                {
-                    propertyGrid_page.SelectedObject = _selectedPage;
-                }
-            }
-        }
-
-        public PageItem SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                _selectedItem = value;
-
-                if (_selectedItem != null)
-                {
-                    propertyGrid_page.SelectedObject = _selectedItem;
-                }
-                else
                 {
                     propertyGrid_page.SelectedObject = _selectedPage;
                 }
@@ -131,6 +115,7 @@ namespace GTControl
                     if (item != null)
                     {
                         item.OnMouseDownEvent += pageItem_MouseDown;
+                        item.OnPaintEvent += pageItem_Paint;
                     }
                 }
             }
@@ -140,6 +125,24 @@ namespace GTControl
 
             SelectedPage = pages[0];
             ResetCells();
+        }
+
+        private void LayoutSettingForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ControlKey)
+            {
+                _isPressedCtrl = true;
+                Console.WriteLine(_isPressedCtrl);
+            }
+        }
+
+        private void LayoutSettingForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ControlKey)
+            {
+                _isPressedCtrl = false;
+                Console.WriteLine(_isPressedCtrl);
+            }
         }
 
         private void menuItem_addPage_Click(object sender, EventArgs e)
@@ -183,7 +186,7 @@ namespace GTControl
         private void menuItem_addItem_Click(object sender, EventArgs e)
         {
             if (SelectedPage == null) return;
-            if (SelectedItem != null) return;
+            if (_ancherItems.Count > 0) return;
 
             var selectedCells = _cells.Where(o => o.IsSelected).ToList();
             if (selectedCells.Count == 0) return;
@@ -207,9 +210,9 @@ namespace GTControl
             if (item != null)
             {
                 item.OnMouseDownEvent += pageItem_MouseDown;
-                SelectedItem = item;
+                item.OnPaintEvent += pageItem_Paint;
             }
-            SelectedItem = item;
+            AddAncherItem(item);
 
             _cells.ForEach(o => o.IsSelected = false);
         }
@@ -240,11 +243,14 @@ namespace GTControl
         private void menuItem_deleteItem_Click(object sender, EventArgs e)
         {
             if (SelectedPage == null) return;
-            if (SelectedItem == null) return;
+            if (_ancherItems.Count == 0) return;
             if (!MessageBoxUtil.Confirm("Are you sure you want to delete item?")) return;
 
-            SelectedPage.RemoveItem(SelectedItem);
-            SelectedItem = null;
+            foreach (var item in _ancherItems)
+            {
+                SelectedPage.RemoveItem(item);
+            }
+            ResetAncherItems();
         }
 
         private void menuItem_save_Click(object sender, EventArgs e)
@@ -286,23 +292,41 @@ namespace GTControl
 
         private void pageItem_MouseDown(object sender, MouseEventArgs e)
         {
-            SelectedItem = sender as PageItem;
-            if (SelectedItem == null) return;
+            var item = sender as PageItem;
+            if (item == null) return;
+
+            AddAncherItem(item);
 
             _cells.ForEach(o => o.IsSelected = false);
             SelectedPage.PageBody.Invalidate();
+        }
+
+        private void pageItem_Paint(object sender, PaintEventArgs e)
+        {
+            var item = sender as PageItem;
+            if (item == null) return;
+
+            if (_ancherItems.Contains(item))
+            {
+                using (var b = new SolidBrush(Color.FromArgb(100, Color.Red)))
+                {
+                    e.Graphics.FillRectangle(b, 0, 0, item.Width, item.Height);
+                }
+            }
         }
 
         private void pageBody_MouseDown(object sender, MouseEventArgs e)
         {
             if (SelectedPage == null) return;
 
+            ResetAncherItems();
             _cells.ForEach(o => o.IsSelected = false);
-            SelectedItem = null;
 
             _startCell = _cells.FirstOrDefault(o => o.IsInLocation(e.Location));
             _endCell = _startCell;
             if (_startCell != null) SelectedPage.PageBody.Invalidate();
+
+            propertyGrid_page.SelectedObject = SelectedPage;
         }
 
         private void pageBody_MouseMove(object sender, MouseEventArgs e)
@@ -417,6 +441,46 @@ namespace GTControl
                     _cells.Add(cell);
                 }
             }
+        }
+
+        private void ResetAncherItems()
+        {
+            var items = _ancherItems.ToArray();
+            foreach (var item in items)
+            {
+                _ancherItems.Remove(item);
+                if (!item.IsDisposed)
+                {
+                    item.Invalidate();
+                }
+            }
+        }
+
+        private void AddAncherItem(PageItem item)
+        {
+            if (_isPressedCtrl)
+            {
+                if (_ancherItems.Contains(item))
+                {
+                    _ancherItems.Remove(item);
+                }
+                else
+                {
+                    _ancherItems.Add(item);
+                }
+            }
+            else
+            {
+                ResetAncherItems();
+                _ancherItems.Add(item);
+            }
+
+            if (_ancherItems.Count > 0)
+            {
+                propertyGrid_page.SelectedObjects = _ancherItems.ToArray();
+            }
+
+            item.Invalidate();
         }
         #endregion
 
