@@ -74,6 +74,8 @@ namespace GTControl
         #region Control Event
         private void LayoutSettingForm_Load(object sender, EventArgs e)
         {
+            Setting.IsEditMode = true;
+
             Location = new Point(0, 0);
             MinimumSize = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
             MaximumSize = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
@@ -125,6 +127,11 @@ namespace GTControl
 
             SelectedPage = pages[0];
             ResetCells();
+        }
+
+        private void LayoutSettingForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Setting.IsEditMode = false;
         }
 
         private void LayoutSettingForm_KeyDown(object sender, KeyEventArgs e)

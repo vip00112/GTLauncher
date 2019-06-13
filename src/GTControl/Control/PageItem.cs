@@ -116,10 +116,6 @@ namespace GTControl
         [Category("Page Option")]
         public string LinkPageName { get; set; }
 
-        [Browsable(false)]
-        [Category("Page Option")]
-        public bool IsEditMode { get; set; }
-
         [Category("Page Option")]
         public int Column
         {

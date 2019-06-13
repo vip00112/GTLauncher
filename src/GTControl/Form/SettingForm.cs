@@ -22,8 +22,6 @@ namespace GTControl
         internal SettingForm()
         {
             InitializeComponent();
-
-            Setting.IsEditMode = true;
         }
         #endregion
 
@@ -39,11 +37,6 @@ namespace GTControl
             checkBox_canMove.Checked = Setting.CanMove;
             comboBox_theme.DataSource = Enum.GetValues(typeof(Theme));
             comboBox_theme.SelectedItem = Setting.Theme;
-        }
-
-        private void SettingForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Setting.IsEditMode = false;
         }
 
         private void button_save_Click(object sender, EventArgs e)
