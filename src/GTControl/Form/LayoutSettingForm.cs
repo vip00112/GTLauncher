@@ -132,6 +132,7 @@ namespace GTControl
         private void LayoutSettingForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Setting.IsEditMode = false;
+            Setting.Invalidate();
         }
 
         private void LayoutSettingForm_KeyDown(object sender, KeyEventArgs e)
@@ -294,6 +295,30 @@ namespace GTControl
                 }
             }
             DialogResult = DialogResult.OK;
+        }
+
+        private void menuItem_specialFolder_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("바탕화면 : {Desktop}");
+            sb.AppendLine("내문서 : {MyDocuments}");
+            sb.AppendLine("내음악 : {MyMusic}");
+            sb.AppendLine("내비디오 : {MyVideos}");
+            sb.AppendLine("내그림 : {MyPictures}");
+            sb.AppendLine("내컴퓨터 : {MyComputer}");
+            sb.AppendLine("현재사용자 : {UserProfile}");
+            sb.AppendLine("윈도우 : {Windows}");
+            sb.AppendLine("User\\AppData\\Local : {LocalApplicationData}");
+            sb.Append("User\\AppData\\Roaming : {ApplicationData}");
+
+            string title = "Special Folder";
+            string content = sb.ToString();
+            int width = 320;
+            int height = 230;
+            using (var dialog = new NoteForm(title, content, width, height))
+            {
+                dialog.ShowDialog();
+            }
         }
 
         private void tabControl_pages_SelectedIndexChanged(object sender, EventArgs e)

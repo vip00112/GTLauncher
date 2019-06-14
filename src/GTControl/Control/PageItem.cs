@@ -11,6 +11,8 @@ using System.Windows.Forms.Design;
 using System.Collections;
 using System.Diagnostics;
 using GTUtil;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace GTControl
 {
@@ -219,19 +221,50 @@ namespace GTControl
             {
                 case ClickMode.Excute:
                     if (string.IsNullOrWhiteSpace(FilePath)) return;
-                    
-                    try
-                    {
-                        Process.Start(FilePath, Arguments);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBoxUtil.Error(ex.Message);
-                    }
+
+                    StartProcess();
                     break;
                 case ClickMode.Folder:
                     if (OnFolderClickEvent != null) OnFolderClickEvent(this, EventArgs.Empty);
                     break;
+            }
+        }
+        #endregion
+
+        #region Private Method
+        private void StartProcess()
+        {
+            try
+            {
+                // SpecialFolder 경로 취득
+                var matches = Regex.Matches(FilePath, @"\{(.*?)\}");
+                foreach (Match m in matches)
+                {
+                    string origin = m.Groups[0].ToString();
+
+                    Environment.SpecialFolder folder;
+                    if (!Enum.TryParse(m.Groups[1].ToString(), true, out folder)) continue;
+                    string realPath = Environment.GetFolderPath(folder);
+                    FilePath = FilePath.Replace(origin, realPath);
+                }
+
+                var si = new ProcessStartInfo();
+                si.FileName = FilePath;
+
+                // 네트워크 연결
+                if (!FilePath.Contains("://"))
+                {
+                    si.Arguments = Arguments;
+                    si.WorkingDirectory = Path.GetDirectoryName(FilePath);
+                }
+
+                var proc = new Process();
+                proc.StartInfo = si;
+                proc.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBoxUtil.Error(ex.Message);
             }
         }
         #endregion

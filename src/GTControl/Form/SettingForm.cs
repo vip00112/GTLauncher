@@ -34,6 +34,7 @@ namespace GTControl
             _sizeModeHeight = Setting.SizeModeHeight;
             _pages = Setting.Pages.ToList();
             _pageItems = Setting.PageItems.ToList();
+            checkBox_runOnStartup.Checked = Setting.RunOnStartup;
             checkBox_canMove.Checked = Setting.CanMove;
             comboBox_theme.DataSource = Enum.GetValues(typeof(Theme));
             comboBox_theme.SelectedItem = Setting.Theme;
@@ -43,6 +44,7 @@ namespace GTControl
         {
             if (!MessageBoxUtil.Confirm("Are you sure you want to save setting?")) return;
 
+            Setting.RunOnStartup = checkBox_runOnStartup.Checked;
             Setting.CanMove = checkBox_canMove.Checked;
             Setting.Theme = (Theme) comboBox_theme.SelectedItem;
             Setting.SizeModeWidth = _sizeModeWidth;

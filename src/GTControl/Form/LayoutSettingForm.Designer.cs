@@ -40,6 +40,7 @@
             this.tabControl_pages = new System.Windows.Forms.TabControl();
             this.panel1 = new System.Windows.Forms.Panel();
             this.propertyGrid_layout = new System.Windows.Forms.PropertyGrid();
+            this.menuItem_specialFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -60,7 +61,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItem_add,
             this.menuItem_delete,
-            this.menuItem_save});
+            this.menuItem_save,
+            this.menuItem_specialFolder});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(837, 24);
@@ -157,6 +159,13 @@
             this.propertyGrid_layout.ToolbarVisible = false;
             this.propertyGrid_layout.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
+            // menuItem_specialFolder
+            // 
+            this.menuItem_specialFolder.Name = "menuItem_specialFolder";
+            this.menuItem_specialFolder.Size = new System.Drawing.Size(90, 20);
+            this.menuItem_specialFolder.Text = "SpecialFolder";
+            this.menuItem_specialFolder.Click += new System.EventHandler(this.menuItem_specialFolder_Click);
+            // 
             // LayoutSettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -198,5 +207,6 @@
         private System.Windows.Forms.TabControl tabControl_pages;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PropertyGrid propertyGrid_layout;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_specialFolder;
     }
 }
