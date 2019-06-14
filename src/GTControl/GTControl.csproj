@@ -79,6 +79,12 @@
     <Compile Include="Control\PageItem.Designer.cs">
       <DependentUpon>PageItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\NoteForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\NoteForm.Designer.cs">
+      <DependentUpon>NoteForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\Cell.cs" />
     <Compile Include="Model\Enums.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,6 +116,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Control\PageItem.resx">
       <DependentUpon>PageItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\NoteForm.resx">
+      <DependentUpon>NoteForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

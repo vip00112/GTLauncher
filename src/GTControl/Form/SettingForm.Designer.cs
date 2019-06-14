@@ -36,6 +36,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.button_layout = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.checkBox_runOnStartup = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button_save
@@ -52,10 +54,10 @@
             // 
             this.checkBox_canMove.AutoSize = true;
             this.checkBox_canMove.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.checkBox_canMove.Location = new System.Drawing.Point(12, 60);
+            this.checkBox_canMove.Location = new System.Drawing.Point(12, 104);
             this.checkBox_canMove.Name = "checkBox_canMove";
             this.checkBox_canMove.Size = new System.Drawing.Size(85, 16);
-            this.checkBox_canMove.TabIndex = 1;
+            this.checkBox_canMove.TabIndex = 2;
             this.checkBox_canMove.Text = "CanMove";
             this.checkBox_canMove.UseVisualStyleBackColor = true;
             // 
@@ -64,16 +66,16 @@
             this.comboBox_theme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_theme.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.comboBox_theme.FormattingEnabled = true;
-            this.comboBox_theme.Location = new System.Drawing.Point(68, 104);
+            this.comboBox_theme.Location = new System.Drawing.Point(68, 148);
             this.comboBox_theme.Name = "comboBox_theme";
             this.comboBox_theme.Size = new System.Drawing.Size(121, 20);
-            this.comboBox_theme.TabIndex = 2;
+            this.comboBox_theme.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(12, 107);
+            this.label1.Location = new System.Drawing.Point(12, 151);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(50, 12);
             this.label1.TabIndex = 3;
@@ -85,14 +87,14 @@
             this.label2.Location = new System.Drawing.Point(10, 79);
             this.label2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(301, 12);
+            this.label2.Size = new System.Drawing.Size(209, 12);
             this.label2.TabIndex = 4;
-            this.label2.Text = "- Launcher can move when mouse click on header.";
+            this.label2.Text = "- Launcher run on windows startup.";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 127);
+            this.label3.Location = new System.Drawing.Point(12, 171);
             this.label3.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(264, 12);
@@ -101,10 +103,10 @@
             // 
             // button_layout
             // 
-            this.button_layout.Location = new System.Drawing.Point(14, 152);
+            this.button_layout.Location = new System.Drawing.Point(14, 196);
             this.button_layout.Name = "button_layout";
             this.button_layout.Size = new System.Drawing.Size(75, 23);
-            this.button_layout.TabIndex = 3;
+            this.button_layout.TabIndex = 4;
             this.button_layout.Text = "Layout";
             this.button_layout.UseVisualStyleBackColor = true;
             this.button_layout.Click += new System.EventHandler(this.button_layout_Click);
@@ -112,22 +114,45 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 178);
+            this.label4.Location = new System.Drawing.Point(12, 222);
             this.label4.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(133, 12);
             this.label4.TabIndex = 4;
             this.label4.Text = "- Change main layout.";
             // 
+            // checkBox_runOnStartup
+            // 
+            this.checkBox_runOnStartup.AutoSize = true;
+            this.checkBox_runOnStartup.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.checkBox_runOnStartup.Location = new System.Drawing.Point(12, 60);
+            this.checkBox_runOnStartup.Name = "checkBox_runOnStartup";
+            this.checkBox_runOnStartup.Size = new System.Drawing.Size(113, 16);
+            this.checkBox_runOnStartup.TabIndex = 1;
+            this.checkBox_runOnStartup.Text = "RunOnStartup";
+            this.checkBox_runOnStartup.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 123);
+            this.label5.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(301, 12);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "- Launcher can move when mouse click on header.";
+            // 
             // SettingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(319, 203);
+            this.ClientSize = new System.Drawing.Size(319, 246);
             this.Controls.Add(this.button_layout);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.checkBox_runOnStartup);
             this.Controls.Add(this.checkBox_canMove);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBox_theme);
@@ -139,7 +164,6 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Setting";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SettingForm_FormClosing);
             this.Load += new System.EventHandler(this.SettingForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -156,5 +180,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button_layout;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox checkBox_runOnStartup;
+        private System.Windows.Forms.Label label5;
     }
 }

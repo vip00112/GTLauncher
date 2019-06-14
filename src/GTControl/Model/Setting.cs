@@ -1,6 +1,8 @@
 ﻿using GTUtil;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -19,6 +21,11 @@ namespace GTControl
         private static List<PageItem> _pageItems;
 
         #region Properties
+        /// <summary>
+        /// Windows 시작시 프로그램 구동 여부
+        /// </summary>
+        public static bool RunOnStartup { get; set; }
+
         /// <summary>
         /// 런처 Window의 이동 가능 여부
         /// </summary>
@@ -184,6 +191,7 @@ namespace GTControl
             try
             {
                 var properties = new Dictionary<string, object>();
+                properties.Add("RunOnStartup", RunOnStartup);
                 properties.Add("CanMove", CanMove);
                 properties.Add("Theme", Theme.ToString());
                 properties.Add("SizeModeWidth", SizeModeWidth.ToString());
@@ -233,6 +241,18 @@ namespace GTControl
 
                 string json = JsonUtil.FromProperties(properties);
                 File.WriteAllText(SaveFile, json);
+
+                // 시작프로그램 등록
+                string name = "GTLauncher";
+                var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                if (reg.GetValue(name) != null)
+                {
+                    reg.DeleteValue(name, false);
+                }
+                if (RunOnStartup)
+                {
+                    reg.SetValue(name, Application.ExecutablePath);
+                }
             }
             catch (Exception e)
             {
@@ -252,6 +272,7 @@ namespace GTControl
 
                 string json = File.ReadAllText(SaveFile);
                 var properties = JsonUtil.FromJson(json);
+                RunOnStartup = JsonUtil.GetValue<bool>(properties, "RunOnStartup");
                 CanMove = JsonUtil.GetValue<bool>(properties, "CanMove");
                 Theme = JsonUtil.GetValue<Theme>(properties, "Theme");
                 SizeModeWidth = JsonUtil.GetValue<SizeMode>(properties, "SizeModeWidth");
@@ -267,6 +288,20 @@ namespace GTControl
             finally
             {
                 Invalidate();
+            }
+        }
+
+        public static void Invalidate()
+        {
+            SetDefault();
+
+            foreach (Form form in Application.OpenForms)
+            {
+                var container = form as PageContainer;
+                if (container == null) return;
+
+                container.ResetLayout(SizeModeWidth, SizeModeHeight);
+                SetTheme(form, Theme);
             }
         }
         #endregion
@@ -336,20 +371,6 @@ namespace GTControl
                 item.RowSpan = (int) JsonUtil.GetValue<long>(props, "RowSpan");
 
                 PageItems.Add(item);
-            }
-        }
-
-        private static void Invalidate()
-        {
-            SetDefault();
-
-            foreach (Form form in Application.OpenForms)
-            {
-                var container = form as PageContainer;
-                if (container == null) return;
-
-                container.ResetLayout(SizeModeWidth, SizeModeHeight);
-                SetTheme(form, Theme);
             }
         }
 
