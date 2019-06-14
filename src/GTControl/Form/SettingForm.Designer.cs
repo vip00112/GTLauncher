@@ -57,7 +57,7 @@
             this.checkBox_canMove.Location = new System.Drawing.Point(12, 104);
             this.checkBox_canMove.Name = "checkBox_canMove";
             this.checkBox_canMove.Size = new System.Drawing.Size(85, 16);
-            this.checkBox_canMove.TabIndex = 1;
+            this.checkBox_canMove.TabIndex = 2;
             this.checkBox_canMove.Text = "CanMove";
             this.checkBox_canMove.UseVisualStyleBackColor = true;
             // 
@@ -69,7 +69,7 @@
             this.comboBox_theme.Location = new System.Drawing.Point(68, 148);
             this.comboBox_theme.Name = "comboBox_theme";
             this.comboBox_theme.Size = new System.Drawing.Size(121, 20);
-            this.comboBox_theme.TabIndex = 2;
+            this.comboBox_theme.TabIndex = 3;
             // 
             // label1
             // 
@@ -106,7 +106,7 @@
             this.button_layout.Location = new System.Drawing.Point(14, 196);
             this.button_layout.Name = "button_layout";
             this.button_layout.Size = new System.Drawing.Size(75, 23);
-            this.button_layout.TabIndex = 3;
+            this.button_layout.TabIndex = 4;
             this.button_layout.Text = "Layout";
             this.button_layout.UseVisualStyleBackColor = true;
             this.button_layout.Click += new System.EventHandler(this.button_layout_Click);
@@ -146,7 +146,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(319, 299);
+            this.ClientSize = new System.Drawing.Size(319, 246);
             this.Controls.Add(this.button_layout);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
