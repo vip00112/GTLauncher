@@ -48,8 +48,9 @@ namespace GTCapture
                 }
                 properties.Add("HotKeyProperties", hotKeyProperties);
 
+                string path = Path.Combine(Application.StartupPath, SaveFile);
                 string json = JsonUtil.FromProperties(properties);
-                File.WriteAllText(SaveFile, json);
+                File.WriteAllText(path, json);
             }
             catch (Exception e)
             {
@@ -65,9 +66,10 @@ namespace GTCapture
         {
             try
             {
-                if (!File.Exists(SaveFile)) return;
+                string path = Path.Combine(Application.StartupPath, SaveFile);
+                if (!File.Exists(path)) return;
 
-                string json = File.ReadAllText(SaveFile);
+                string json = File.ReadAllText(path);
                 var properties = JsonUtil.FromJson(json);
                 Timer = (int) JsonUtil.GetValue<long>(properties, "Timer");
                 SaveDirectory = JsonUtil.GetValue<string>(properties, "SaveDirectory");

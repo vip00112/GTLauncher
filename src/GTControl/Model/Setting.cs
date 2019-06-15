@@ -239,8 +239,10 @@ namespace GTControl
                 }
                 properties.Add("PageItemProperties", pageItemProperties);
 
+
+                string path = Path.Combine(Application.StartupPath, SaveFile);
                 string json = JsonUtil.FromProperties(properties);
-                File.WriteAllText(SaveFile, json);
+                File.WriteAllText(path, json);
 
                 // 시작프로그램 등록
                 string name = "GTLauncher";
@@ -268,9 +270,10 @@ namespace GTControl
         {
             try
             {
-                if (!File.Exists(SaveFile)) return;
+                string path = Path.Combine(Application.StartupPath, SaveFile);
+                if (!File.Exists(path)) return;
 
-                string json = File.ReadAllText(SaveFile);
+                string json = File.ReadAllText(path);
                 var properties = JsonUtil.FromJson(json);
                 RunOnStartup = JsonUtil.GetValue<bool>(properties, "RunOnStartup");
                 CanMove = JsonUtil.GetValue<bool>(properties, "CanMove");
