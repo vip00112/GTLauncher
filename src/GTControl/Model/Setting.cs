@@ -15,7 +15,7 @@ namespace GTControl
 {
     public static class Setting
     {
-        private const string SaveFile = "Setting.General.json";
+        private const string SaveFileName = "Setting.General.json";
 
         private static List<Page> _pages;
         private static List<PageItem> _pageItems;
@@ -240,7 +240,7 @@ namespace GTControl
                 properties.Add("PageItemProperties", pageItemProperties);
 
 
-                string path = Path.Combine(Application.StartupPath, SaveFile);
+                string path = Path.Combine(Application.StartupPath, SaveFileName);
                 string json = JsonUtil.FromProperties(properties);
                 File.WriteAllText(path, json);
 
@@ -270,7 +270,7 @@ namespace GTControl
         {
             try
             {
-                string path = Path.Combine(Application.StartupPath, SaveFile);
+                string path = Path.Combine(Application.StartupPath, SaveFileName);
                 if (!File.Exists(path)) return;
 
                 string json = File.ReadAllText(path);

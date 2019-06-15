@@ -12,7 +12,7 @@ namespace GTCapture
 {
     public static class Setting
     {
-        private const string SaveFile = "Setting.Capture.json";
+        private const string SaveFileName = "Setting.Capture.json";
         public static readonly string[] ImageFormats = new string[] { "jpg", "png", "gif", "bmp" };
 
         #region Properties
@@ -48,7 +48,7 @@ namespace GTCapture
                 }
                 properties.Add("HotKeyProperties", hotKeyProperties);
 
-                string path = Path.Combine(Application.StartupPath, SaveFile);
+                string path = Path.Combine(Application.StartupPath, SaveFileName);
                 string json = JsonUtil.FromProperties(properties);
                 File.WriteAllText(path, json);
             }
@@ -66,7 +66,7 @@ namespace GTCapture
         {
             try
             {
-                string path = Path.Combine(Application.StartupPath, SaveFile);
+                string path = Path.Combine(Application.StartupPath, SaveFileName);
                 if (!File.Exists(path)) return;
 
                 string json = File.ReadAllText(path);
