@@ -8,6 +8,8 @@ namespace GTControl
 {
     public enum Theme { Dark, Light }
 
+    public enum DockMode { TopLeft, TopCenter, TopRight, MiddleLeft, MiddleCenter, MiddleRight, BottomLeft, BottomCenter, BottomRight }
+
     public enum SizeMode { Small, Medium, Large, XLarge }
 
     public enum PageCloseMode { Hide, Dispose }

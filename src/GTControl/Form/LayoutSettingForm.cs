@@ -26,19 +26,18 @@ namespace GTControl
         {
             InitializeComponent();
 
-            _layout = new LayoutProperty()
-            {
-                SizeModeWidth = Setting.SizeModeWidth,
-                SizeModeHeight = Setting.SizeModeHeight,
-            };
             _cells = new List<Cell>();
             _ancherItems = new List<PageItem>();
         }
 
-        internal LayoutSettingForm(SizeMode width, SizeMode height, List<Page> pages, List<PageItem> pageItems) : this()
+        internal LayoutSettingForm(DockMode dock, SizeMode width, SizeMode height, List<Page> pages, List<PageItem> pageItems) : this()
         {
-            SizeModeWidth = width;
-            SizeModeHeight = height;
+            _layout = new LayoutProperty()
+            {
+                DockMode = dock,
+                SizeModeWidth = width,
+                SizeModeHeight = height,
+            };
 
             if (pages != null) Pages = pages;
             else Pages = Setting.Pages.ToList();
@@ -61,6 +60,8 @@ namespace GTControl
                 }
             }
         }
+
+        public DockMode DockMode { get; private set; }
 
         public SizeMode SizeModeWidth { get; private set; }
 
@@ -93,8 +94,8 @@ namespace GTControl
                 var panel = new Panel();
                 panel.Name = p.PageName;
                 panel.Location = new Point(0, 0);
-                panel.Width = Setting.GetWidth(Setting.SizeModeWidth);
-                panel.Height = Setting.GetHeight(Setting.SizeModeHeight);
+                panel.Width = Setting.GetWidth(_layout.SizeModeWidth);
+                panel.Height = Setting.GetHeight(_layout.SizeModeHeight);
                 tabPage.Controls.Add(panel);
 
                 var page = new Page(p.PageName);
@@ -275,6 +276,7 @@ namespace GTControl
 
             if (!MessageBoxUtil.Confirm("Are you sure you want to save layout?")) return;
 
+            DockMode = _layout.DockMode;
             SizeModeWidth = _layout.SizeModeWidth;
             SizeModeHeight = _layout.SizeModeHeight;
 
@@ -531,6 +533,9 @@ namespace GTControl
         #region Inner Class
         private class LayoutProperty
         {
+            [Category("Page Option")]
+            public DockMode DockMode { get; set; }
+
             [Category("Page Option")]
             public SizeMode SizeModeWidth { get; set; }
 

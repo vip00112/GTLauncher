@@ -13,6 +13,7 @@ namespace GTControl
 {
     public partial class SettingForm : Form
     {
+        private DockMode _dockMode;
         private SizeMode _sizeModeWidth;
         private SizeMode _sizeModeHeight;
         private List<Page> _pages;
@@ -30,6 +31,7 @@ namespace GTControl
         {
             if (DesignMode) return;
 
+            _dockMode = Setting.DockMode;
             _sizeModeWidth = Setting.SizeModeWidth;
             _sizeModeHeight = Setting.SizeModeHeight;
             _pages = Setting.Pages.ToList();
@@ -47,6 +49,7 @@ namespace GTControl
             Setting.RunOnStartup = checkBox_runOnStartup.Checked;
             Setting.CanMove = checkBox_canMove.Checked;
             Setting.Theme = (Theme) comboBox_theme.SelectedItem;
+            Setting.DockMode = _dockMode;
             Setting.SizeModeWidth = _sizeModeWidth;
             Setting.SizeModeHeight = _sizeModeHeight;
             Setting.Pages = _pages;
@@ -59,11 +62,12 @@ namespace GTControl
 
         private void button_layout_Click(object sender, EventArgs e)
         {
-            using (var dialog = new LayoutSettingForm(_sizeModeWidth, _sizeModeHeight, _pages, _pageItems))
+            using (var dialog = new LayoutSettingForm(_dockMode, _sizeModeWidth, _sizeModeHeight, _pages, _pageItems))
             {
                 if (dialog.ShowDialog() != DialogResult.OK) return;
                 if (dialog.PageItems == null) return;
 
+                _dockMode = dialog.DockMode;
                 _sizeModeWidth = dialog.SizeModeWidth;
                 _sizeModeHeight = dialog.SizeModeHeight;
                 _pages = dialog.Pages;

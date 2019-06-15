@@ -37,6 +37,11 @@ namespace GTControl
         public static Theme Theme { get; set; }
 
         /// <summary>
+        /// 런처 위치
+        /// </summary>
+        public static DockMode DockMode { get; set; }
+
+        /// <summary>
         /// 런처 넓이
         /// </summary>
         public static SizeMode SizeModeWidth { get; set; }
@@ -194,6 +199,7 @@ namespace GTControl
                 properties.Add("RunOnStartup", RunOnStartup);
                 properties.Add("CanMove", CanMove);
                 properties.Add("Theme", Theme.ToString());
+                properties.Add("DockMode", DockMode.ToString());
                 properties.Add("SizeModeWidth", SizeModeWidth.ToString());
                 properties.Add("SizeModeHeight", SizeModeHeight.ToString());
 
@@ -278,6 +284,7 @@ namespace GTControl
                 RunOnStartup = JsonUtil.GetValue<bool>(properties, "RunOnStartup");
                 CanMove = JsonUtil.GetValue<bool>(properties, "CanMove");
                 Theme = JsonUtil.GetValue<Theme>(properties, "Theme");
+                DockMode = JsonUtil.GetValue<DockMode>(properties, "DockMode");
                 SizeModeWidth = JsonUtil.GetValue<SizeMode>(properties, "SizeModeWidth");
                 SizeModeHeight = JsonUtil.GetValue<SizeMode>(properties, "SizeModeHeight");
 
@@ -303,7 +310,7 @@ namespace GTControl
                 var container = form as PageContainer;
                 if (container == null) return;
 
-                container.ResetLayout(SizeModeWidth, SizeModeHeight);
+                container.ResetLayout();
                 SetTheme(form, Theme);
             }
         }
