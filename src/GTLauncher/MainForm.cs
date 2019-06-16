@@ -20,6 +20,11 @@ namespace GTLauncher
         public MainForm()
         {
             InitializeComponent();
+
+            using (var dialog = new GTVoiceChat.SettingForm())
+            {
+                dialog.ShowDialog();
+            }
         }
 
         #region Control Event
