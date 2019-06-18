@@ -63,6 +63,11 @@ namespace GTVoiceChat
         }
 
         public void Dispose() { }
+
+        public INetworkChatCodec Clone()
+        {
+            return new NarrowBandSpeexCodec();
+        }
         #endregion
 
         #region Private Method

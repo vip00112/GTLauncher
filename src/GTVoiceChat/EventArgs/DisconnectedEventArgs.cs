@@ -6,16 +6,23 @@ using System.Threading.Tasks;
 
 namespace GTVoiceChat
 {
-    public class ConnectedEventArgs : EventArgs
+    public class DisconnectedEventArgs : EventArgs
     {
-        public ConnectedEventArgs(string id, string host)
+        public DisconnectedEventArgs(string id, string host)
         {
             ID = id;
             Host = host;
         }
 
+        public DisconnectedEventArgs(Exception exception)
+        {
+            Exception = exception;
+        }
+
         public string ID { get; set; }
 
         public string Host { get; set; }
+
+        public Exception Exception { get; set; }
     }
 }

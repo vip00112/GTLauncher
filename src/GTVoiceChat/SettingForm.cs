@@ -13,15 +13,20 @@ namespace GTVoiceChat
 {
     public partial class SettingForm : Form
     {
+        #region Constructor
         public SettingForm()
         {
             InitializeComponent();
         }
+        #endregion
 
+        #region Properties
         public int InputDeviceNumber { get; private set; }
 
         public int OutputDeviceNumber { get; private set; }
+        #endregion
 
+        #region Control Event
         private void SettingForm_Load(object sender, EventArgs e)
         {
             for (int i = 0; i < WaveIn.DeviceCount; i++)
@@ -47,19 +52,10 @@ namespace GTVoiceChat
 
         private void button_save_Click(object sender, EventArgs e)
         {
-            //InputDeviceNumber = comboBox_inputDevice.SelectedIndex;
-            //OutputDeviceNumber = comboBox_outputDevice.SelectedIndex;
-            //DialogResult = DialogResult.OK;
-
-            //var m = new Manager();
-            //var endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 7080);
-            //int deviceNum = comboBox_inputDevice.SelectedIndex;
-            //m.Connect(endPoint, deviceNum);
-
-            var m = new Manager();
-            int deviceNum = comboBox_inputDevice.SelectedIndex;
-            m.StartServer(7080, deviceNum);
-            //m.StartClient("127.0.0.1", 7080, deviceNum);
+            InputDeviceNumber = comboBox_inputDevice.SelectedIndex;
+            OutputDeviceNumber = comboBox_outputDevice.SelectedIndex;
+            DialogResult = DialogResult.OK;
         }
+        #endregion
     }
 }

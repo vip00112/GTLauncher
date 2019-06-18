@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace GTVoiceChat
 {
-    public class DecodedEventArgs : EventArgs
+    public class DataReceiveEventArgs : EventArgs
     {
-        public DecodedEventArgs(byte[] decoded)
+        public DataReceiveEventArgs(byte[] data)
         {
-            Decodecd = decoded;
+            Data = data;
         }
 
-        public byte[] Decodecd { get; set; }
+        public byte[] Data { get; set; }
     }
 }

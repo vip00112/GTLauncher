@@ -38,5 +38,7 @@ namespace GTVoiceChat
         /// Decodes a block of audio
         /// </summary>
         byte[] Decode(byte[] data, int offset, int length);
+
+        INetworkChatCodec Clone();
     }
 }

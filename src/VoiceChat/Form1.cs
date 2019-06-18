@@ -24,20 +24,54 @@ namespace VoiceChat
             {
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
+                button1.Enabled = false;
+
                 var m = new Manager();
                 int deviceNum = dialog.InputDeviceNumber;
-                m.OnDisposed += delegate (object sender2, EventArgs e2)
+                m.Connected += delegate (object sender2, ConnectedEventArgs e2)
                 {
-                    Invoke((MethodInvoker) delegate () { Enable(true); });
+                    Invoke((MethodInvoker) delegate () { Connected(e2.Host); });
+                };
+                m.Disconnected += delegate (object sender2, DisconnectedEventArgs e2)
+                {
+                    Invoke((MethodInvoker) delegate () { Disconnected(e2.Exception); });
+                };
+                m.OtherClientConnected += delegate (object sender2, ConnectedEventArgs e2)
+                {
+                    Invoke((MethodInvoker) delegate () { OtherClientConnected(e2.Host); });
+                };
+                m.OtherClientDisconnected += delegate (object sender2, DisconnectedEventArgs e2)
+                {
+                    Invoke((MethodInvoker) delegate () { OtherClientDisconnected(e2.Host); });
                 };
                 m.StartClient(textBox1.Text, 7080, deviceNum);
-                button1.Enabled = false;
             }
         }
 
-        private void Enable(bool enable)
+        private void Connected(string host)
         {
-            button1.Enabled = enable;
+            listBox1.Items.Add(string.Format("-> {0}", host));
+        }
+
+        private void Disconnected(Exception e)
+        {
+            if (e != null)
+            {
+                MessageBox.Show(e.Message);
+            }
+
+            button1.Enabled = true;
+            listBox1.Items.Clear();
+        }
+
+        private void OtherClientConnected(string host)
+        {
+            listBox1.Items.Add(host);
+        }
+
+        private void OtherClientDisconnected(string host)
+        {
+            listBox1.Items.Remove(host);
         }
     }
 }

@@ -40,6 +40,11 @@ namespace GTVoiceChat
         }
 
         public void Dispose() { }
+
+        public INetworkChatCodec Clone()
+        {
+            return new NarrowBandSpeexCodec();
+        }
         #endregion
     }
 }

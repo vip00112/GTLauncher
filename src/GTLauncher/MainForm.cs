@@ -23,7 +23,23 @@ namespace GTLauncher
 
             using (var dialog = new GTVoiceChat.SettingForm())
             {
-                dialog.ShowDialog();
+                if (dialog.ShowDialog() != DialogResult.OK) return;
+
+
+                //var m = new Manager();
+                //var endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 7080);
+                //int deviceNum = comboBox_inputDevice.SelectedIndex;
+                //m.Connect(endPoint, deviceNum);
+
+                // 서버 개설
+                var m = new GTVoiceChat.Manager();
+                int deviceNum = dialog.InputDeviceNumber;
+                m.StartServer(7080, deviceNum);
+
+                // 내 서버에 참가
+                m.StartClient("127.0.0.1", 7080, deviceNum);
+
+                // TODO : 다중 클라이언트 접속시 Codec의 OutOfIndex 이슈
             }
         }
 

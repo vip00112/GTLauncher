@@ -13,44 +13,27 @@ namespace GTVoiceChat
     public class Server
     {
         private bool _acceptStarted;
-        private Socket _listener;
+        private Socket _socket;
         private IPEndPoint _endPoint;
-        private UserManager _manager;
-
-        private INetworkChatCodec _codec;
-        private WaveIn _waveIn;
-        private IWavePlayer _waveOut;
-        private BufferedWaveProvider _waveProvider;
+        private List<User> _users;
 
         #region Constuctor
-        public Server(int port, int inputDeviceNumber, INetworkChatCodec codec)
+        public Server(int port, int inputDeviceNumber)
         {
             _endPoint = new IPEndPoint(IPAddress.Any, port);
-            _manager = new UserManager();
-
-            _codec = codec;
-            _waveIn = new WaveIn();
-            _waveIn.BufferMilliseconds = 50;
-            _waveIn.DeviceNumber = inputDeviceNumber;
-            _waveIn.WaveFormat = _codec.RecordFormat;
-            _waveIn.StartRecording();
-
-            _waveOut = new WaveOut();
-            _waveProvider = new BufferedWaveProvider(codec.RecordFormat);
-            _waveOut.Init(_waveProvider);
-            _waveOut.Play();
+            _users = new List<User>();
         }
         #endregion
 
         #region Public Method
         public void Start()
         {
-            if (_listener != null) return;
+            if (_socket != null) return;
 
             _acceptStarted = true;
-            _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _listener.Bind(_endPoint);
-            _listener.Listen(20);
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _socket.Bind(_endPoint);
+            _socket.Listen(20);
 
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += AcceptComplete;
@@ -59,22 +42,14 @@ namespace GTVoiceChat
 
         public void Close()
         {
-            _manager.Dispose();
-
-            if (_listener != null)
+            if (_socket != null)
             {
-                _listener.Close();
-                _listener.Dispose();
+                _socket.Close();
+                _socket.Dispose();
             }
 
-            if (_waveIn != null)
-            {
-                _waveIn.StopRecording();
-                _waveIn.Dispose();
-            }
-
+            _socket = null;
             _endPoint = null;
-            _codec = null;
             _acceptStarted = false;
         }
         #endregion
@@ -82,10 +57,10 @@ namespace GTVoiceChat
         #region Private Method
         private void StartAccept(SocketAsyncEventArgs e)
         {
-            if (_listener == null || e.SocketError != SocketError.Success) return;
+            if (_socket == null || e.SocketError != SocketError.Success) return;
 
             e.AcceptSocket = null;
-            if (!_listener.AcceptAsync(e))
+            if (!_socket.AcceptAsync(e))
             {
                 AcceptProcess(e);
             }
@@ -110,13 +85,17 @@ namespace GTVoiceChat
                     return;
                 }
 
-                var user = new User(clientSocket, _codec);
-                if (_manager.AddUser(user))
+                var user = new User(clientSocket);
+                if (AddUser(user))
                 {
-                    user.OnDecoded += UserDecoded;
-                    user.OnDisposed += UserDisposed;
-                    _waveIn.DataAvailable += user.SendPacket;
-                    user.ReceivePacket();
+                    var onlineUsers = _users.Where(o => o.ID != user.ID).ToList();
+                    foreach (var onlineUser in onlineUsers)
+                    {
+                        user.StartSend(new Packet() { Type = PacketType.Connected, ID = onlineUser.ID, Host = onlineUser.Host });
+                    }
+                    user.StartSend(new Packet() { Type = PacketType.LoginResult, ID = user.ID, Host = user.Host });
+                    SendPacketToUsers(user, new Packet() { Type = PacketType.Connected, ID = user.ID, Host = user.Host });
+                    user.StartReceive();
                 }
                 else
                 {
@@ -125,7 +104,6 @@ namespace GTVoiceChat
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 Logger.Error(ex);
             }
             finally
@@ -134,31 +112,55 @@ namespace GTVoiceChat
             }
         }
 
-        private void UserDecoded(object sender, DecodedEventArgs e)
+        private bool AddUser(User user)
         {
-            var user = sender as User;
-            if (user == null) return;
-
-            // 서버측 output
-            _waveProvider.AddSamples(e.Decodecd, 0, e.Decodecd.Length);
-
-            // 접속된 사용자에게 output
-            var onlineUsers = _manager.Users.Where(o => o.ID != user.ID).ToList();
-            foreach (var online in onlineUsers)
+            if (!_users.Any(o => o.ID == user.ID))
             {
-                online.SendPacket(this, new WaveInEventArgs(e.Decodecd, e.Decodecd.Length));
+                user.DataReceived += UserDataReceived;
+                user.Disposed += UserDisposed;
+                _users.Add(user);
+                return true;
             }
+            return false;
         }
 
-        private void UserDisposed(object sender, EventArgs e)
+        private bool RemoveUser(User user)
         {
-            var user = sender as User;
-            if (user == null) return;
+            if (_users.Any(o => o.ID == user.ID))
+            {
+                user.DataReceived -= UserDataReceived;
+                user.Disposed -= UserDisposed;
+                _users.Remove(user);
+                return true;
+            }
+            return false;
+        }
 
-            _waveIn.DataAvailable -= user.SendPacket;
-            user.OnDecoded -= UserDecoded;
-            user.OnDisposed -= UserDisposed;
-            _manager.RemoveUser(user);
+        private void UserDataReceived(object sender, DataReceiveEventArgs e)
+        {
+            var sendUser = sender as User;
+            if (sendUser == null) return;
+
+            SendPacketToUsers(sendUser, new Packet() { Type = PacketType.Audiom, ID = sendUser.ID, AudioData = e.Data });
+        }
+
+        private void UserDisposed(object sender, DisposedEventArgs e)
+        {
+            var disposedUser = sender as User;
+            if (disposedUser == null) return;
+
+            RemoveUser(disposedUser);
+            SendPacketToUsers(disposedUser, new Packet() { Type = PacketType.Disconnected, ID = disposedUser.ID });
+        }
+
+        private void SendPacketToUsers(User sendUser, Packet packet)
+        {
+            // TODO : 테스트 코드
+            var users = _users/*.Where(o => o.ID != sendUser.ID)*/.ToList();
+            foreach (var user in users)
+            {
+                user.StartSend(packet);
+            }
         }
         #endregion
     }
