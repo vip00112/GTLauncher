@@ -33,17 +33,17 @@ namespace GTVoiceChat
 
         public void Dispose()
         {
-            if (_waveOut != null)
-            {
-                _waveOut.Stop();
-                _waveOut.Dispose();
-            }
             if (_codec != null)
             {
                 _codec.Dispose();
             }
-            _waveOut = null;
+            if (_waveOut != null)
+            {
+                _waveOut.Stop();
+                //_waveOut.Dispose();
+            }
             _codec = null;
+            _waveOut = null;
         }
         #endregion
     }

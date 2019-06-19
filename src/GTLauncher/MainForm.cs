@@ -37,7 +37,7 @@ namespace GTLauncher
                 m.StartServer(7080, deviceNum);
 
                 // 내 서버에 참가
-                m.StartClient("127.0.0.1", 7080, deviceNum);
+                //m.StartClient("127.0.0.1", 7080, deviceNum);
 
                 // TODO : 다중 클라이언트 접속시 Codec의 OutOfIndex 이슈
             }

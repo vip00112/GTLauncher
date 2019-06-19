@@ -20,9 +20,10 @@ namespace GTVoiceChat
         private object _lock;
         private Socket _socket;
         private IPEndPoint _endPoint;
-        private int _inputDeviceNumber;
         private INetworkChatCodec _codec;
         private WaveIn _waveIn;
+        private IWavePlayer _waveOut;
+        private BufferedWaveProvider _waveProvider;
         private Dictionary<string, AudioOutput> _outputs;
 
         #region Constuctor
@@ -31,19 +32,23 @@ namespace GTVoiceChat
             _lock = new object();
             _endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
 
-            _inputDeviceNumber = inputDeviceNumber;
-            //_codec = new UncompressedPcmChatCodec();
+            _codec = new UncompressedPcmChatCodec();
             //_codec = new UltraWideBandSpeexCodec();
             //_codec = new WideBandSpeexCodec();
-            _codec = new NarrowBandSpeexCodec();
+            //_codec = new NarrowBandSpeexCodec();
 
-            // TODO : AudioOutput에서 WaveIn을 처리하면 Encode 에러가 안나지 않을까?
             _waveIn = new WaveIn();
             _waveIn.BufferMilliseconds = 50;
-            _waveIn.DeviceNumber = _inputDeviceNumber;
+            _waveIn.DeviceNumber = inputDeviceNumber;
             _waveIn.WaveFormat = _codec.RecordFormat;
+            _waveIn.DataAvailable += OnAudioCaptured;
             _waveIn.StartRecording();
-            _outputs = new Dictionary<string, AudioOutput>();
+
+            _waveOut = new WaveOut();
+            _waveProvider = new BufferedWaveProvider(_codec.RecordFormat);
+            _waveOut.Init(_waveProvider);
+            _waveOut.Play();
+            //_outputs = new Dictionary<string, AudioOutput>();
 
             Buffer = new byte[1024 * 4];
         }
@@ -98,7 +103,12 @@ namespace GTVoiceChat
                 if (_waveIn != null)
                 {
                     _waveIn.StopRecording();
-                    _waveIn.Dispose();
+                    //_waveIn.Dispose();
+                }
+                if (_waveOut != null)
+                {
+                    _waveOut.Stop();
+                    //_waveOut.Dispose();
                 }
                 if (_codec != null)
                 {
@@ -179,16 +189,6 @@ namespace GTVoiceChat
                     PacketHandler(data);
                 }
 
-                //int size = e.BytesTransferred;
-
-                //// 패킷 처리
-                //byte[] data = new byte[size];
-                //System.Buffer.BlockCopy(Buffer, 0, data, 0, size);
-                //Array.Clear(Buffer, 0, Buffer.Length);
-                //e.SetBuffer(0, Buffer.Length);
-
-                //PacketHandler(data);
-
                 if (!_socket.ReceiveAsync(e))
                 {
                     ReceiveProcess(e);
@@ -202,8 +202,10 @@ namespace GTVoiceChat
 
         private void OnAudioCaptured(object sender, WaveInEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(ID)) return;
+
             byte[] encoded = _codec.Encode(e.Buffer, 0, e.BytesRecorded);
-            StartSend(new Packet() { Type = PacketType.Audiom, ID = ID, AudioData = encoded });
+            StartSend(new Packet() { Type = PacketType.Audio, ID = ID, AudioData = encoded });
         }
 
         private void StartSend(Packet packet)
@@ -261,26 +263,28 @@ namespace GTVoiceChat
                     ID = packet.ID;
                     Host = packet.Host;
                     if (Connected != null) Connected(this, new ConnectedEventArgs(ID, Host));
-                    _waveIn.DataAvailable += OnAudioCaptured;
                     break;
                 case PacketType.Connected: // 다른 유저의 접속
-                    if (_outputs.ContainsKey(packet.ID)) return;
-                    _outputs.Add(packet.ID, new AudioOutput(_codec.Clone()));
+                    //if (_outputs.ContainsKey(packet.ID)) return;
+                    //_outputs.Add(packet.ID, new AudioOutput(_codec.Clone()));
 
                     // Host정보 화면에 생성
                     if (OtherClientConnected != null) OtherClientConnected(this, new ConnectedEventArgs(packet.ID, packet.Host));
                     break;
                 case PacketType.Disconnected: // 다른 유저의 종료
-                    if (!_outputs.ContainsKey(packet.ID)) return;
-                    _outputs[packet.ID].Dispose();
-                    _outputs.Remove(packet.ID);
+                    //if (!_outputs.ContainsKey(packet.ID)) return;
+                    //_outputs[packet.ID].Dispose();
+                    //_outputs.Remove(packet.ID);
 
                     // Host정보 화면에서 삭제
                     if (OtherClientDisconnected != null) OtherClientDisconnected(this, new DisconnectedEventArgs(packet.ID, packet.Host));
                     break;
-                case PacketType.Audiom: // 음성정보
-                    if (!_outputs.ContainsKey(packet.ID)) return;
-                    _outputs[packet.ID].Play(packet.AudioData);
+                case PacketType.Audio: // 음성정보
+                    //if (!_outputs.ContainsKey(packet.ID)) return;
+                    //_outputs[packet.ID].Play(packet.AudioData);
+                    byte[] decoded = _codec.Decode(packet.AudioData, 0, packet.AudioData.Length);
+                    _waveProvider.AddSamples(decoded, 0, decoded.Length);
+                    _waveOut.Play();
                     break;
             }
         }

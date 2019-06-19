@@ -20,14 +20,19 @@ namespace GTVoiceChat
         public User(Socket socket)
         {
             _lock = new object();
+            ID = Guid.NewGuid().ToString();
             Socket = socket;
+            Host = Socket.RemoteEndPoint.ToString();
             Buffer = new byte[1024 * 4];
-            UserData = new UserData(socket.RemoteEndPoint.ToString());
         }
         #endregion
 
         #region Properties
+        public string ID { get; }
+
         public Socket Socket { get; private set; }
+
+        public string Host { get; } // IP:PORT
 
         public bool IsAlive { get { return Socket != null && Socket.Connected; } }
 
@@ -36,12 +41,6 @@ namespace GTVoiceChat
         public int BufferOffset { get; set; }
 
         public int BufferSize { get { return Buffer.Length - BufferOffset; } }
-
-        public UserData UserData { get; }
-
-        public string ID { get { return UserData.ID; } }
-
-        public string Host { get { return UserData.Host; } }
         #endregion
 
         #region Public Method
@@ -130,16 +129,6 @@ namespace GTVoiceChat
                     PacketHandler(data);
                 }
 
-                //int size = e.BytesTransferred;
-
-                //// 패킷 처리
-                //byte[] data = new byte[size];
-                //System.Buffer.BlockCopy(Buffer, 0, data, 0, size);
-                //Array.Clear(Buffer, 0, Buffer.Length);
-                //e.SetBuffer(0, Buffer.Length);
-
-                //PacketHandler(data);
-
                 if (!Socket.ReceiveAsync(e))
                 {
                     ReceiveProcess(e);
@@ -182,24 +171,11 @@ namespace GTVoiceChat
                 case PacketType.Exit: // 서버퇴장
                     Dispose();
                     break;
-                case PacketType.Audiom: // 음성정보
+                case PacketType.Audio: // 음성정보
                     if (DataReceived != null) DataReceived(this, new DataReceiveEventArgs(data));
                     break;
             }
         }
         #endregion
-    }
-
-    public class UserData
-    {
-        public UserData(string host)
-        {
-            ID = Guid.NewGuid().ToString();
-            Host = host;
-        }
-
-        public string ID { get; }
-
-        public string Host { get; } // IP:PORT
     }
 }

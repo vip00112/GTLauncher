@@ -43,7 +43,7 @@ namespace GTVoiceChat
 
         public INetworkChatCodec Clone()
         {
-            return new NarrowBandSpeexCodec();
+            return new UncompressedPcmChatCodec();
         }
         #endregion
     }

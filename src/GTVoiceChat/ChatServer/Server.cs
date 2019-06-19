@@ -141,7 +141,7 @@ namespace GTVoiceChat
             var sendUser = sender as User;
             if (sendUser == null) return;
 
-            SendPacketToUsers(sendUser, new Packet() { Type = PacketType.Audiom, ID = sendUser.ID, AudioData = e.Data });
+            SendPacketToUsers(sendUser, new Packet() { Type = PacketType.Audio, ID = sendUser.ID, AudioData = e.Data });
         }
 
         private void UserDisposed(object sender, DisposedEventArgs e)
@@ -155,8 +155,7 @@ namespace GTVoiceChat
 
         private void SendPacketToUsers(User sendUser, Packet packet)
         {
-            // TODO : 테스트 코드
-            var users = _users/*.Where(o => o.ID != sendUser.ID)*/.ToList();
+            var users = _users.Where(o => o.ID != sendUser.ID).ToList();
             foreach (var user in users)
             {
                 user.StartSend(packet);

@@ -64,10 +64,7 @@
     <Compile Include="EventArgs\DisposedEventArgs.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Packet\Packet.cs" />
-    <Compile Include="Sample\AudioReceiver.cs" />
-    <Compile Include="Sample\AudioSender.cs" />
     <Compile Include="ChatServer\Server.cs" />
-    <Compile Include="Sample\UdpAudioReceiver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingForm.cs">
       <SubType>Form</SubType>
@@ -75,7 +72,6 @@
     <Compile Include="SettingForm.Designer.cs">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Sample\UdpAudioSender.cs" />
     <Compile Include="Codec\UltraWideBandSpeexCodec.cs" />
     <Compile Include="ChatServer\User.cs" />
   </ItemGroup>
