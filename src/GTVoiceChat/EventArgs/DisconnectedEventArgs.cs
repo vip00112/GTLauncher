@@ -8,10 +8,9 @@ namespace GTVoiceChat
 {
     public class DisconnectedEventArgs : EventArgs
     {
-        public DisconnectedEventArgs(string id, string host)
+        public DisconnectedEventArgs(string name)
         {
-            ID = id;
-            Host = host;
+            ID = name;
         }
 
         public DisconnectedEventArgs(Exception exception)
@@ -20,8 +19,6 @@ namespace GTVoiceChat
         }
 
         public string ID { get; set; }
-
-        public string Host { get; set; }
 
         public Exception Exception { get; set; }
     }

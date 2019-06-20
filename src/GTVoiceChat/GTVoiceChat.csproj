@@ -51,20 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatClient\AudioOutput.cs" />
-    <Compile Include="ChatClient\Client.cs" />
+    <Compile Include="Network\TcpClient.cs" />
+    <Compile Include="Network\StateObject.cs" />
+    <Compile Include="Network\TcpServer.cs" />
+    <Compile Include="Network\ServerUser.cs" />
     <Compile Include="Codec\INetworkChatCodec.cs" />
     <Compile Include="Codec\NarrowBandSpeexCodec.cs" />
     <Compile Include="Codec\UncompressedPcmChatCodec.cs" />
     <Compile Include="Codec\WideBandSpeexCodec.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="EventArgs\ConnectedEventArgs.cs" />
-    <Compile Include="EventArgs\DataReceiveEventArgs.cs" />
     <Compile Include="EventArgs\DisconnectedEventArgs.cs" />
-    <Compile Include="EventArgs\DisposedEventArgs.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Packet\Packet.cs" />
-    <Compile Include="ChatServer\Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingForm.cs">
       <SubType>Form</SubType>
@@ -73,7 +72,6 @@
       <DependentUpon>SettingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Codec\UltraWideBandSpeexCodec.cs" />
-    <Compile Include="ChatServer\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

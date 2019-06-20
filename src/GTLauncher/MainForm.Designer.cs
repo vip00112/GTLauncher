@@ -32,8 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.menuItem_exit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_captureSetting = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_exit = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,21 +51,21 @@
             this.menuItem_captureSetting,
             this.menuItem_exit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(181, 70);
-            // 
-            // menuItem_exit
-            // 
-            this.menuItem_exit.Name = "menuItem_exit";
-            this.menuItem_exit.Size = new System.Drawing.Size(180, 22);
-            this.menuItem_exit.Text = "Exit";
-            this.menuItem_exit.Click += new System.EventHandler(this.menuItem_exit_Click);
+            this.notifyIconMenu.Size = new System.Drawing.Size(117, 48);
             // 
             // menuItem_captureSetting
             // 
             this.menuItem_captureSetting.Name = "menuItem_captureSetting";
-            this.menuItem_captureSetting.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_captureSetting.Size = new System.Drawing.Size(116, 22);
             this.menuItem_captureSetting.Text = "Capture";
             this.menuItem_captureSetting.Click += new System.EventHandler(this.menuItem_captureSetting_Click);
+            // 
+            // menuItem_exit
+            // 
+            this.menuItem_exit.Name = "menuItem_exit";
+            this.menuItem_exit.Size = new System.Drawing.Size(116, 22);
+            this.menuItem_exit.Text = "Exit";
+            this.menuItem_exit.Click += new System.EventHandler(this.menuItem_exit_Click);
             // 
             // MainForm
             // 
@@ -82,6 +82,7 @@
             this.SizeModeHeight = GTControl.SizeMode.Medium;
             this.SizeModeWidth = GTControl.SizeMode.Medium;
             this.Text = "MainForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.notifyIconMenu.ResumeLayout(false);
             this.ResumeLayout(false);

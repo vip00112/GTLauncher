@@ -8,14 +8,19 @@ namespace GTVoiceChat
 {
     public class ConnectedEventArgs : EventArgs
     {
-        public ConnectedEventArgs(string id, string host)
+        public ConnectedEventArgs(string name)
         {
-            ID = id;
-            Host = host;
+            ID = name;
+        }
+
+        public ConnectedEventArgs(string name, string[] onlineUserNames)
+        {
+            ID = name;
+            OnlineUserNames = onlineUserNames;
         }
 
         public string ID { get; set; }
 
-        public string Host { get; set; }
+        public string[] OnlineUserNames { get; set; }
     }
 }

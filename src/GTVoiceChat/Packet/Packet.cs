@@ -14,9 +14,9 @@ namespace GTVoiceChat
     {
         public PacketType Type { get; set; }
 
-        public string ID { get; set; }
+        public string SendUserName { get; set; }
 
-        public string Host { get; set; }
+        public string[] OnlineUserNames { get; set; }
 
         public byte[] AudioData { get; set; }
 

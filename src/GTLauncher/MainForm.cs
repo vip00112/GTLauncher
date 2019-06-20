@@ -16,6 +16,7 @@ namespace GTLauncher
     public partial class MainForm : PageContainer
     {
         private Capture _capture;
+        private GTVoiceChat.Manager _chatManager;
 
         public MainForm()
         {
@@ -25,21 +26,10 @@ namespace GTLauncher
             {
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
-
-                //var m = new Manager();
-                //var endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 7080);
-                //int deviceNum = comboBox_inputDevice.SelectedIndex;
-                //m.Connect(endPoint, deviceNum);
-
                 // 서버 개설
-                var m = new GTVoiceChat.Manager();
+                _chatManager = new GTVoiceChat.Manager();
                 int deviceNum = dialog.InputDeviceNumber;
-                m.StartServer(7080, deviceNum);
-
-                // 내 서버에 참가
-                //m.StartClient("127.0.0.1", 7080, deviceNum);
-
-                // TODO : 다중 클라이언트 접속시 Codec의 OutOfIndex 이슈
+                _chatManager.StartServer(7080);
             }
         }
 
@@ -50,6 +40,15 @@ namespace GTLauncher
 
             _capture = new Capture(Handle);
             _capture.OnCaptured += OnCaptured;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_chatManager != null)
+            {
+                _chatManager.StopClient();
+                _chatManager.StopServer();
+            }
         }
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)

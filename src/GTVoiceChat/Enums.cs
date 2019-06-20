@@ -8,7 +8,8 @@ namespace GTVoiceChat
 {
     public enum PacketType
     {
-        LoginResult, // 서버 입장 결과
+        JoinFail, // 서버 입장 실패
+        JoinSuccess, // 서버 입장 성공
         Exit, // 서버퇴장
         Connected, // 다른 유저의 접속
         Disconnected, // 다른 유저의 종료
