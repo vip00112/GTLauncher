@@ -13,6 +13,8 @@ namespace GTVoiceChat
         Exit, // 서버퇴장
         Connected, // 다른 유저의 접속
         Disconnected, // 다른 유저의 종료
+        Text, // 텍스트
         Audio, // 음성정보
+        File, // 파일전송
     }
 }

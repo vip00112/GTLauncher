@@ -18,7 +18,13 @@ namespace GTVoiceChat
 
         public string[] OnlineUserNames { get; set; }
 
+        public string SendText { get; set; }
+
         public byte[] AudioData { get; set; }
+
+        public string FileName { get; set; }
+
+        public byte[] FileData { get; set; }
 
         #region Static Method
         public static int GetPacketSize(byte[] data)

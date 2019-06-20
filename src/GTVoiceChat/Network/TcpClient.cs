@@ -194,10 +194,17 @@ namespace GTVoiceChat
                     case PacketType.Disconnected: // 다른 유저의 종료 : 화면에서 삭제
                         OtherClientDisconnected?.Invoke(this, new DisconnectedEventArgs(packet.SendUserName));
                         break;
+                    case PacketType.Text: // 텍스트
+                        // TODO : 텍스트 전송 및 표기
+                        break;
                     case PacketType.Audio: // 음성정보
+                        // TODO : 3명이상 대화할시 Buffer가 밀린다. 출력 문제인지 서버 문제인지 불확실
                         byte[] decoded = _codec.Decode(packet.AudioData, 0, packet.AudioData.Length);
                         _waveProvider.AddSamples(decoded, 0, decoded.Length);
                         _waveOut.Play();
+                        break;
+                    case PacketType.File: // 파일전송
+                        // TODO : 파일 전송 및 저장
                         break;
                 }
                 return true;
