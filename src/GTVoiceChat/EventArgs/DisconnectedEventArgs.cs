@@ -10,7 +10,7 @@ namespace GTVoiceChat
     {
         public DisconnectedEventArgs(string name)
         {
-            ID = name;
+            Name = name;
         }
 
         public DisconnectedEventArgs(Exception exception)
@@ -18,7 +18,7 @@ namespace GTVoiceChat
             Exception = exception;
         }
 
-        public string ID { get; set; }
+        public string Name { get; set; }
 
         public Exception Exception { get; set; }
     }

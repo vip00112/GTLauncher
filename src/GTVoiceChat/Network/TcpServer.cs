@@ -98,7 +98,7 @@ namespace GTVoiceChat
             user.Send(new Packet() { Type = PacketType.JoinSuccess, OnlineUserNames = onlineUserNames });
 
             // 접속된 Client들에게 새로운 Client의 접속 알림
-            SendToUsers(user, new Packet() { Type = PacketType.Connected, SendUserName = user.Name });
+            SendToUsers(socket, new Packet() { Type = PacketType.Connected, SendUserName = user.Name });
 
             var state = new StateObject(socket);
             socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, OnReceive, state);
@@ -120,14 +120,29 @@ namespace GTVoiceChat
 
             try
             {
-                var size = socket.EndReceive(ar);
-                if (size <= 0) return;
+                var receiveSize = socket.EndReceive(ar);
+                if (receiveSize <= 0) return;
 
-                if (!PacketHandler(state))
+                // Receive Data를 Buffer에 저장
+                Buffer.BlockCopy(state.Buffer, 0, state.ProcessingBuffer, state.ProcessingOffset, receiveSize);
+                state.ProcessingOffset += receiveSize;
+
+                // Buffer에 저장된 길이값으로 패킷 취득
+                int size = Packet.GetPacketSize(state.ProcessingBuffer) + 2;
+                if (size != 0 && size <= state.ProcessingOffset)
                 {
-                    DisconnectClient(socket);
-                    return;
+                    byte[] data = new byte[size];
+                    Buffer.BlockCopy(state.ProcessingBuffer, 0, data, 0, size);
+                    Buffer.BlockCopy(state.ProcessingBuffer, size, state.ProcessingBuffer, 0, state.ProcessingOffset - size);
+                    state.ProcessingOffset -= size;
+
+                    if (!PacketHandler(data, socket))
+                    {
+                        Stop();
+                        return;
+                    }
                 }
+
                 socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, OnReceive, state);
             }
             catch (Exception e)
@@ -137,22 +152,27 @@ namespace GTVoiceChat
             }
         }
 
-        private bool PacketHandler(StateObject state)
+        private bool PacketHandler(byte[] data, Socket socket)
         {
             try
             {
-                var packet = Packet.ToPacket(state.Buffer);
+                var packet = Packet.ToPacket(data);
                 if (packet == null) return false;
 
                 switch (packet.Type)
                 {
                     case PacketType.Exit: // 서버퇴장
-                        DisconnectClient(state.Socket);
+                        DisconnectClient(socket);
+                        break;
+                    case PacketType.Text: // 텍스트
+                        {
+                            SendToUsers(socket, new Packet() { Type = PacketType.Text, SendUserName = GetName(socket), SendText = packet.SendText });
+                        }
                         break;
                     case PacketType.Audio: // 음성정보
-                        // Client로부터 받은 음성 정보를 모든 유저에ㅔ 전송
-                        var sendUser = _users.FirstOrDefault(o => o.Name == packet.SendUserName);
-                        SendToUsers(sendUser, new Packet() { Type = PacketType.Audio, SendUserName = sendUser.Name, AudioData = packet.AudioData });
+                        {
+                            SendToUsers(socket, new Packet() { Type = PacketType.Audio, SendUserName = GetName(socket), AudioData = packet.AudioData });
+                        }
                         break;
                 }
                 return true;
@@ -170,18 +190,35 @@ namespace GTVoiceChat
             if (user != null)
             {
                 _users.Remove(user);
-                SendToUsers(user, new Packet() { Type = PacketType.Disconnected, SendUserName = user.Name });
+                SendToUsers(user.Name, new Packet() { Type = PacketType.Disconnected, SendUserName = user.Name });
             }
             if (socket != null) socket.Close();
         }
 
-        private void SendToUsers(ServerUser sendUser, Packet packet)
+        private void SendToUsers(Socket socket, Packet packet)
         {
-            var users = _users.Where(o => o.Name != sendUser.Name).ToList();
-            foreach (var user in users)
+            var users = _users.Where(o => o.Socket != socket).ToList();
+            SendToUsers(users, packet);
+        }
+
+        private void SendToUsers(string name, Packet packet)
+        {
+            var users = _users.Where(o => o.Name != name).ToList();
+            SendToUsers(users, packet);
+        }
+
+        private void SendToUsers(List<ServerUser> targetUsers, Packet packet)
+        {
+            foreach (var user in targetUsers)
             {
                 user.Send(packet);
             }
+        }
+
+        private string GetName(Socket socket)
+        {
+            var user = _users.FirstOrDefault(o => o.Socket == socket);
+            return (user == null) ? null : user.Name;
         }
         #endregion
     }

@@ -15,28 +15,33 @@ namespace GTVoiceChat
         public EventHandler<DisconnectedEventArgs> Disconnected;
         public EventHandler<ConnectedEventArgs> OtherClientConnected;
         public EventHandler<DisconnectedEventArgs> OtherClientDisconnected;
+        public EventHandler<MessageEventArgs> ReceiveMessage;
 
-        private TcpServer _myServer;
-        private TcpClient _myClient;
+        private TcpServer _server;
+        private TcpClient _client;
 
+        #region Public Method
+        #region Server
         public void StartServer(int port)
         {
             //if (_server != null) return;
             //_server = new Server(port);
             //_server.Start();
-            if (_myServer != null) return;
-            _myServer = new TcpServer(port);
-            _myServer.Start();
+            if (_server != null) return;
+            _server = new TcpServer(port);
+            _server.Start();
         }
 
         public void StopServer()
         {
             //if (_server == null) return;
             //_server.Close();
-            if (_myServer == null) return;
-            _myServer.Stop();
+            if (_server == null) return;
+            _server.Stop();
         }
+        #endregion
 
+        #region Client
         public void StartClient(string ip, int port, int inputDeviceNumber)
         {
             //if (_client != null) return;
@@ -50,19 +55,21 @@ namespace GTVoiceChat
 
         public bool StartClient(string ip, int port, string name, int inputDeviceNumber)
         {
-            if (_myClient != null) return false;
-            _myClient = new TcpClient(ip, port, name, inputDeviceNumber);
-            _myClient.Connected += OnConnected;
-            _myClient.Disconnected += OnDisconnected;
-            _myClient.OtherClientConnected += OnOtherClientConnected;
-            _myClient.OtherClientDisconnected += OnOtherClientDisconnected;
+            if (_client != null) return false;
+            _client = new TcpClient(ip, port, name, inputDeviceNumber);
+            _client.Connected += OnConnected;
+            _client.Disconnected += OnDisconnected;
+            _client.OtherClientConnected += OnOtherClientConnected;
+            _client.OtherClientDisconnected += OnOtherClientDisconnected;
+            _client.ReceiveMessage += OnReceiveMessage;
 
-            if (!_myClient.Start())
+            if (!_client.Start())
             {
-                _myClient.Connected -= OnConnected;
-                _myClient.Disconnected -= OnDisconnected;
-                _myClient.OtherClientConnected -= OnOtherClientConnected;
-                _myClient.OtherClientDisconnected -= OnOtherClientDisconnected;
+                _client.Connected -= OnConnected;
+                _client.Disconnected -= OnDisconnected;
+                _client.OtherClientConnected -= OnOtherClientConnected;
+                _client.OtherClientDisconnected -= OnOtherClientDisconnected;
+                _client.ReceiveMessage -= OnReceiveMessage;
                 return false;
             }
             return true;
@@ -76,32 +83,54 @@ namespace GTVoiceChat
             //_client.OtherClientConnected -= OnOtherClientConnected;
             //_client.OtherClientDisconnected -= OnOtherClientDisconnected;
             //_client.Close();
-            if (_myClient == null) return;
-            _myClient.Connected -= OnConnected;
-            _myClient.Disconnected -= OnDisconnected;
-            _myClient.OtherClientConnected -= OnOtherClientConnected;
-            _myClient.OtherClientDisconnected -= OnOtherClientDisconnected;
-            _myClient.Stop();
+            if (_client == null) return;
+            _client.Connected -= OnConnected;
+            _client.Disconnected -= OnDisconnected;
+            _client.OtherClientConnected -= OnOtherClientConnected;
+            _client.OtherClientDisconnected -= OnOtherClientDisconnected;
+            _client.ReceiveMessage -= OnReceiveMessage;
+            _client.Stop();
         }
 
+        public void SendMessageToServer(string name, string text)
+        {
+            if (_client == null) return;
+            _client.SendPacket(new Packet() { Type = PacketType.Text, SendUserName = name, SendText = text });
+        }
+
+        public void SendFileToServer(string name, string fileName, byte[] fileData)
+        {
+            if (_client == null) return;
+            _client.SendPacket(new Packet() { Type = PacketType.File, SendUserName = name, FileName = fileName, FileData = fileData });
+        }
+        #endregion
+        #endregion
+
+        #region Private Method
         private void OnConnected(object sender, ConnectedEventArgs e)
         {
-            if (Connected != null) Connected(sender, e);
+            Connected?.Invoke(sender, e);
         }
 
         private void OnDisconnected(object sender, DisconnectedEventArgs e)
         {
-            if (Disconnected != null) Disconnected(sender, e);
+            Disconnected?.Invoke(sender, e);
         }
 
         private void OnOtherClientConnected(object sender, ConnectedEventArgs e)
         {
-            if (OtherClientConnected != null) OtherClientConnected(sender, e);
+            OtherClientConnected?.Invoke(sender, e);
         }
 
         private void OnOtherClientDisconnected(object sender, DisconnectedEventArgs e)
         {
-            if (OtherClientDisconnected != null) OtherClientDisconnected(sender, e);
+            OtherClientDisconnected?.Invoke(sender, e);
         }
+
+        private void OnReceiveMessage(object sender, MessageEventArgs e)
+        {
+            ReceiveMessage?.Invoke(sender, e);
+        }
+        #endregion
     }
 }

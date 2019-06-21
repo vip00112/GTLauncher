@@ -10,16 +10,16 @@ namespace GTVoiceChat
     {
         public ConnectedEventArgs(string name)
         {
-            ID = name;
+            Name = name;
         }
 
         public ConnectedEventArgs(string name, string[] onlineUserNames)
         {
-            ID = name;
+            Name = name;
             OnlineUserNames = onlineUserNames;
         }
 
-        public string ID { get; set; }
+        public string Name { get; set; }
 
         public string[] OnlineUserNames { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using GTUtil;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace GTVoiceChat
         public EventHandler<DisconnectedEventArgs> Disconnected;
         public EventHandler<ConnectedEventArgs> OtherClientConnected;
         public EventHandler<DisconnectedEventArgs> OtherClientDisconnected;
+        public EventHandler<MessageEventArgs> ReceiveMessage;
 
         private System.Net.Sockets.TcpClient _client;
         private readonly IPEndPoint _endPoint;
@@ -27,8 +29,9 @@ namespace GTVoiceChat
         private readonly int _inputDeviceNumber;
         private INetworkChatCodec _codec;
         private WaveIn _waveIn;
+        private MixingSampleProvider _mixer;
         private IWavePlayer _waveOut;
-        private BufferedWaveProvider _waveProvider;
+        private Dictionary<string, MyProvider> _providers;
 
         #region Constructor
         public TcpClient(string ip, int port, string name, int inputDeviceNumber)
@@ -36,6 +39,17 @@ namespace GTVoiceChat
             _endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             _name = name;
             _inputDeviceNumber = inputDeviceNumber;
+
+            //_codec = new UncompressedPcmChatCodec();
+            //_codec = new UltraWideBandSpeexCodec();
+            //_codec = new WideBandSpeexCodec();
+            _codec = new NarrowBandSpeexCodec();
+
+            _mixer = new MixingSampleProvider(MyProvider.CreateFormat(_codec));
+            _waveOut = new WaveOut();
+            _waveOut.Init(_mixer);
+
+            _providers = new Dictionary<string, MyProvider>();
         }
         #endregion
 
@@ -77,8 +91,12 @@ namespace GTVoiceChat
                 // 접속 성공 이벤트 : Client 화면에 표기
                 string[] onlineUserNames = packet.OnlineUserNames;
                 Connected?.Invoke(this, new ConnectedEventArgs(_name, onlineUserNames));
+                foreach (var name in onlineUserNames)
+                {
+                    AddProvier(name);
+                }
 
-                AudioSetting();
+                StartRecording();
 
                 var receiveThread = new Thread(ReceiveThread);
                 receiveThread.Start();
@@ -126,6 +144,15 @@ namespace GTVoiceChat
             }
             Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
         }
+
+        public void SendPacket(Packet packet)
+        {
+            if (packet == null) return;
+            if (_client == null || !_client.Connected) return;
+            if (_client.Client == null || !_client.Client.Connected) return;
+
+            _client.Client.Send(Packet.ToData(packet));
+        }
         #endregion
 
         #region Thread
@@ -162,14 +189,29 @@ namespace GTVoiceChat
 
             try
             {
-                var size = socket.EndReceive(ar);
-                if (size <= 0) return;
+                var receiveSize = socket.EndReceive(ar);
+                if (receiveSize <= 0) return;
 
-                if (!PacketHandler(state))
+                // Receive Data를 Buffer에 저장
+                Buffer.BlockCopy(state.Buffer, 0, state.ProcessingBuffer, state.ProcessingOffset, receiveSize);
+                state.ProcessingOffset += receiveSize;
+
+                // Buffer에 저장된 길이값으로 패킷 취득
+                int size = Packet.GetPacketSize(state.ProcessingBuffer) + 2;
+                if (size != 0 && size <= state.ProcessingOffset)
                 {
-                    Stop();
-                    return;
+                    byte[] data = new byte[size];
+                    Buffer.BlockCopy(state.ProcessingBuffer, 0, data, 0, size);
+                    Buffer.BlockCopy(state.ProcessingBuffer, size, state.ProcessingBuffer, 0, state.ProcessingOffset - size);
+                    state.ProcessingOffset -= size;
+
+                    if (!PacketHandler(data))
+                    {
+                        Stop();
+                        return;
+                    }
                 }
+
                 socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, OnReceive, state);
             }
             catch (Exception e)
@@ -179,29 +221,28 @@ namespace GTVoiceChat
             }
         }
 
-        private bool PacketHandler(StateObject state)
+        private bool PacketHandler(byte[] data)
         {
             try
             {
-                var packet = Packet.ToPacket(state.Buffer);
+                var packet = Packet.ToPacket(data);
                 if (packet == null) return false;
 
                 switch (packet.Type)
                 {
                     case PacketType.Connected: // 다른 유저의 접속 : 화면에 생성
                         OtherClientConnected?.Invoke(this, new ConnectedEventArgs(packet.SendUserName));
+                        AddProvier(packet.SendUserName);
                         break;
                     case PacketType.Disconnected: // 다른 유저의 종료 : 화면에서 삭제
                         OtherClientDisconnected?.Invoke(this, new DisconnectedEventArgs(packet.SendUserName));
+                        RemoveProvider(packet.SendUserName);
                         break;
                     case PacketType.Text: // 텍스트
-                        // TODO : 텍스트 전송 및 표기
+                        ReceiveMessage?.Invoke(this, new MessageEventArgs(packet.SendUserName, packet.SendText));
                         break;
                     case PacketType.Audio: // 음성정보
-                        // TODO : 3명이상 대화할시 Buffer가 밀린다. 출력 문제인지 서버 문제인지 불확실
-                        byte[] decoded = _codec.Decode(packet.AudioData, 0, packet.AudioData.Length);
-                        _waveProvider.AddSamples(decoded, 0, decoded.Length);
-                        _waveOut.Play();
+                        StartPlay(packet);
                         break;
                     case PacketType.File: // 파일전송
                         // TODO : 파일 전송 및 저장
@@ -216,38 +257,47 @@ namespace GTVoiceChat
             return false;
         }
 
-        private void SendPacket(Packet packet)
-        {
-            if (packet == null) return;
-            if (_client == null || !_client.Connected) return;
-            if (_client.Client == null || !_client.Client.Connected) return;
-
-            _client.Client.Send(Packet.ToData(packet));
-        }
-
         private void OnAudioCaptured(object sender, WaveInEventArgs e)
         {
             byte[] encoded = _codec.Encode(e.Buffer, 0, e.BytesRecorded);
             SendPacket(new Packet() { Type = PacketType.Audio, SendUserName = _name, AudioData = encoded });
         }
 
-        private void AudioSetting()
+        private void StartRecording()
         {
-            _codec = new UncompressedPcmChatCodec();
-            //_codec = new UltraWideBandSpeexCodec();
-            //_codec = new WideBandSpeexCodec();
-            //_codec = new NarrowBandSpeexCodec();
-
             _waveIn = new WaveIn();
             _waveIn.BufferMilliseconds = 50;
             _waveIn.DeviceNumber = _inputDeviceNumber;
             _waveIn.WaveFormat = _codec.RecordFormat;
             _waveIn.DataAvailable += OnAudioCaptured;
             _waveIn.StartRecording();
+        }
 
-            _waveOut = new WaveOut();
-            _waveProvider = new BufferedWaveProvider(_codec.RecordFormat);
-            _waveOut.Init(_waveProvider);
+        private void StartPlay(Packet packet)
+        {
+            if (!_providers.ContainsKey(packet.SendUserName)) return;
+
+            byte[] decoded = _codec.Decode(packet.AudioData, 0, packet.AudioData.Length);
+            _providers[packet.SendUserName].AddSamples(decoded);
+            _waveOut.Play();
+        }
+
+        private void AddProvier(string name)
+        {
+            if (_providers.ContainsKey(name)) return;
+
+            var provider = new MyProvider(_codec.RecordFormat);
+            _mixer.AddMixerInput(provider.Sample);
+            _providers.Add(name, provider);
+        }
+
+        private void RemoveProvider(string name)
+        {
+            if (!_providers.ContainsKey(name)) return;
+
+            var provider = _providers[name];
+            _mixer.RemoveMixerInput(provider.Sample);
+            _providers.Remove(name);
         }
         #endregion
     }

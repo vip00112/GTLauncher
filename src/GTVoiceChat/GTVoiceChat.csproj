@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventArgs\MessageEventArgs.cs" />
+    <Compile Include="MyProvider.cs" />
     <Compile Include="Network\TcpClient.cs" />
     <Compile Include="Network\StateObject.cs" />
     <Compile Include="Network\TcpServer.cs" />
