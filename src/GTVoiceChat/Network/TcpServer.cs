@@ -12,6 +12,8 @@ namespace GTVoiceChat
 {
     public class TcpServer
     {
+        public EventHandler<DisconnectedEventArgs> ServerClosed;
+
         private TcpListener _server;
         private readonly IPEndPoint _endPoint;
         private readonly List<ServerUser> _users;
@@ -26,12 +28,26 @@ namespace GTVoiceChat
         #endregion
 
         #region Public Method
-        public void Start()
+        public bool Start()
         {
-            if (_server != null) return;
+            if (_server != null) return false;
+
+            try
+            {
+                _server = new TcpListener(_endPoint);
+                _server.Start();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                MessageBoxUtil.Error(string.Format("Failed to create server.\r\n\r\n{0}", e.Message));
+                Stop();
+                return false;
+            }
 
             var mainThread = new Thread(MainThread);
             mainThread.Start();
+            return true;
         }
 
         public void Stop()
@@ -49,15 +65,13 @@ namespace GTVoiceChat
                 _server.Stop();
                 _server = null;
             }
+            ServerClosed?.Invoke(this, new DisconnectedEventArgs("Server"));
         }
         #endregion
 
         #region Thread
         private void MainThread()
         {
-            _server = new TcpListener(_endPoint);
-            _server.Start();
-
             _isRunning = true;
             while (_isRunning)
             {

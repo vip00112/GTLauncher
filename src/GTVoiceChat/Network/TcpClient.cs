@@ -23,8 +23,6 @@ namespace GTVoiceChat
         private System.Net.Sockets.TcpClient _client;
         private readonly IPEndPoint _endPoint;
         private readonly string _name;
-        private bool _isConnected;
-        private bool _isProcessing;
 
         private readonly int _inputDeviceNumber;
         private INetworkChatCodec _codec;
@@ -40,10 +38,10 @@ namespace GTVoiceChat
             _name = name;
             _inputDeviceNumber = inputDeviceNumber;
 
-            //_codec = new UncompressedPcmChatCodec();
+            _codec = new UncompressedPcmChatCodec();
             //_codec = new UltraWideBandSpeexCodec();
             //_codec = new WideBandSpeexCodec();
-            _codec = new NarrowBandSpeexCodec();
+            //_codec = new NarrowBandSpeexCodec();
 
             _mixer = new MixingSampleProvider(MyProvider.CreateFormat(_codec));
             _waveOut = new WaveOut();
@@ -59,13 +57,15 @@ namespace GTVoiceChat
             try
             {
                 _client = new System.Net.Sockets.TcpClient();
+                _client.ReceiveTimeout = 1000 * 5;
+                _client.SendTimeout = 1000 * 5;
                 _client.Connect(_endPoint);
             }
             catch (Exception e)
             {
-                MessageBoxUtil.Error("Connect failed.");
                 Logger.Error(e);
-                Stop(e);
+                MessageBoxUtil.Error(string.Format("Failed to connect to server.\r\n\r\n{0}", e.Message));
+                Stop();
                 return false;
             }
 
@@ -112,8 +112,6 @@ namespace GTVoiceChat
 
         public void Stop(Exception e = null)
         {
-            _isConnected = false;
-
             if (_client != null)
             {
                 if (_client.Client != null)
@@ -153,24 +151,42 @@ namespace GTVoiceChat
 
             _client.Client.Send(Packet.ToData(packet));
         }
+
+        public void ChangeVolume(string name, float volume)
+        {
+            if (!_providers.ContainsKey(name)) return;
+
+            var provider = _providers[name];
+            provider.ChangeVolume(volume);
+        }
+
+        public void ChangeGeneralVolume(float generalVolume)
+        {
+            foreach (var provider in _providers.Values)
+            {
+                provider.ChangeGeneralVolume(generalVolume);
+            }
+        }
+
+        public void MuteInputDevice(bool isMute)
+        {
+            if (isMute)
+            {
+                _waveIn.DataAvailable -= OnAudioCaptured;
+            }
+            else
+            {
+                _waveIn.DataAvailable += OnAudioCaptured;
+            }
+        }
         #endregion
 
         #region Thread
         private void ReceiveThread()
         {
-            _isConnected = true;
-
             var socket = _client.Client;
             var state = new StateObject(socket);
             socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, OnReceive, state);
-
-            //while (_isConnected)
-            //{
-            //    if (_isProcessing) continue;
-
-            //    _isProcessing = true;
-            //    socket.BeginReceive(state.Buffer, 0, StateObject.BufferSize, 0, OnReceive, state);
-            //}
         }
         #endregion
 

@@ -51,6 +51,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatClientForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChatClientForm.Designer.cs">
+      <DependentUpon>ChatClientForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChatSetting.cs" />
+    <Compile Include="EventArgs\ChangeVolumeEventArgs.cs" />
     <Compile Include="EventArgs\MessageEventArgs.cs" />
     <Compile Include="MyProvider.cs" />
     <Compile Include="Network\TcpClient.cs" />
@@ -65,8 +73,19 @@
     <Compile Include="EventArgs\ConnectedEventArgs.cs" />
     <Compile Include="EventArgs\DisconnectedEventArgs.cs" />
     <Compile Include="Manager.cs" />
-    <Compile Include="Packet\Packet.cs" />
+    <Compile Include="Network\Packet.cs" />
+    <Compile Include="OnlineUser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OnlineUser.Designer.cs">
+      <DependentUpon>OnlineUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SettingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,15 +98,53 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ChatClientForm.resx">
+      <DependentUpon>ChatClientForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OnlineUser.resx">
+      <DependentUpon>OnlineUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="SettingForm.resx">
       <DependentUpon>SettingForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GTControl\GTControl.csproj">
+      <Project>{35B70DBA-E58C-4DCF-B0CD-ADDC0AAB15FE}</Project>
+      <Name>GTControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GTUtil\GTUtil.csproj">
       <Project>{3e47b9d4-ea18-4f1b-9eef-f586bb1a1f0d}</Project>
       <Name>GTUtil</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\out_on_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\out_off_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\in_off_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\in_on_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\out_on_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\out_off_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\in_off_64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\in_on_64x64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
