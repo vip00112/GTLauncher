@@ -10,7 +10,6 @@ using System.Windows.Forms;
 
 namespace GTVoiceChat
 {
-    // TODO : 사용자별 볼륨조절, 마이크 off, 스피커 off
     // TODO : 패킷 구조 최대한 가볍게 변경
     // TODO : 음성 채팅 프로토콜은 UDP로 개별 채널 뚫어서 사용
     // TODO : 스테레오믹스 꺼져있는데 내 목소리가 상대방 마이크로 들어가는 이슈

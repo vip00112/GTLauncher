@@ -99,7 +99,7 @@ namespace GTVoiceChat
             string name = Encoding.UTF8.GetString(data, 0, size);
             if (_users.Any(o => o.Name == name))
             {
-                socket.Send(Packet.ToData(new Packet() { Type = PacketType.JoinFail }));
+                socket.Send(Packet.Pack(new Packet() { Type = PacketType.JoinFail }));
                 DisconnectClient(socket);
                 return;
             }
@@ -125,7 +125,7 @@ namespace GTVoiceChat
             var state = ar.AsyncState as StateObject;
             if (state == null) return;
 
-            var socket = state.Socket;
+            var socket = state.WorkSocket;
             if (!socket.Connected)
             {
                 DisconnectClient(socket);
@@ -170,7 +170,7 @@ namespace GTVoiceChat
         {
             try
             {
-                var packet = Packet.ToPacket(data);
+                var packet = Packet.UnPack(data);
                 if (packet == null) return false;
 
                 switch (packet.Type)

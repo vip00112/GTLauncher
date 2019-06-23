@@ -10,15 +10,16 @@ namespace GTVoiceChat
     public class StateObject
     {
         public const int BufferSize = 1024 * 4;
+        public const int ProcessingBufferSize = 1024 * 4 * 512;
 
-        public StateObject(Socket socket)
+        public StateObject(Socket workSocket)
         {
-            Socket = socket;
+            WorkSocket = workSocket;
             Buffer = new byte[BufferSize];
-            ProcessingBuffer = new byte[BufferSize * 4];
+            ProcessingBuffer = new byte[ProcessingBufferSize];
         }
 
-        public Socket Socket { get; }
+        public Socket WorkSocket { get; }
 
         public byte[] Buffer { get; }
 

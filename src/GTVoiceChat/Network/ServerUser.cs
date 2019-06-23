@@ -32,7 +32,7 @@ namespace GTVoiceChat
         #region Public Method
         public void Send(Packet packet)
         {
-            byte[] data = Packet.ToData(packet);
+            byte[] data = Packet.Pack(packet);
             Socket.Send(data);
         }
 

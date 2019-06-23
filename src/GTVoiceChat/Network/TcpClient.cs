@@ -76,11 +76,11 @@ namespace GTVoiceChat
                 _client.Client.Send(bytes);
 
                 // 접속 결과 수신 : JoinFail / JoinSuccess
-                var data = new byte[StateObject.BufferSize];
+                var data = new byte[StateObject.ProcessingBufferSize];
                 int size = _client.Client.Receive(data);
                 var buffer = new byte[size];
                 Buffer.BlockCopy(data, 0, buffer, 0, size);
-                var packet = Packet.ToPacket(buffer);
+                var packet = Packet.UnPack(buffer);
                 if (packet == null || packet.Type == PacketType.JoinFail)
                 {
                     MessageBoxUtil.Error(string.Format("Your name '{0}' is already exist on server.", _name));
@@ -149,7 +149,7 @@ namespace GTVoiceChat
             if (_client == null || !_client.Connected) return;
             if (_client.Client == null || !_client.Client.Connected) return;
 
-            _client.Client.Send(Packet.ToData(packet));
+            _client.Client.Send(Packet.Pack(packet));
         }
 
         public void ChangeVolume(string name, float volume)
@@ -196,7 +196,7 @@ namespace GTVoiceChat
             var state = ar.AsyncState as StateObject;
             if (state == null) return;
 
-            var socket = state.Socket;
+            var socket = state.WorkSocket;
             if (!socket.Connected)
             {
                 Stop();
@@ -241,7 +241,7 @@ namespace GTVoiceChat
         {
             try
             {
-                var packet = Packet.ToPacket(data);
+                var packet = Packet.UnPack(data);
                 if (packet == null) return false;
 
                 switch (packet.Type)
