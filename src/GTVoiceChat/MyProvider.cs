@@ -10,40 +10,42 @@ namespace GTVoiceChat
 {
     public class MyProvider
     {
-        private BufferedWaveProvider _bufferd;
-        private float _generalVolume;
-        private float _volume;
-
         #region Constructor
         public MyProvider(WaveFormat waveFormat)
         {
-            _bufferd = new BufferedWaveProvider(waveFormat);
-            _generalVolume = 1.0f;
-            _volume = 1.0f;
-            Sample = new VolumeSampleProvider(_bufferd.ToSampleProvider());
+            BufferdProvider = new BufferedWaveProvider(waveFormat);
+            VolumeProvider = new VolumeSampleProvider(BufferdProvider.ToSampleProvider());
+            GeneralVolume = 1.0f;
+            Volume = 1.0f;
         }
         #endregion
 
         #region Properties
-        public VolumeSampleProvider Sample { get; }
+        public BufferedWaveProvider BufferdProvider { get; }
+
+        public VolumeSampleProvider VolumeProvider { get; }
+
+        public float GeneralVolume { get; private set; }
+
+        public float Volume { get; private set; }
         #endregion
 
         #region Public Method
         public void AddSamples(byte[] decoded)
         {
-            _bufferd.AddSamples(decoded, 0, decoded.Length);
+            BufferdProvider.AddSamples(decoded, 0, decoded.Length);
         }
 
         public void ChangeVolume(float volume)
         {
-            _volume = volume;
-            Sample.Volume = _generalVolume * _volume;
+            Volume = volume;
+            VolumeProvider.Volume = GeneralVolume * Volume;
         }
 
         public void ChangeGeneralVolume(float generalVolume)
         {
-            _generalVolume = generalVolume;
-            Sample.Volume = _generalVolume * _volume;
+            GeneralVolume = generalVolume;
+            VolumeProvider.Volume = GeneralVolume * Volume;
         }
         #endregion
 

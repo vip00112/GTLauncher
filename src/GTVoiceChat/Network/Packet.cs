@@ -16,6 +16,8 @@ namespace GTVoiceChat
 
         public string SendUserName { get; set; }
 
+        public string SendUserHost { get; set; }
+
         public string[] OnlineUserNames { get; set; }
 
         public string SendText { get; set; }
@@ -27,71 +29,13 @@ namespace GTVoiceChat
         public byte[] FileData { get; set; }
 
         #region Static Method
-        public static int GetPacketSize(byte[] data)
-        {
-            int size = data[0] & 0xff;
-            size |= data[1] << 8 & 0xff00;
-            return size;
-        }
-
-        public static byte[] ToData(Packet packet)
-        {
-            try
-            {
-                byte[] data = null;
-                using (var ms = new MemoryStream())
-                {
-                    BinaryFormatter bf = new BinaryFormatter();
-                    bf.Serialize(ms, packet);
-                    byte[] packetData =  ms.ToArray();
-
-                    int size = packetData.Length;
-                    data = new byte[size + 2];
-                    data[0] = (byte) (size & 0xff);
-                    data[1] = (byte) (size >> 8 & 0xff);
-                    System.Buffer.BlockCopy(packetData, 0, data, 2, packetData.Length);
-                }
-                return data;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-            return null;
-        }
-
-        public static Packet ToPacket(byte[] data)
-        {
-            try
-            {
-                Packet packet = null;
-                using (var ms = new MemoryStream())
-                {
-                    int size = GetPacketSize(data);
-                    byte[] packetData = new byte[size];
-                    System.Buffer.BlockCopy(data, 2, packetData, 0, size);
-
-                    ms.Write(packetData, 0, packetData.Length);
-                    ms.Position = 0;
-
-                    BinaryFormatter bf = new BinaryFormatter();
-                    packet = (Packet) bf.Deserialize(ms);
-                }
-                return packet;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-            return null;
-        }
-
         public static byte[] Pack(Packet packet)
         {
             var result = new List<byte>();
 
             result.AddRange(BitConverter.GetBytes((int) packet.Type));
             Pack(result, packet.SendUserName);
+            Pack(result, packet.SendUserHost);
             Pack(result, packet.OnlineUserNames);
             Pack(result, packet.SendText);
             Pack(result, packet.AudioData);
@@ -113,6 +57,7 @@ namespace GTVoiceChat
             offset += 4;
 
             packet.SendUserName = UnPack<string>(data, ref offset);
+            packet.SendUserHost = UnPack<string>(data, ref offset);
 
             var onlineUserNames = UnPack<string>(data, ref offset);
             if (!string.IsNullOrWhiteSpace(onlineUserNames))

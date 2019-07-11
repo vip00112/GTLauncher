@@ -173,7 +173,8 @@ namespace GTVoiceChat
 
         public void MuteInputDevice(bool isMute)
         {
-            _client.MuteInputDevice(isMute);
+            if (isMute) _client.StopRecording();
+            else _client.StartRecording();
         }
         #endregion
         #endregion

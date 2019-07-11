@@ -223,7 +223,6 @@ namespace GTControl
                 var page = new Page(p.PageName);
                 page.Title = p.Title;
                 page.VisibleTitle = p.VisibleTitle;
-                page.VisibleHeader = p.VisibleHeader;
                 page.VisibleBackButton = p.VisibleBackButton;
                 page.CloseMode = p.CloseMode;
                 if (page.CloseMode == PageCloseMode.Dispose)

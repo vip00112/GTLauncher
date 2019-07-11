@@ -210,7 +210,6 @@ namespace GTControl
                     props.Add("PageName", page.PageName);
                     props.Add("Title", page.Title);
                     props.Add("VisibleTitle", page.VisibleTitle);
-                    props.Add("VisibleHeader", page.VisibleHeader);
                     props.Add("VisibleBackButton", page.VisibleBackButton);
                     props.Add("CloseMode", page.CloseMode.ToString());
                     pageProperties.Add(props);
@@ -237,10 +236,10 @@ namespace GTControl
                     props.Add("FilePath", pageItem.FilePath);
                     props.Add("Arguments", pageItem.Arguments);
                     props.Add("LinkPageName", pageItem.LinkPageName);
-                    props.Add("Column", pageItem.Column);
-                    props.Add("Row", pageItem.Row);
-                    props.Add("ColumnSpan", pageItem.ColumnSpan);
-                    props.Add("RowSpan", pageItem.RowSpan);
+                    props.Add("X", pageItem.X);
+                    props.Add("Y", pageItem.Y);
+                    props.Add("Width", pageItem.Width);
+                    props.Add("Height", pageItem.Height);
                     pageItemProperties.Add(props);
                 }
                 properties.Add("PageItemProperties", pageItemProperties);
@@ -332,7 +331,6 @@ namespace GTControl
                 var page = new Page(pageName);
                 page.Title = JsonUtil.GetValue<string>(props, "Title");
                 page.VisibleTitle = JsonUtil.GetValue<bool>(props, "VisibleTitle");
-                page.VisibleHeader = JsonUtil.GetValue<bool>(props, "VisibleHeader");
                 page.VisibleBackButton = JsonUtil.GetValue<bool>(props, "VisibleBackButton");
                 page.CloseMode = JsonUtil.GetValue<PageCloseMode>(props, "CloseMode");
 
@@ -375,10 +373,10 @@ namespace GTControl
                 item.FilePath = JsonUtil.GetValue<string>(props, "FilePath");
                 item.Arguments = JsonUtil.GetValue<string>(props, "Arguments");
                 item.LinkPageName = JsonUtil.GetValue<string>(props, "LinkPageName");
-                item.Column = (int) JsonUtil.GetValue<long>(props, "Column");
-                item.Row = (int) JsonUtil.GetValue<long>(props, "Row");
-                item.ColumnSpan = (int) JsonUtil.GetValue<long>(props, "ColumnSpan");
-                item.RowSpan = (int) JsonUtil.GetValue<long>(props, "RowSpan");
+                item.X = (int) JsonUtil.GetValue<long>(props, "X");
+                item.Y = (int) JsonUtil.GetValue<long>(props, "Y");
+                item.Width = (int) JsonUtil.GetValue<long>(props, "Width");
+                item.Height = (int) JsonUtil.GetValue<long>(props, "Height");
 
                 PageItems.Add(item);
             }

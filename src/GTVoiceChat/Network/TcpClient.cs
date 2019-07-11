@@ -27,9 +27,8 @@ namespace GTVoiceChat
         private readonly int _inputDeviceNumber;
         private INetworkChatCodec _codec;
         private WaveIn _waveIn;
-        private MixingSampleProvider _mixer;
-        private IWavePlayer _waveOut;
-        private Dictionary<string, MyProvider> _providers;
+        //private MixingPlayer _player;
+        private BufferdPlayer _player;
 
         #region Constructor
         public TcpClient(string ip, int port, string name, int inputDeviceNumber)
@@ -43,11 +42,13 @@ namespace GTVoiceChat
             //_codec = new WideBandSpeexCodec();
             //_codec = new NarrowBandSpeexCodec();
 
-            _mixer = new MixingSampleProvider(MyProvider.CreateFormat(_codec));
-            _waveOut = new WaveOut();
-            _waveOut.Init(_mixer);
+            _waveIn = new WaveIn();
+            _waveIn.BufferMilliseconds = 50;
+            _waveIn.DeviceNumber = _inputDeviceNumber;
+            _waveIn.WaveFormat = _codec.RecordFormat;
 
-            _providers = new Dictionary<string, MyProvider>();
+            //_player = new MixingPlayer(_codec.RecordFormat);
+            _player = new BufferdPlayer(_codec.RecordFormat);
         }
         #endregion
 
@@ -91,10 +92,10 @@ namespace GTVoiceChat
                 // 접속 성공 이벤트 : Client 화면에 표기
                 string[] onlineUserNames = packet.OnlineUserNames;
                 Connected?.Invoke(this, new ConnectedEventArgs(_name, onlineUserNames));
-                foreach (var name in onlineUserNames)
-                {
-                    AddProvier(name);
-                }
+                //foreach (var name in onlineUserNames)
+                //{
+                //    _player.AddProvider(name);
+                //}
 
                 StartRecording();
 
@@ -129,11 +130,9 @@ namespace GTVoiceChat
                 //_waveIn.Dispose();
                 _waveIn = null;
             }
-            if (_waveOut != null)
+            if (_player != null)
             {
-                _waveOut.Stop();
-                //_waveOut.Dispose();
-                _waveOut = null;
+                _player.Dispose();
             }
             if (_codec != null)
             {
@@ -154,30 +153,24 @@ namespace GTVoiceChat
 
         public void ChangeVolume(string name, float volume)
         {
-            if (!_providers.ContainsKey(name)) return;
-
-            var provider = _providers[name];
-            provider.ChangeVolume(volume);
+            _player.ChangeVolume(name, volume);
         }
 
         public void ChangeGeneralVolume(float generalVolume)
         {
-            foreach (var provider in _providers.Values)
-            {
-                provider.ChangeGeneralVolume(generalVolume);
-            }
+            _player.ChangeGeneralVolume(generalVolume);
         }
 
-        public void MuteInputDevice(bool isMute)
+        public void StartRecording()
         {
-            if (isMute)
-            {
-                _waveIn.DataAvailable -= OnAudioCaptured;
-            }
-            else
-            {
-                _waveIn.DataAvailable += OnAudioCaptured;
-            }
+            _waveIn.DataAvailable += OnAudioCaptured;
+            _waveIn.StartRecording();
+        }
+
+        public void StopRecording()
+        {
+            _waveIn.DataAvailable -= OnAudioCaptured;
+            _waveIn.StopRecording();
         }
         #endregion
 
@@ -213,7 +206,7 @@ namespace GTVoiceChat
                 state.ProcessingOffset += receiveSize;
 
                 // Buffer에 저장된 길이값으로 패킷 취득
-                int size = Packet.GetPacketSize(state.ProcessingBuffer) + 2;
+                int size = BitConverter.ToInt32(state.ProcessingBuffer, 0) + 2;
                 if (size != 0 && size <= state.ProcessingOffset)
                 {
                     byte[] data = new byte[size];
@@ -248,11 +241,9 @@ namespace GTVoiceChat
                 {
                     case PacketType.Connected: // 다른 유저의 접속 : 화면에 생성
                         OtherClientConnected?.Invoke(this, new ConnectedEventArgs(packet.SendUserName));
-                        AddProvier(packet.SendUserName);
                         break;
                     case PacketType.Disconnected: // 다른 유저의 종료 : 화면에서 삭제
                         OtherClientDisconnected?.Invoke(this, new DisconnectedEventArgs(packet.SendUserName));
-                        RemoveProvider(packet.SendUserName);
                         break;
                     case PacketType.Text: // 텍스트
                         ReceiveMessage?.Invoke(this, new MessageEventArgs(packet.SendUserName, packet.SendText));
@@ -279,41 +270,12 @@ namespace GTVoiceChat
             SendPacket(new Packet() { Type = PacketType.Audio, SendUserName = _name, AudioData = encoded });
         }
 
-        private void StartRecording()
-        {
-            _waveIn = new WaveIn();
-            _waveIn.BufferMilliseconds = 50;
-            _waveIn.DeviceNumber = _inputDeviceNumber;
-            _waveIn.WaveFormat = _codec.RecordFormat;
-            _waveIn.DataAvailable += OnAudioCaptured;
-            _waveIn.StartRecording();
-        }
-
         private void StartPlay(Packet packet)
         {
-            if (!_providers.ContainsKey(packet.SendUserName)) return;
+            //if (!_player.IsAddedProvider(packet.SendUserName)) return;
 
             byte[] decoded = _codec.Decode(packet.AudioData, 0, packet.AudioData.Length);
-            _providers[packet.SendUserName].AddSamples(decoded);
-            _waveOut.Play();
-        }
-
-        private void AddProvier(string name)
-        {
-            if (_providers.ContainsKey(name)) return;
-
-            var provider = new MyProvider(_codec.RecordFormat);
-            _mixer.AddMixerInput(provider.Sample);
-            _providers.Add(name, provider);
-        }
-
-        private void RemoveProvider(string name)
-        {
-            if (!_providers.ContainsKey(name)) return;
-
-            var provider = _providers[name];
-            _mixer.RemoveMixerInput(provider.Sample);
-            _providers.Remove(name);
+            _player.Play(packet.SendUserName, decoded);
         }
         #endregion
     }

@@ -17,10 +17,6 @@ namespace GTControl
 
         public int Height { get; set; }
 
-        public int Column { get; set; }
-
-        public int Row { get; set; }
-
         public bool IsSelected { get; set; }
 
         public bool IsInLocation(Point loc)
@@ -34,11 +30,11 @@ namespace GTControl
 
         public bool IsInRange(Cell start, Cell end)
         {
-            int startCol = start.Column;
-            int endCol = end.Column;
-            int startRow = start.Row;
-            int endRow = end.Row;
-            return Column >= startCol && Column <= endCol && Row >= startRow && Row <= endRow;
+            int startX = start.X;
+            int endX = end.X;
+            int startY = start.Y;
+            int endY = end.Y;
+            return X >= startX && X <= endX && Y >= startY && Y <= endY;
         }
     }
 }

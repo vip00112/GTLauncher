@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BufferdPlayer.cs" />
     <Compile Include="ChatClientForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +61,7 @@
     <Compile Include="ChatSetting.cs" />
     <Compile Include="EventArgs\ChangeVolumeEventArgs.cs" />
     <Compile Include="EventArgs\MessageEventArgs.cs" />
+    <Compile Include="MixingPlayer.cs" />
     <Compile Include="MyProvider.cs" />
     <Compile Include="Network\TcpClient.cs" />
     <Compile Include="Network\StateObject.cs" />

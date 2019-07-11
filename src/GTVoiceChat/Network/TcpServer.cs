@@ -142,7 +142,7 @@ namespace GTVoiceChat
                 state.ProcessingOffset += receiveSize;
 
                 // Buffer에 저장된 길이값으로 패킷 취득
-                int size = Packet.GetPacketSize(state.ProcessingBuffer) + 2;
+                int size = BitConverter.ToInt32(state.ProcessingBuffer, 0) + 2;
                 if (size != 0 && size <= state.ProcessingOffset)
                 {
                     byte[] data = new byte[size];

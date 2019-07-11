@@ -101,14 +101,13 @@ namespace GTControl
                 var page = new Page(p.PageName);
                 page.Title = p.Title;
                 page.VisibleTitle = p.VisibleTitle;
-                page.VisibleHeader = p.VisibleHeader;
                 page.VisibleBackButton = p.VisibleBackButton;
                 page.CloseMode = p.CloseMode;
+                page.PageBody.Resize += pageBody_Resize;
+                page.PageBody.Paint += pageBody_Paint;
                 page.PageBody.MouseDown += pageBody_MouseDown;
                 page.PageBody.MouseMove += pageBody_MouseMove;
                 page.PageBody.MouseUp += pageBody_MouseUp;
-                page.PageBody.Paint += pageBody_Paint;
-                page.PageBody.Resize += pageBody_Resize;
                 panel.Controls.Add(page);
 
                 var pageItems = PageItems.Where(o => o.PageName == p.PageName);
@@ -117,6 +116,7 @@ namespace GTControl
                     var item = page.AddItem(pageItem);
                     if (item != null)
                     {
+                        page.PageBody.StartEditItem(item);
                         item.OnMouseDownEvent += pageItem_MouseDown;
                         item.OnPaintEvent += pageItem_Paint;
                     }
@@ -182,14 +182,13 @@ namespace GTControl
                 var page = new Page(pageName);
                 page.Title = "Title";
                 page.VisibleTitle = true;
-                page.VisibleHeader = true;
                 page.VisibleBackButton = true;
                 page.CloseMode = PageCloseMode.Hide;
+                page.PageBody.Resize += pageBody_Resize;
+                page.PageBody.Paint += pageBody_Paint;
                 page.PageBody.MouseDown += pageBody_MouseDown;
                 page.PageBody.MouseMove += pageBody_MouseMove;
                 page.PageBody.MouseUp += pageBody_MouseUp;
-                page.PageBody.Paint += pageBody_Paint;
-                page.PageBody.Resize += pageBody_Resize;
                 panel.Controls.Add(page);
             }
         }
@@ -204,24 +203,23 @@ namespace GTControl
             var selectedCells = _cells.Where(o => o.IsSelected).ToList();
             if (selectedCells.Count == 0) return;
 
-            int minCol = selectedCells.Min(o => o.Column);
-            int maxCol = selectedCells.Max(o => o.Column);
-            int colSpan = maxCol - minCol + 1;
+            var minX = selectedCells.Min(o => o.X);
+            var minY = selectedCells.Min(o => o.Y);
+            var maxX = selectedCells.Max(o => o.X);
+            var maxY = selectedCells.Max(o => o.Y);
 
-            int minRow = selectedCells.Min(o => o.Row);
-            int maxRow = selectedCells.Max(o => o.Row);
-            int rowSpan = maxRow - minRow + 1;
-
+            int grid = PageBody.Grid;
             var item = SelectedPage.AddItem(new PageItem()
             {
                 PageName = SelectedPage.PageName,
-                Column = minCol,
-                Row = minRow,
-                ColumnSpan = colSpan,
-                RowSpan = rowSpan,
+                X = minX,
+                Y = minY,
+                Width = maxX - minX + grid,
+                Height = maxY - minY + grid,
             });
             if (item != null)
             {
+                SelectedPage.PageBody.StartEditItem(item);
                 item.OnMouseDownEvent += pageItem_MouseDown;
                 item.OnPaintEvent += pageItem_Paint;
             }
@@ -266,6 +264,7 @@ namespace GTControl
             foreach (var item in _ancherItems)
             {
                 SelectedPage.RemoveItem(item);
+                SelectedPage.PageBody.StopEditItem(item);
             }
             ResetAncherItems();
         }
@@ -336,17 +335,6 @@ namespace GTControl
             ResetCells();
         }
 
-        private void pageItem_MouseDown(object sender, MouseEventArgs e)
-        {
-            var item = sender as PageItem;
-            if (item == null) return;
-
-            AddAncherItem(item);
-
-            _cells.ForEach(o => o.IsSelected = false);
-            SelectedPage.PageBody.Invalidate();
-        }
-
         private void pageItem_Paint(object sender, PaintEventArgs e)
         {
             var item = sender as PageItem;
@@ -359,6 +347,32 @@ namespace GTControl
                     e.Graphics.FillRectangle(b, 0, 0, item.Width, item.Height);
                 }
             }
+        }
+
+        private void pageItem_MouseDown(object sender, MouseEventArgs e)
+        {
+            var item = sender as PageItem;
+            if (item == null) return;
+
+            AddAncherItem(item);
+
+            _cells.ForEach(o => o.IsSelected = false);
+            SelectedPage.PageBody.Invalidate();
+        }
+
+        private void pageBody_Resize(object sender, EventArgs e)
+        {
+            if (SelectedPage == null) return;
+
+            ResetCells();
+        }
+
+        private void pageBody_Paint(object sender, PaintEventArgs e)
+        {
+            if (SelectedPage == null) return;
+
+            DrawLine(e.Graphics);
+            DrawCell(e.Graphics);
         }
 
         private void pageBody_MouseDown(object sender, MouseEventArgs e)
@@ -375,21 +389,14 @@ namespace GTControl
             propertyGrid_page.SelectedObject = SelectedPage;
         }
 
-        private void pageBody_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (SelectedPage == null) return;
-            if (_startCell == null) return;
-
-            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(e.Location));
-            if (_endCell != null) SelectedPage.PageBody.Invalidate();
-        }
-
         private void pageBody_MouseUp(object sender, MouseEventArgs e)
         {
             if (SelectedPage == null) return;
             if (_startCell == null) return;
 
-            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(e.Location));
+            int x = e.Location.X > SelectedPage.PageBody.Width ? SelectedPage.PageBody.Width : e.Location.X;
+            int y = e.Location.Y > SelectedPage.PageBody.Height ? SelectedPage.PageBody.Height : e.Location.Y;
+            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(new Point(x, y)));
             if (_endCell == null) return;
 
             foreach (var cell in _cells)
@@ -401,41 +408,18 @@ namespace GTControl
             }
             _startCell = null;
             _endCell = null;
+            SelectedPage.PageBody.Invalidate();
         }
 
-        private void pageBody_Paint(object sender, PaintEventArgs e)
+        private void pageBody_MouseMove(object sender, MouseEventArgs e)
         {
             if (SelectedPage == null) return;
+            if (_startCell == null) return;
 
-            using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
-            {
-                if (_startCell != null && _endCell != null)
-                {
-                    foreach (var cell in _cells)
-                    {
-                        if (cell.IsInRange(_startCell, _endCell))
-                        {
-                            e.Graphics.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var cell in _cells)
-                    {
-                        if (!cell.IsSelected) continue;
-
-                        e.Graphics.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
-                    }
-                }
-            }
-        }
-
-        private void pageBody_Resize(object sender, EventArgs e)
-        {
-            if (SelectedPage == null) return;
-
-            ResetCells();
+            int x = e.Location.X > SelectedPage.PageBody.Width ? SelectedPage.PageBody.Width : e.Location.X;
+            int y = e.Location.Y > SelectedPage.PageBody.Height ? SelectedPage.PageBody.Height : e.Location.Y;
+            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(new Point(x, y)));
+            if (_endCell != null) SelectedPage.PageBody.Invalidate();
         }
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -468,23 +452,80 @@ namespace GTControl
         private void ResetCells()
         {
             _cells.Clear();
-            int width = SelectedPage.PageBody.Width / SelectedPage.PageBody.ColumnCount;
-            int height = SelectedPage.PageBody.Height / SelectedPage.PageBody.RowCount;
+
+            int grid = PageBody.Grid;
             for (int col = 0; col < SelectedPage.PageBody.ColumnCount; col++)
             {
                 for (int row = 0; row < SelectedPage.PageBody.RowCount; row++)
                 {
                     var cell = new Cell()
                     {
-                        X = col * width,
-                        Y = row * height,
-                        Width = width,
-                        Height = height,
-                        Column = col,
-                        Row = row,
+                        X = col * grid,
+                        Y = row * grid,
+                        Width = grid,
+                        Height = grid,
                         IsSelected = false,
                     };
                     _cells.Add(cell);
+                }
+            }
+        }
+
+        private void DrawLine(Graphics g)
+        {
+            int grid = PageBody.Grid;
+            using (var normal = new Pen(Color.LightGray))
+            using (var highlight = new Pen(Color.DarkGray))
+            {
+                for (int col = 0; col < SelectedPage.PageBody.ColumnCount; col++)
+                {
+                    if (col % 5 == 0)
+                    {
+                        g.DrawLine(highlight, col * grid, 0, col * grid, Height);
+                    }
+                    else
+                    {
+                        g.DrawLine(normal, col * grid, 0, col * grid, Height);
+                    }
+                }
+                g.DrawLine(highlight, Width - 1, 0, Width - 1, Height);
+                for (int row = 0; row < SelectedPage.PageBody.RowCount; row++)
+                {
+                    if (row % 5 == 0)
+                    {
+                        g.DrawLine(highlight, 0, row * grid, Width, row * grid);
+                    }
+                    else
+                    {
+                        g.DrawLine(normal, 0, row * grid, Width, row * grid);
+                    }
+                }
+                g.DrawLine(highlight, 0, Height - 1, Width, Height - 1);
+            }
+        }
+
+        private void DrawCell(Graphics g)
+        {
+            using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
+            {
+                if (_startCell != null && _endCell != null)
+                {
+                    foreach (var cell in _cells)
+                    {
+                        if (cell.IsInRange(_startCell, _endCell))
+                        {
+                            g.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var cell in _cells)
+                    {
+                        if (!cell.IsSelected) continue;
+
+                        g.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
+                    }
                 }
             }
         }

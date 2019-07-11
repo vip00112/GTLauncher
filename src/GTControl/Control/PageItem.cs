@@ -24,10 +24,6 @@ namespace GTControl
 
         private string _pageName;
         private Image _backgroundImage;
-        private int _column;
-        private int _row;
-        private int _columnSpan;
-        private int _rowSpan;
 
         #region Constructor
         public PageItem()
@@ -36,7 +32,6 @@ namespace GTControl
 
             Padding = new Padding(0);
             Margin = new Padding(0);
-            Dock = DockStyle.Fill;
 
             BackgroundImage = null;
             TextContent = "Content";
@@ -119,66 +114,34 @@ namespace GTControl
         public string LinkPageName { get; set; }
 
         [Category("Page Option")]
-        public int Column
+        public int X
         {
-            get { return _column; }
-            set
-            {
-                if (value + ColumnSpan > 10) return;
-                _column = value;
-
-                var body = Parent as PageBody;
-                if (body != null) body.SetColumn(this, value);
-            }
+            get { return Left; }
+            set { Left = value; }
         }
 
         [Category("Page Option")]
-        public int Row
+        public int Y
         {
-            get { return _row; }
-            set
-            {
-                if (value + RowSpan > 10) return;
-                _row = value;
-
-                var body = Parent as PageBody;
-                if (body != null) body.SetRow(this, value);
-            }
+            get { return Top; }
+            set { Top = value; }
         }
 
         [Category("Page Option")]
-        public int ColumnSpan
+        new public int Width
         {
-            get { return _columnSpan; }
-            set
-            {
-                if (value < 1) return;
-                _columnSpan = value;
-
-                var body = Parent as PageBody;
-                if (body != null) body.SetColumnSpan(this, value);
-            }
+            get { return base.Width; }
+            set { base.Width = value; }
         }
 
         [Category("Page Option")]
-        public int RowSpan
+        new public int Height
         {
-            get { return _rowSpan; }
-            set
-            {
-                if (value < 1) return;
-                _rowSpan = value;
-
-                var body = Parent as PageBody;
-                if (body != null) body.SetRowSpan(this, value);
-            }
+            get { return base.Height; }
+            set { base.Height = value; }
         }
 
-        [Category("Page Option")]
-        public int ItemWidth { get { return Width; } }
-
-        [Category("Page Option")]
-        public int ItemHeight { get { return Height; } }
+        public Control WrapperControl { get { return label; } }
         #endregion
 
         #region Control Event
@@ -188,14 +151,14 @@ namespace GTControl
             {
                 using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
                 {
-                    e.Graphics.FillRectangle(b, new Rectangle(0, 0, Width, Height));
+                    e.Graphics.FillRectangle(b, new Rectangle(0, 0, base.Width, base.Height));
                 }
             }
             if (BackgroundImage != null)
             {
-                e.Graphics.DrawImage(BackgroundImage, 0, 0, Width, Height);
+                e.Graphics.DrawImage(BackgroundImage, 0, 0, base.Width, base.Height);
             }
-            if (OnPaintEvent != null) OnPaintEvent(this, e);
+            OnPaintEvent?.Invoke(this, e);
         }
 
         private void label_MouseEnter(object sender, EventArgs e)
@@ -210,7 +173,7 @@ namespace GTControl
 
         private void label_MouseDown(object sender, MouseEventArgs e)
         {
-            if (OnMouseDownEvent != null) OnMouseDownEvent(this, e);
+            OnMouseDownEvent?.Invoke(this, e);
         }
 
         private void label_Click(object sender, EventArgs e)
@@ -225,7 +188,7 @@ namespace GTControl
                     StartProcess();
                     break;
                 case ClickMode.Folder:
-                    if (OnFolderClickEvent != null) OnFolderClickEvent(this, EventArgs.Empty);
+                    OnFolderClickEvent.Invoke(this, EventArgs.Empty);
                     break;
             }
         }
