@@ -65,6 +65,7 @@
             this.menuItem_chat.Name = "menuItem_chat";
             this.menuItem_chat.Size = new System.Drawing.Size(180, 22);
             this.menuItem_chat.Text = "Chat";
+            this.menuItem_chat.Visible = false;
             // 
             // menuItem_chatJoin
             // 
