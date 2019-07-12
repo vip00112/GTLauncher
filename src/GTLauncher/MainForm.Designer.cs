@@ -55,7 +55,7 @@
             this.menuItem_captureSetting,
             this.menuItem_exit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(181, 92);
+            this.notifyIconMenu.Size = new System.Drawing.Size(117, 70);
             // 
             // menuItem_chat
             // 
@@ -63,7 +63,7 @@
             this.menuItem_chatJoin,
             this.menuItem_chatCreate});
             this.menuItem_chat.Name = "menuItem_chat";
-            this.menuItem_chat.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_chat.Size = new System.Drawing.Size(116, 22);
             this.menuItem_chat.Text = "Chat";
             // 
             // menuItem_chatJoin
@@ -83,14 +83,14 @@
             // menuItem_captureSetting
             // 
             this.menuItem_captureSetting.Name = "menuItem_captureSetting";
-            this.menuItem_captureSetting.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_captureSetting.Size = new System.Drawing.Size(116, 22);
             this.menuItem_captureSetting.Text = "Capture";
             this.menuItem_captureSetting.Click += new System.EventHandler(this.menuItem_captureSetting_Click);
             // 
             // menuItem_exit
             // 
             this.menuItem_exit.Name = "menuItem_exit";
-            this.menuItem_exit.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_exit.Size = new System.Drawing.Size(116, 22);
             this.menuItem_exit.Text = "Exit";
             this.menuItem_exit.Click += new System.EventHandler(this.menuItem_exit_Click);
             // 
@@ -106,8 +106,6 @@
             this.MinimizeBox = false;
             this.Name = "MainForm";
             this.ShowInTaskbar = false;
-            this.SizeModeHeight = GTControl.SizeMode.Medium;
-            this.SizeModeWidth = GTControl.SizeMode.Medium;
             this.Text = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);

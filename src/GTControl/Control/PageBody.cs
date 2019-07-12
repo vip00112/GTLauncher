@@ -133,13 +133,11 @@ namespace GTControl
         private class Wrapper
         {
             private PageItem _item;
-            private Control _parent;
             private Edge _edge;
 
             public Wrapper(PageItem item)
             {
                 _item = item;
-                _parent = item.Parent;
             }
 
             #region Properties
@@ -183,7 +181,6 @@ namespace GTControl
                 _item.WrapperControl.MouseMove -= MouseMove;
                 _item.WrapperControl.MouseUp -= MouseUp;
                 _item.WrapperControl.Paint -= Paint;
-                _item.Parent = _parent;
             }
             #endregion
 
