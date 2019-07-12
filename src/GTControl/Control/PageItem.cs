@@ -35,6 +35,9 @@ namespace GTControl
             Padding = new Padding(0);
             Margin = new Padding(0);
 
+            int dotSize = PageBody.DotSize;
+            Width = dotSize * 2;
+            Height = dotSize * 2;
             BackgroundImage = null;
             TextContent = "Content";
             TextAlign = ContentAlignment.MiddleCenter;
