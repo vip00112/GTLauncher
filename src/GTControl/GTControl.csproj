@@ -43,6 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\Page.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Control\Page.Designer.cs">
+      <DependentUpon>Page.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Control\PageBody.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Form\CreatePageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,20 +64,11 @@
     <Compile Include="Form\LayoutSettingForm.Designer.cs">
       <DependentUpon>LayoutSettingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Control\Page.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Control\Page.Designer.cs">
-      <DependentUpon>Page.cs</DependentUpon>
-    </Compile>
     <Compile Include="Control\PageButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Control\PageContainer.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Control\PageBody.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Control\PageHeader.cs">
       <SubType>Component</SubType>
@@ -102,14 +102,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Control\Page.resx">
+      <DependentUpon>Page.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\CreatePageForm.resx">
       <DependentUpon>CreatePageForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\LayoutSettingForm.resx">
       <DependentUpon>LayoutSettingForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Control\Page.resx">
-      <DependentUpon>Page.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Control\PageContainer.resx">
       <DependentUpon>PageContainer.cs</DependentUpon>

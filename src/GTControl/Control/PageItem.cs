@@ -24,19 +24,16 @@ namespace GTControl
 
         private string _pageName;
         private Image _backgroundImage;
-        private int _column;
-        private int _row;
-        private int _columnSpan;
-        private int _rowSpan;
+        private bool _isLoaded;
 
         #region Constructor
         public PageItem()
         {
             InitializeComponent();
+            DoubleBuffered = true;
 
             Padding = new Padding(0);
             Margin = new Padding(0);
-            Dock = DockStyle.Fill;
 
             BackgroundImage = null;
             TextContent = "Content";
@@ -119,83 +116,125 @@ namespace GTControl
         public string LinkPageName { get; set; }
 
         [Category("Page Option")]
-        public int Column
+        public int X
         {
-            get { return _column; }
+            get { return Left; }
             set
             {
-                if (value + ColumnSpan > 10) return;
-                _column = value;
-
-                var body = Parent as PageBody;
-                if (body != null) body.SetColumn(this, value);
+                if (_isLoaded && Setting.IsEditMode)
+                {
+                    if (value % PageBody.Grid != 0) return;
+                    if (value < MinPoint.X) value = MinPoint.X;
+                    else if (value > MaxPoint.X) value = MaxPoint.X;
+                    Left = value;
+                    CalcLimit();
+                }
+                else
+                {
+                    Left = value;
+                }
             }
         }
 
         [Category("Page Option")]
-        public int Row
+        public int Y
         {
-            get { return _row; }
+            get { return Top; }
             set
             {
-                if (value + RowSpan > 10) return;
-                _row = value;
-
-                var body = Parent as PageBody;
-                if (body != null) body.SetRow(this, value);
+                if (_isLoaded && Setting.IsEditMode)
+                {
+                    if (value % PageBody.Grid != 0) return;
+                    if (value < MinPoint.Y) value = MinPoint.Y;
+                    else if (value > MaxPoint.Y) value = MaxPoint.Y;
+                    Top = value;
+                    CalcLimit();
+                }
+                else
+                {
+                    Top = value;
+                }
             }
         }
 
         [Category("Page Option")]
-        public int ColumnSpan
+        new public int Width
         {
-            get { return _columnSpan; }
+            get { return base.Width; }
             set
             {
-                if (value < 1) return;
-                _columnSpan = value;
-
-                var body = Parent as PageBody;
-                if (body != null) body.SetColumnSpan(this, value);
+                if (_isLoaded && Setting.IsEditMode)
+                {
+                    if (value % PageBody.Grid != 0) return;
+                    if (value < MinSize.Width) value = MinSize.Width;
+                    else if (value > MaxSize.Width) value = MaxSize.Width;
+                    base.Width = value;
+                    CalcLimit();
+                }
+                else
+                {
+                    base.Width = value;
+                }
             }
         }
 
         [Category("Page Option")]
-        public int RowSpan
+        new public int Height
         {
-            get { return _rowSpan; }
+            get { return base.Height; }
             set
             {
-                if (value < 1) return;
-                _rowSpan = value;
-
-                var body = Parent as PageBody;
-                if (body != null) body.SetRowSpan(this, value);
+                if (_isLoaded && Setting.IsEditMode)
+                {
+                    if (value % PageBody.Grid != 0) return;
+                    if (value < MinSize.Height) value = MinSize.Height;
+                    else if (value > MaxSize.Height) value = MaxSize.Height;
+                    base.Height = value;
+                    CalcLimit();
+                }
+                else
+                {
+                    base.Height = value;
+                }
             }
         }
 
-        [Category("Page Option")]
-        public int ItemWidth { get { return Width; } }
+        public Point MinPoint { get; private set; }
 
-        [Category("Page Option")]
-        public int ItemHeight { get { return Height; } }
+        public Point MaxPoint { get; private set; }
+
+        public Size MinSize { get; private set; }
+
+        public Size MaxSize { get; private set; }
+
+        public Control WrapperControl { get { return label; } }
         #endregion
 
         #region Control Event
+        private void PageItem_Load(object sender, EventArgs e)
+        {
+            if (!Setting.IsEditMode) return;
+
+            CalcLimit();
+            _isLoaded = true;
+        }
+
         private void PageItem_Paint(object sender, PaintEventArgs e)
         {
             if (Setting.IsEditMode)
             {
                 using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
+                using (var p = new Pen(Color.Blue, 2))
                 {
-                    e.Graphics.FillRectangle(b, new Rectangle(0, 0, Width, Height));
+                    e.Graphics.FillRectangle(b, new Rectangle(0, 0, base.Width, base.Height));
+                    e.Graphics.DrawRectangle(p, new Rectangle(0, 0, base.Width, base.Height));
                 }
             }
             if (BackgroundImage != null)
             {
-                e.Graphics.DrawImage(BackgroundImage, 0, 0, Width, Height);
+                e.Graphics.DrawImage(BackgroundImage, 0, 0, base.Width, base.Height);
             }
-            if (OnPaintEvent != null) OnPaintEvent(this, e);
+            OnPaintEvent?.Invoke(this, e);
         }
 
         private void label_MouseEnter(object sender, EventArgs e)
@@ -210,7 +249,7 @@ namespace GTControl
 
         private void label_MouseDown(object sender, MouseEventArgs e)
         {
-            if (OnMouseDownEvent != null) OnMouseDownEvent(this, e);
+            OnMouseDownEvent?.Invoke(this, e);
         }
 
         private void label_Click(object sender, EventArgs e)
@@ -225,7 +264,7 @@ namespace GTControl
                     StartProcess();
                     break;
                 case ClickMode.Folder:
-                    if (OnFolderClickEvent != null) OnFolderClickEvent(this, EventArgs.Empty);
+                    OnFolderClickEvent.Invoke(this, EventArgs.Empty);
                     break;
             }
         }
@@ -265,6 +304,20 @@ namespace GTControl
             catch (Exception ex)
             {
                 MessageBoxUtil.Error(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Public Method
+        public void CalcLimit()
+        {
+            if (Parent != null)
+            {
+                int dotSize = PageBody.DotSize;
+                MinPoint = new Point(Parent.ClientRectangle.Left, Parent.ClientRectangle.Top);
+                MaxPoint = new Point(Parent.ClientRectangle.Right - Width, Parent.ClientRectangle.Bottom - Height);
+                MinSize = new Size(dotSize * 2, dotSize * 2);
+                MaxSize = new Size(Parent.ClientRectangle.Right - Left, Parent.ClientRectangle.Bottom - Top);
             }
         }
         #endregion

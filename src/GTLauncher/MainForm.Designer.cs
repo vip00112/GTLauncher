@@ -32,8 +32,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.menuItem_exit = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_chat = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_chatJoin = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_chatCreate = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_captureSetting = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_exit = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,17 +51,35 @@
             // notifyIconMenu
             // 
             this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_chat,
             this.menuItem_captureSetting,
             this.menuItem_exit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(181, 70);
+            this.notifyIconMenu.Size = new System.Drawing.Size(181, 92);
             // 
-            // menuItem_exit
+            // menuItem_chat
             // 
-            this.menuItem_exit.Name = "menuItem_exit";
-            this.menuItem_exit.Size = new System.Drawing.Size(180, 22);
-            this.menuItem_exit.Text = "Exit";
-            this.menuItem_exit.Click += new System.EventHandler(this.menuItem_exit_Click);
+            this.menuItem_chat.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_chatJoin,
+            this.menuItem_chatCreate});
+            this.menuItem_chat.Name = "menuItem_chat";
+            this.menuItem_chat.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_chat.Text = "Chat";
+            this.menuItem_chat.Visible = false;
+            // 
+            // menuItem_chatJoin
+            // 
+            this.menuItem_chatJoin.Name = "menuItem_chatJoin";
+            this.menuItem_chatJoin.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_chatJoin.Text = "Join";
+            this.menuItem_chatJoin.Click += new System.EventHandler(this.menuItem_chatJoin_Click);
+            // 
+            // menuItem_chatCreate
+            // 
+            this.menuItem_chatCreate.Name = "menuItem_chatCreate";
+            this.menuItem_chatCreate.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_chatCreate.Text = "Create";
+            this.menuItem_chatCreate.Click += new System.EventHandler(this.menuItem_chatCreate_Click);
             // 
             // menuItem_captureSetting
             // 
@@ -66,6 +87,13 @@
             this.menuItem_captureSetting.Size = new System.Drawing.Size(180, 22);
             this.menuItem_captureSetting.Text = "Capture";
             this.menuItem_captureSetting.Click += new System.EventHandler(this.menuItem_captureSetting_Click);
+            // 
+            // menuItem_exit
+            // 
+            this.menuItem_exit.Name = "menuItem_exit";
+            this.menuItem_exit.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_exit.Text = "Exit";
+            this.menuItem_exit.Click += new System.EventHandler(this.menuItem_exit_Click);
             // 
             // MainForm
             // 
@@ -82,6 +110,7 @@
             this.SizeModeHeight = GTControl.SizeMode.Medium;
             this.SizeModeWidth = GTControl.SizeMode.Medium;
             this.Text = "MainForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.notifyIconMenu.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -94,6 +123,9 @@
         private System.Windows.Forms.ContextMenuStrip notifyIconMenu;
         private System.Windows.Forms.ToolStripMenuItem menuItem_exit;
         private System.Windows.Forms.ToolStripMenuItem menuItem_captureSetting;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_chat;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_chatJoin;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_chatCreate;
     }
 }
 

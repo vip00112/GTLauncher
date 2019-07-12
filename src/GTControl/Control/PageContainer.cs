@@ -13,6 +13,7 @@ namespace GTControl
     {
         private bool _isMouseDown;
         private Point _mouseDownPoint;
+        private DockMode _dockMode;
         private SizeMode _sizeModeWidth;
         private SizeMode _sizeModeHeight;
         private List<Page> _pages;
@@ -24,6 +25,7 @@ namespace GTControl
 
             _pages = new List<Page>();
 
+            DockMode = DockMode.BottomCenter;
             SizeModeWidth = SizeMode.Small;
             SizeModeHeight = SizeMode.Small;
         }
@@ -31,6 +33,17 @@ namespace GTControl
 
         #region Properties
         new public Size Size { get { return base.Size; } }
+
+        [Category("Page Option"), DefaultValue(DockMode.BottomCenter)]
+        public DockMode DockMode
+        {
+            get { return _dockMode; }
+            set
+            {
+                _dockMode = value;
+                InitLocation();
+            }
+        }
 
         [Category("Page Option"), DefaultValue(SizeMode.Small)]
         public SizeMode SizeModeWidth
@@ -100,8 +113,53 @@ namespace GTControl
             if (DesignMode) return;
 
             var screen = Screen.AllScreens[0];
-            Left = (screen.WorkingArea.Width / 2) - (Width / 2);
-            Top = screen.WorkingArea.Height - Height - 20;
+            int top = 20;
+            int middel = (screen.WorkingArea.Height / 2) - (Height / 2);
+            int bottom = screen.WorkingArea.Height - Height - 20;
+            int left = 20;
+            int center = (screen.WorkingArea.Width / 2) - (Width / 2);
+            int right = screen.WorkingArea.Right - Width - 20;
+            switch (DockMode)
+            {
+                case DockMode.TopLeft:
+                    Left = left;
+                    Top = top;
+                    break;
+                case DockMode.TopCenter:
+                    Left = center;
+                    Top = top;
+                    break;
+                case DockMode.TopRight:
+                    Left = right;
+                    Top = top;
+                    break;
+
+                case DockMode.MiddleLeft:
+                    Left = left;
+                    Top = middel;
+                    break;
+                case DockMode.MiddleCenter:
+                    Left = center;
+                    Top = middel;
+                    break;
+                case DockMode.MiddleRight:
+                    Left = right;
+                    Top = middel;
+                    break;
+
+                case DockMode.BottomLeft:
+                    Left = left;
+                    Top = bottom;
+                    break;
+                case DockMode.BottomCenter:
+                    Left = center;
+                    Top = bottom;
+                    break;
+                case DockMode.BottomRight:
+                    Left = right;
+                    Top = bottom;
+                    break;
+            }
         }
 
         private void SetMoveEvent(Control control)
@@ -146,10 +204,11 @@ namespace GTControl
         #endregion
 
         #region Public Method
-        public void ResetLayout(SizeMode width, SizeMode height)
+        public void ResetLayout()
         {
-            SizeModeWidth = width;
-            SizeModeHeight = height;
+            DockMode = Setting.DockMode;
+            SizeModeWidth = Setting.SizeModeWidth;
+            SizeModeHeight = Setting.SizeModeHeight;
 
             // 기존 페이지 삭제
             var pages = _pages.ToArray();
@@ -164,7 +223,6 @@ namespace GTControl
                 var page = new Page(p.PageName);
                 page.Title = p.Title;
                 page.VisibleTitle = p.VisibleTitle;
-                page.VisibleHeader = p.VisibleHeader;
                 page.VisibleBackButton = p.VisibleBackButton;
                 page.CloseMode = p.CloseMode;
                 if (page.CloseMode == PageCloseMode.Dispose)

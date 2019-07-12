@@ -60,7 +60,7 @@ namespace GTCapture
                     {
                         if (img == null) return;
 
-                        if (OnCaptured != null) OnCaptured(this, EventArgs.Empty);
+                        OnCaptured?.Invoke(this, EventArgs.Empty);
                         SaveImage(img);
                     }
                 }

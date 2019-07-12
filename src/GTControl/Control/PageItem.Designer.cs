@@ -54,6 +54,7 @@
             this.Controls.Add(this.label);
             this.Name = "PageItem";
             this.Size = new System.Drawing.Size(100, 100);
+            this.Load += new System.EventHandler(this.PageItem_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PageItem_Paint);
             this.ResumeLayout(false);
 

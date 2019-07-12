@@ -19,7 +19,6 @@ namespace GTControl
         private string _pageName;
         private string _title;
         private bool _visibleTitle;
-        private bool _visibleHeader;
         private bool _visibleBackButton;
         private PageCloseMode _cloeMode;
 
@@ -32,7 +31,6 @@ namespace GTControl
             Dock = DockStyle.Fill;
 
             Title = "Title";
-            VisibleHeader = true;
             VisibleBackButton = true;
             CloseMode = PageCloseMode.Hide;
         }
@@ -65,7 +63,6 @@ namespace GTControl
                 if (value == "Main")
                 {
                     pageButton_option.Visible = true;
-                    VisibleHeader = true;
                     VisibleBackButton = true;
                     CloseMode = PageCloseMode.Dispose;
                 }
@@ -92,19 +89,6 @@ namespace GTControl
             {
                 _visibleTitle = value;
                 label_title.Visible = value;
-            }
-        }
-
-        [Category("Page Option"), DefaultValue(true)]
-        public bool VisibleHeader
-        {
-            get { return _visibleHeader; }
-            set
-            {
-                if (PageName == "Main") return;
-
-                _visibleHeader = value;
-                pageHeader.Visible = value;
             }
         }
 
@@ -175,7 +159,7 @@ namespace GTControl
             {
                 case PageCloseMode.Hide:
                     Hide();
-                    if (OnHidden != null) OnHidden(this, EventArgs.Empty);
+                    OnHidden?.Invoke(this, EventArgs.Empty);
                     break;
                 case PageCloseMode.Dispose:
                     if (!MessageBoxUtil.Confirm("Are you sure you want to close?")) return;
@@ -185,7 +169,7 @@ namespace GTControl
                         Parent.Controls.Remove(this);
                     }
                     Dispose();
-                    if (OnDisposed != null) OnDisposed(this, EventArgs.Empty);
+                    OnDisposed?.Invoke(this, EventArgs.Empty);
                     break;
             }
         }
@@ -220,10 +204,10 @@ namespace GTControl
                 item.LinkPageName = pageItem.LinkPageName;
 
                 pageBody.Controls.Add(item);
-                item.Column = pageItem.Column;
-                item.Row = pageItem.Row;
-                item.ColumnSpan = pageItem.ColumnSpan;
-                item.RowSpan = pageItem.RowSpan;
+                item.X = pageItem.X;
+                item.Y = pageItem.Y;
+                item.Width = pageItem.Width;
+                item.Height = pageItem.Height;
                 return item;
             }
             catch

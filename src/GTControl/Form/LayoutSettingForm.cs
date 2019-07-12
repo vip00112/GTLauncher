@@ -26,19 +26,18 @@ namespace GTControl
         {
             InitializeComponent();
 
-            _layout = new LayoutProperty()
-            {
-                SizeModeWidth = Setting.SizeModeWidth,
-                SizeModeHeight = Setting.SizeModeHeight,
-            };
             _cells = new List<Cell>();
             _ancherItems = new List<PageItem>();
         }
 
-        internal LayoutSettingForm(SizeMode width, SizeMode height, List<Page> pages, List<PageItem> pageItems) : this()
+        internal LayoutSettingForm(DockMode dock, SizeMode width, SizeMode height, List<Page> pages, List<PageItem> pageItems) : this()
         {
-            SizeModeWidth = width;
-            SizeModeHeight = height;
+            _layout = new LayoutProperty()
+            {
+                DockMode = dock,
+                SizeModeWidth = width,
+                SizeModeHeight = height,
+            };
 
             if (pages != null) Pages = pages;
             else Pages = Setting.Pages.ToList();
@@ -62,6 +61,8 @@ namespace GTControl
             }
         }
 
+        public DockMode DockMode { get; private set; }
+
         public SizeMode SizeModeWidth { get; private set; }
 
         public SizeMode SizeModeHeight { get; private set; }
@@ -76,46 +77,21 @@ namespace GTControl
         {
             Setting.IsEditMode = true;
 
-            Location = new Point(0, 0);
-            MinimumSize = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
-            MaximumSize = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
-            Size = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
-
             propertyGrid_layout.SelectedObject = _layout;
             propertyGrid_page.BrowsableAttributes = new AttributeCollection(new Attribute[] { new CategoryAttribute("Page Option") });
 
             foreach (var p in Pages)
             {
-                var tabPage = new TabPage();
-                tabPage.Text = p.PageName;
-                tabControl_pages.TabPages.Add(tabPage);
+                string pageName = p.PageName;
+                var page = CreatePage(pageName, p);
 
-                var panel = new Panel();
-                panel.Name = p.PageName;
-                panel.Location = new Point(0, 0);
-                panel.Width = Setting.GetWidth(Setting.SizeModeWidth);
-                panel.Height = Setting.GetHeight(Setting.SizeModeHeight);
-                tabPage.Controls.Add(panel);
-
-                var page = new Page(p.PageName);
-                page.Title = p.Title;
-                page.VisibleTitle = p.VisibleTitle;
-                page.VisibleHeader = p.VisibleHeader;
-                page.VisibleBackButton = p.VisibleBackButton;
-                page.CloseMode = p.CloseMode;
-                page.PageBody.MouseDown += pageBody_MouseDown;
-                page.PageBody.MouseMove += pageBody_MouseMove;
-                page.PageBody.MouseUp += pageBody_MouseUp;
-                page.PageBody.Paint += pageBody_Paint;
-                page.PageBody.Resize += pageBody_Resize;
-                panel.Controls.Add(page);
-
-                var pageItems = PageItems.Where(o => o.PageName == p.PageName);
+                var pageItems = PageItems.Where(o => o.PageName == pageName);
                 foreach (var pageItem in pageItems)
                 {
                     var item = page.AddItem(pageItem);
                     if (item != null)
                     {
+                        page.PageBody.StartEditItem(item);
                         item.OnMouseDownEvent += pageItem_MouseDown;
                         item.OnPaintEvent += pageItem_Paint;
                     }
@@ -167,29 +143,7 @@ namespace GTControl
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
                 string pageName = dialog.PageName;
-                var tabPage = new TabPage();
-                tabPage.Text = pageName;
-                tabControl_pages.TabPages.Add(tabPage);
-
-                var panel = new Panel();
-                panel.Name = pageName;
-                panel.Location = new Point(0, 0);
-                panel.Width = Setting.GetWidth(Setting.SizeModeWidth);
-                panel.Height = Setting.GetHeight(Setting.SizeModeHeight);
-                tabPage.Controls.Add(panel);
-
-                var page = new Page(pageName);
-                page.Title = "Title";
-                page.VisibleTitle = true;
-                page.VisibleHeader = true;
-                page.VisibleBackButton = true;
-                page.CloseMode = PageCloseMode.Hide;
-                page.PageBody.MouseDown += pageBody_MouseDown;
-                page.PageBody.MouseMove += pageBody_MouseMove;
-                page.PageBody.MouseUp += pageBody_MouseUp;
-                page.PageBody.Paint += pageBody_Paint;
-                page.PageBody.Resize += pageBody_Resize;
-                panel.Controls.Add(page);
+                CreatePage(pageName, null);
             }
         }
 
@@ -203,24 +157,23 @@ namespace GTControl
             var selectedCells = _cells.Where(o => o.IsSelected).ToList();
             if (selectedCells.Count == 0) return;
 
-            int minCol = selectedCells.Min(o => o.Column);
-            int maxCol = selectedCells.Max(o => o.Column);
-            int colSpan = maxCol - minCol + 1;
+            var minX = selectedCells.Min(o => o.X);
+            var minY = selectedCells.Min(o => o.Y);
+            var maxX = selectedCells.Max(o => o.X);
+            var maxY = selectedCells.Max(o => o.Y);
 
-            int minRow = selectedCells.Min(o => o.Row);
-            int maxRow = selectedCells.Max(o => o.Row);
-            int rowSpan = maxRow - minRow + 1;
-
+            int grid = PageBody.Grid;
             var item = SelectedPage.AddItem(new PageItem()
             {
                 PageName = SelectedPage.PageName,
-                Column = minCol,
-                Row = minRow,
-                ColumnSpan = colSpan,
-                RowSpan = rowSpan,
+                X = minX,
+                Y = minY,
+                Width = maxX - minX + grid,
+                Height = maxY - minY + grid,
             });
             if (item != null)
             {
+                SelectedPage.PageBody.StartEditItem(item);
                 item.OnMouseDownEvent += pageItem_MouseDown;
                 item.OnPaintEvent += pageItem_Paint;
             }
@@ -265,6 +218,7 @@ namespace GTControl
             foreach (var item in _ancherItems)
             {
                 SelectedPage.RemoveItem(item);
+                SelectedPage.PageBody.StopEditItem(item);
             }
             ResetAncherItems();
         }
@@ -275,6 +229,7 @@ namespace GTControl
 
             if (!MessageBoxUtil.Confirm("Are you sure you want to save layout?")) return;
 
+            DockMode = _layout.DockMode;
             SizeModeWidth = _layout.SizeModeWidth;
             SizeModeHeight = _layout.SizeModeHeight;
 
@@ -334,17 +289,6 @@ namespace GTControl
             ResetCells();
         }
 
-        private void pageItem_MouseDown(object sender, MouseEventArgs e)
-        {
-            var item = sender as PageItem;
-            if (item == null) return;
-
-            AddAncherItem(item);
-
-            _cells.ForEach(o => o.IsSelected = false);
-            SelectedPage.PageBody.Invalidate();
-        }
-
         private void pageItem_Paint(object sender, PaintEventArgs e)
         {
             var item = sender as PageItem;
@@ -357,6 +301,31 @@ namespace GTControl
                     e.Graphics.FillRectangle(b, 0, 0, item.Width, item.Height);
                 }
             }
+        }
+
+        private void pageItem_MouseDown(object sender, MouseEventArgs e)
+        {
+            var item = sender as PageItem;
+            if (item == null) return;
+
+            AddAncherItem(item);
+
+            _cells.ForEach(o => o.IsSelected = false);
+            SelectedPage.PageBody.Invalidate();
+        }
+
+        private void pageBody_Resize(object sender, EventArgs e)
+        {
+            if (SelectedPage == null) return;
+
+            ResetCells();
+        }
+
+        private void pageBody_Paint(object sender, PaintEventArgs e)
+        {
+            if (SelectedPage == null) return;
+
+            DrawCell(e.Graphics);
         }
 
         private void pageBody_MouseDown(object sender, MouseEventArgs e)
@@ -373,21 +342,14 @@ namespace GTControl
             propertyGrid_page.SelectedObject = SelectedPage;
         }
 
-        private void pageBody_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (SelectedPage == null) return;
-            if (_startCell == null) return;
-
-            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(e.Location));
-            if (_endCell != null) SelectedPage.PageBody.Invalidate();
-        }
-
         private void pageBody_MouseUp(object sender, MouseEventArgs e)
         {
             if (SelectedPage == null) return;
             if (_startCell == null) return;
 
-            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(e.Location));
+            int x = e.Location.X > SelectedPage.PageBody.Width ? SelectedPage.PageBody.Width : e.Location.X;
+            int y = e.Location.Y > SelectedPage.PageBody.Height ? SelectedPage.PageBody.Height : e.Location.Y;
+            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(new Point(x, y)));
             if (_endCell == null) return;
 
             foreach (var cell in _cells)
@@ -399,41 +361,18 @@ namespace GTControl
             }
             _startCell = null;
             _endCell = null;
+            SelectedPage.PageBody.Invalidate();
         }
 
-        private void pageBody_Paint(object sender, PaintEventArgs e)
+        private void pageBody_MouseMove(object sender, MouseEventArgs e)
         {
             if (SelectedPage == null) return;
+            if (_startCell == null) return;
 
-            using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
-            {
-                if (_startCell != null && _endCell != null)
-                {
-                    foreach (var cell in _cells)
-                    {
-                        if (cell.IsInRange(_startCell, _endCell))
-                        {
-                            e.Graphics.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var cell in _cells)
-                    {
-                        if (!cell.IsSelected) continue;
-
-                        e.Graphics.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
-                    }
-                }
-            }
-        }
-
-        private void pageBody_Resize(object sender, EventArgs e)
-        {
-            if (SelectedPage == null) return;
-
-            ResetCells();
+            int x = e.Location.X > SelectedPage.PageBody.Width ? SelectedPage.PageBody.Width : e.Location.X;
+            int y = e.Location.Y > SelectedPage.PageBody.Height ? SelectedPage.PageBody.Height : e.Location.Y;
+            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(new Point(x, y)));
+            if (_endCell != null) SelectedPage.PageBody.Invalidate();
         }
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -441,10 +380,22 @@ namespace GTControl
             switch (e.ChangedItem.Label)
             {
                 case "SizeModeWidth":
-                    SelectedPage.Parent.Width = Setting.GetWidth((SizeMode) e.ChangedItem.Value);
+                    foreach (TabPage tabPage in tabControl_pages.TabPages)
+                    {
+                        foreach (var page in tabPage.Controls[0].Controls.OfType<Page>())
+                        {
+                            page.Parent.Width = Setting.GetWidth((SizeMode) e.ChangedItem.Value);
+                        }
+                    }
                     break;
                 case "SizeModeHeight":
-                    SelectedPage.Parent.Height = Setting.GetHeight((SizeMode) e.ChangedItem.Value);
+                    foreach (TabPage tabPage in tabControl_pages.TabPages)
+                    {
+                        foreach (var page in tabPage.Controls[0].Controls.OfType<Page>())
+                        {
+                            page.Parent.Height = Setting.GetHeight((SizeMode) e.ChangedItem.Value);
+                        }
+                    }
                     break;
                 case "PageName":
                     var tab = tabControl_pages.SelectedTab;
@@ -463,26 +414,81 @@ namespace GTControl
         #endregion
 
         #region Private Method
+        private Page CreatePage(string pageName, Page clone)
+        {
+            var tabPage = new TabPage();
+            tabPage.Text = pageName;
+            tabPage.AutoScroll = true;
+            tabControl_pages.TabPages.Add(tabPage);
+
+            var panel = new Panel();
+            panel.Name = pageName;
+            panel.BackColor = Color.Transparent;
+            panel.Padding = new Padding(0);
+            panel.Location = new Point(0, 0);
+            panel.Width = Setting.GetWidth(Setting.SizeModeWidth);
+            panel.Height = Setting.GetHeight(Setting.SizeModeHeight);
+            tabPage.Controls.Add(panel);
+
+            var page = new Page(pageName);
+            page.Title = (clone != null) ? clone.Title : "Title";
+            page.VisibleTitle = (clone != null) ? clone.VisibleTitle : true;
+            page.VisibleBackButton = (clone != null) ? clone.VisibleBackButton : true;
+            page.CloseMode = (clone != null) ? clone.CloseMode : PageCloseMode.Hide;
+            page.PageBody.Resize += pageBody_Resize;
+            page.PageBody.Paint += pageBody_Paint;
+            page.PageBody.MouseDown += pageBody_MouseDown;
+            page.PageBody.MouseMove += pageBody_MouseMove;
+            page.PageBody.MouseUp += pageBody_MouseUp;
+            panel.Controls.Add(page);
+
+            return page;
+        }
+
         private void ResetCells()
         {
             _cells.Clear();
-            int width = SelectedPage.PageBody.Width / SelectedPage.PageBody.ColumnCount;
-            int height = SelectedPage.PageBody.Height / SelectedPage.PageBody.RowCount;
+
+            int grid = PageBody.Grid;
             for (int col = 0; col < SelectedPage.PageBody.ColumnCount; col++)
             {
                 for (int row = 0; row < SelectedPage.PageBody.RowCount; row++)
                 {
                     var cell = new Cell()
                     {
-                        X = col * width,
-                        Y = row * height,
-                        Width = width,
-                        Height = height,
-                        Column = col,
-                        Row = row,
+                        X = col * grid,
+                        Y = row * grid,
+                        Width = grid,
+                        Height = grid,
                         IsSelected = false,
                     };
                     _cells.Add(cell);
+                }
+            }
+        }
+
+        private void DrawCell(Graphics g)
+        {
+            using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
+            {
+                if (_startCell != null && _endCell != null)
+                {
+                    foreach (var cell in _cells)
+                    {
+                        if (cell.IsInRange(_startCell, _endCell))
+                        {
+                            g.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var cell in _cells)
+                    {
+                        if (!cell.IsSelected) continue;
+
+                        g.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
+                    }
                 }
             }
         }
@@ -531,6 +537,9 @@ namespace GTControl
         #region Inner Class
         private class LayoutProperty
         {
+            [Category("Page Option")]
+            public DockMode DockMode { get; set; }
+
             [Category("Page Option")]
             public SizeMode SizeModeWidth { get; set; }
 

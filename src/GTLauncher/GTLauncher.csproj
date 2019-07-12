@@ -112,6 +112,10 @@
       <Project>{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}</Project>
       <Name>GTUtil</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GTVoiceChat\GTVoiceChat.csproj">
+      <Project>{baed4e91-b104-490a-b7d8-0d9ff4a3d51f}</Project>
+      <Name>GTVoiceChat</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\icon.ico" />
