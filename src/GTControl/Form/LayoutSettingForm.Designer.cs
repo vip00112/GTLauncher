@@ -52,7 +52,7 @@
             this.propertyGrid_page.Location = new System.Drawing.Point(0, 149);
             this.propertyGrid_page.Name = "propertyGrid_page";
             this.propertyGrid_page.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid_page.Size = new System.Drawing.Size(250, 277);
+            this.propertyGrid_page.Size = new System.Drawing.Size(250, 388);
             this.propertyGrid_page.TabIndex = 1;
             this.propertyGrid_page.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
@@ -65,7 +65,7 @@
             this.menuItem_specialFolder});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(837, 24);
+            this.menuStrip.Size = new System.Drawing.Size(784, 24);
             this.menuStrip.TabIndex = 2;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -140,7 +140,7 @@
             this.tabControl_pages.Location = new System.Drawing.Point(0, 24);
             this.tabControl_pages.Name = "tabControl_pages";
             this.tabControl_pages.SelectedIndex = 0;
-            this.tabControl_pages.Size = new System.Drawing.Size(587, 426);
+            this.tabControl_pages.Size = new System.Drawing.Size(534, 537);
             this.tabControl_pages.TabIndex = 1;
             this.tabControl_pages.SelectedIndexChanged += new System.EventHandler(this.tabControl_pages_SelectedIndexChanged);
             // 
@@ -149,9 +149,9 @@
             this.panel1.Controls.Add(this.propertyGrid_page);
             this.panel1.Controls.Add(this.propertyGrid_layout);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(587, 24);
+            this.panel1.Location = new System.Drawing.Point(534, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(250, 426);
+            this.panel1.Size = new System.Drawing.Size(250, 537);
             this.panel1.TabIndex = 3;
             // 
             // propertyGrid_layout
@@ -170,14 +170,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(837, 450);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tabControl_pages);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "LayoutSettingForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

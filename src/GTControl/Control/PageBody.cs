@@ -13,7 +13,7 @@ namespace GTControl
     {
         public enum Edge { None, TopLeft, BottomRight }
 
-        private const int DotSize = 10;
+        public const int DotSize = 10;
         public const int Grid = 10;
 
         private Dictionary<string, Wrapper> _wrappers;
@@ -48,6 +48,18 @@ namespace GTControl
         public int RowCount { get { return Height / Grid; } }
         #endregion
 
+        #region Protected Method
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            if (Setting.IsEditMode)
+            {
+                DrawLine(e.Graphics);
+            }
+        }
+        #endregion
+
         #region Public Method
         public void StartEditItem(PageItem item)
         {
@@ -71,6 +83,38 @@ namespace GTControl
         #endregion
 
         #region Private Method
+        private void DrawLine(Graphics g)
+        {
+            using (var normal = new Pen(Color.LightGray))
+            using (var highlight = new Pen(Color.DarkGray))
+            {
+                for (int col = 0; col < ColumnCount; col++)
+                {
+                    if (col % 5 == 0)
+                    {
+                        g.DrawLine(highlight, col * Grid, 0, col * Grid, Height);
+                    }
+                    else
+                    {
+                        g.DrawLine(normal, col * Grid, 0, col * Grid, Height);
+                    }
+                }
+                g.DrawLine(highlight, Width - 1, 0, Width - 1, Height);
+                for (int row = 0; row < RowCount; row++)
+                {
+                    if (row % 5 == 0)
+                    {
+                        g.DrawLine(highlight, 0, row * Grid, Width, row * Grid);
+                    }
+                    else
+                    {
+                        g.DrawLine(normal, 0, row * Grid, Width, row * Grid);
+                    }
+                }
+                g.DrawLine(highlight, 0, Height - 1, Width, Height - 1);
+            }
+        }
+
         private string CreateKey(Control control)
         {
             string key = control.GetHashCode().ToString();
@@ -90,10 +134,6 @@ namespace GTControl
         {
             private PageItem _item;
             private Control _parent;
-            private Point _minPoint;
-            private Point _maxPoint;
-            private Size _minSize;
-            private Size _maxSize;
             private Edge _edge;
 
             public Wrapper(PageItem item)
@@ -130,11 +170,11 @@ namespace GTControl
                 _item.WrapperControl.MouseUp += MouseUp;
                 _item.WrapperControl.Paint += Paint;
 
-                CalcLimit();
-                if (_item.Width < _minSize.Width) _item.Width = _minSize.Width;
-                if (_item.Width > _maxSize.Width) _item.Width = _maxSize.Width;
-                if (_item.Height < _minSize.Height) _item.Height = _minSize.Height;
-                if (_item.Height > _maxSize.Height) _item.Height = _maxSize.Height;
+                _item.CalcLimit();
+                if (_item.Width < _item.MinSize.Width) _item.Width = _item.MinSize.Width;
+                if (_item.Height < _item.MinSize.Height) _item.Height = _item.MinSize.Height;
+                if (_item.Width > _item.MaxSize.Width) _item.Width = _item.MaxSize.Width;
+                if (_item.Height > _item.MaxSize.Height) _item.Height = _item.MaxSize.Height;
             }
 
             public void Dispose()
@@ -188,17 +228,17 @@ namespace GTControl
                         bounds.Height = _item.Height - bounds.Height;
                         break;
                 }
-                if (bounds.X < _minPoint.X) bounds.X = _minPoint.X;
-                if (bounds.Y < _minPoint.Y) bounds.Y = _minPoint.Y;
-                if (bounds.X > _maxPoint.X) bounds.X = _maxPoint.X;
-                if (bounds.Y > _maxPoint.Y) bounds.Y = _maxPoint.Y;
-                if (bounds.Width < _minSize.Width) bounds.Width = _minSize.Width;
-                if (bounds.Height < _minSize.Height) bounds.Height = _minSize.Height;
-                if (bounds.Width > _maxSize.Width) bounds.Width = _maxSize.Width;
-                if (bounds.Height > _maxSize.Height) bounds.Height = _maxSize.Height;
+                if (bounds.X < _item.MinPoint.X) bounds.X = _item.MinPoint.X;
+                if (bounds.Y < _item.MinPoint.Y) bounds.Y = _item.MinPoint.Y;
+                if (bounds.X > _item.MaxPoint.X) bounds.X = _item.MaxPoint.X;
+                if (bounds.Y > _item.MaxPoint.Y) bounds.Y = _item.MaxPoint.Y;
+                if (bounds.Width < _item.MinSize.Width) bounds.Width = _item.MinSize.Width;
+                if (bounds.Height < _item.MinSize.Height) bounds.Height = _item.MinSize.Height;
+                if (bounds.Width > _item.MaxSize.Width) bounds.Width = _item.MaxSize.Width;
+                if (bounds.Height > _item.MaxSize.Height) bounds.Height = _item.MaxSize.Height;
                 _item.Bounds = bounds;
 
-                CalcLimit();
+                _item.CalcLimit();
                 _item.Invalidate();
             }
 
@@ -248,18 +288,6 @@ namespace GTControl
                 return p.X >= minX && p.X <= maxX && p.Y >= minY && p.Y <= maxY;
             }
 
-            private void CalcLimit()
-            {
-                if (_item.Parent != null)
-                {
-                    var parent = _item.Parent;
-                    _minPoint = new Point(parent.ClientRectangle.Left, parent.ClientRectangle.Top);
-                    _maxPoint = new Point(parent.ClientRectangle.Right - _item.Width, parent.ClientRectangle.Bottom - _item.Height);
-                    _minSize = new Size(DotSize * 2, DotSize * 2);
-                    _maxSize = new Size(parent.ClientRectangle.Right - _item.Left, parent.ClientRectangle.Bottom - _item.Top);
-                }
-            }
-
             private void ChangeCursor(Point p)
             {
                 if (_edge != Edge.None) return;
@@ -273,11 +301,12 @@ namespace GTControl
                 }
                 else
                 {
-                    _item.Cursor = Cursors.Default;
+                    _item.Cursor = Cursors.Hand;
                 }
             }
             #endregion
         }
         #endregion
+
     }
 }
