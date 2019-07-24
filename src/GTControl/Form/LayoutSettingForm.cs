@@ -123,6 +123,8 @@ namespace GTControl
 
             if (e.KeyCode == Keys.C)
             {
+                if (!CanCopyPaste()) return;
+
                 ResetCopyItems();
                 foreach (var item in _ancherItems)
                 {
@@ -134,6 +136,8 @@ namespace GTControl
             }
             else if (e.KeyCode == Keys.V)
             {
+                if (!CanCopyPaste()) return;
+
                 if (SelectedPage == null) return;
                 if (_copyItems.Count == 0) return;
 
@@ -378,6 +382,7 @@ namespace GTControl
             if (_startCell != null) SelectedPage.PageBody.Invalidate();
 
             propertyGrid_page.SelectedObject = SelectedPage;
+            tabControl_pages.Focus();
         }
 
         private void pageBody_MouseUp(object sender, MouseEventArgs e)
@@ -579,6 +584,20 @@ namespace GTControl
             }
 
             item.Invalidate();
+            tabControl_pages.Focus();
+        }
+
+        private bool CanCopyPaste()
+        {
+            Control control = this;
+            var container = control as IContainerControl;
+            while (container != null)
+            {
+                control = container.ActiveControl;
+                container = control as IContainerControl;
+            }
+
+            return control != null && control is TabControl;
         }
         #endregion
 
