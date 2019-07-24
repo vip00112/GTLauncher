@@ -18,6 +18,7 @@ namespace GTControl
         private Cell _endCell;
         private List<Cell> _cells;
         private List<PageItem> _ancherItems;
+        private List<PageItem> _copyItems;
         private Page _selectedPage;
         private bool _isPressedCtrl;
 
@@ -28,6 +29,7 @@ namespace GTControl
 
             _cells = new List<Cell>();
             _ancherItems = new List<PageItem>();
+            _copyItems = new List<PageItem>();
         }
 
         internal LayoutSettingForm(DockMode dock, SizeMode width, SizeMode height, List<Page> pages, List<PageItem> pageItems) : this()
@@ -116,7 +118,42 @@ namespace GTControl
             if (e.KeyCode == Keys.ControlKey)
             {
                 _isPressedCtrl = true;
-                Console.WriteLine(_isPressedCtrl);
+            }
+            if (!_isPressedCtrl) return;
+
+            if (e.KeyCode == Keys.C)
+            {
+                ResetCopyItems();
+                foreach (var item in _ancherItems)
+                {
+                    var copy = item.Copy();
+                    if (copy == null) continue;
+
+                    _copyItems.Add(copy);
+                }
+            }
+            else if (e.KeyCode == Keys.V)
+            {
+                if (SelectedPage == null) return;
+                if (_copyItems.Count == 0) return;
+
+                var items = _copyItems.ToArray();
+                foreach (var copy in items)
+                {
+                    _copyItems.Remove(copy);
+
+                    var item = SelectedPage.AddItem(copy);
+                    if (item != null)
+                    {
+                        item.PageName = SelectedPage.PageName;
+
+                        SelectedPage.PageBody.StartEditItem(item);
+                        item.OnMouseDownEvent += pageItem_MouseDown;
+                        item.OnPaintEvent += pageItem_Paint;
+                        AddAncherItem(item);
+                    }
+                }
+                ResetCopyItems();
             }
         }
 
@@ -125,7 +162,6 @@ namespace GTControl
             if (e.KeyCode == Keys.ControlKey)
             {
                 _isPressedCtrl = false;
-                Console.WriteLine(_isPressedCtrl);
             }
         }
 
@@ -503,6 +539,16 @@ namespace GTControl
                 {
                     item.Invalidate();
                 }
+            }
+        }
+
+        private void ResetCopyItems()
+        {
+            var items = _copyItems.ToArray();
+            foreach (var item in items)
+            {
+                _copyItems.Remove(item);
+                item.Dispose();
             }
         }
 

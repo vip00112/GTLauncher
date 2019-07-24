@@ -190,32 +190,11 @@ namespace GTControl
         {
             if (pageBody == null) return null;
 
-            var item = new PageItem();
-            try
-            {
-                item.PageName = pageItem.PageName;
-                item.BackgroundImage = pageItem.BackgroundImage;
-                item.TextContent = pageItem.TextContent;
-                item.TextAlign = pageItem.TextAlign;
-                item.TextFont = pageItem.TextFont;
-                item.ClickMode = pageItem.ClickMode;
-                item.FilePath = pageItem.FilePath;
-                item.Arguments = pageItem.Arguments;
-                item.LinkPageName = pageItem.LinkPageName;
+            var item = pageItem.Copy();
+            if (item == null) return null;
 
-                pageBody.Controls.Add(item);
-                item.X = pageItem.X;
-                item.Y = pageItem.Y;
-                item.Width = pageItem.Width;
-                item.Height = pageItem.Height;
-                return item;
-            }
-            catch
-            {
-                pageBody.Controls.Remove(item);
-                item.Dispose();
-            }
-            return null;
+            pageBody.Controls.Add(item);
+            return item;
         }
 
         public void RemoveItem(PageItem item)

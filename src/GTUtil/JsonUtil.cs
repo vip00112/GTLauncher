@@ -55,30 +55,23 @@ namespace GTUtil
 
         public static T GetValue<T>(Dictionary<string, object> properties, string key)
         {
+            if (properties == null) return default(T);
+            if (!properties.ContainsKey(key)) return default(T);
+
             try
             {
-                if (!properties.ContainsKey(key)) return default(T);
-
-                try
+                var value = properties[key];
+                if (typeof(T).IsEnum)
                 {
-                    var value = properties[key];
-                    if (typeof(T).IsEnum)
-                    {
-                        return (T) Enum.Parse(typeof(T), value as string);
-                    }
+                    return (T) Enum.Parse(typeof(T), value as string);
+                }
 
-                    // string, bool, doule, long
-                    return (T) value;
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
-                return default(T);
+                // string, bool, doule, long
+                return (T) value;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e);
             }
             return default(T);
         }
