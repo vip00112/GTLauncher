@@ -323,6 +323,34 @@ namespace GTControl
                 MaxSize = new Size(Parent.ClientRectangle.Right - Left, Parent.ClientRectangle.Bottom - Top);
             }
         }
+
+        public PageItem Copy()
+        {
+            var item = new PageItem();
+            try
+            {
+                item.PageName = PageName;
+                item.BackgroundImage = BackgroundImage;
+                item.TextContent = TextContent;
+                item.TextAlign = TextAlign;
+                item.TextFont = TextFont;
+                item.ClickMode = ClickMode;
+                item.FilePath = FilePath;
+                item.Arguments = Arguments;
+                item.LinkPageName = LinkPageName;
+                item.X = X;
+                item.Y = Y;
+                item.Width = Width;
+                item.Height = Height;
+                return item;
+            }
+            catch
+            {
+                item.Dispose();
+                item = null;
+            }
+            return item;
+        }
         #endregion
     }
 }

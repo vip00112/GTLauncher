@@ -112,7 +112,7 @@ namespace GTControl
                 case Theme.Dark:
                     return Color.FromArgb(0x12, 0x12, 0x12);
                 case Theme.Light:
-                    return Color.FromArgb(255, 255, 255);
+                    return Color.FromArgb(0xee, 0xee, 0xee);
                 default:
                     return GetBackColorCommon(Theme.Dark);
             }
@@ -123,7 +123,7 @@ namespace GTControl
             switch (theme)
             {
                 case Theme.Dark:
-                    return Color.FromArgb(255, 255, 255);
+                    return Color.FromArgb(0xee, 0xee, 0xee);
                 case Theme.Light:
                     return Color.FromArgb(0x12, 0x12, 0x12);
                 default:
@@ -136,7 +136,7 @@ namespace GTControl
             switch (theme)
             {
                 case Theme.Dark:
-                    return Color.FromArgb(255, 255, 255);
+                    return Color.FromArgb(0xee, 0xee, 0xee);
                 case Theme.Light:
                     return Color.FromArgb(0x12, 0x12, 0x12);
                 default:
@@ -151,7 +151,7 @@ namespace GTControl
                 case Theme.Dark:
                     return Color.FromArgb(0x12, 0x12, 0x12);
                 case Theme.Light:
-                    return Color.FromArgb(255, 255, 255);
+                    return Color.FromArgb(0xee, 0xee, 0xee);
                 default:
                     return GetForeColorHover(Theme.Dark);
             }
