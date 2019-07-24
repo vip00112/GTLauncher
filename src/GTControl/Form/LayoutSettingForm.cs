@@ -145,6 +145,7 @@ namespace GTControl
                     var item = SelectedPage.AddItem(copy);
                     if (item != null)
                     {
+                        item.BringToFront();
                         item.PageName = SelectedPage.PageName;
 
                         SelectedPage.PageBody.StartEditItem(item);
@@ -209,6 +210,7 @@ namespace GTControl
             });
             if (item != null)
             {
+                item.BringToFront();
                 SelectedPage.PageBody.StartEditItem(item);
                 item.OnMouseDownEvent += pageItem_MouseDown;
                 item.OnPaintEvent += pageItem_Paint;
