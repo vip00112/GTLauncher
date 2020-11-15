@@ -1,4 +1,5 @@
-﻿using GTUtil;
+﻿using GTCapture;
+using GTUtil;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,6 +41,52 @@ namespace GTControl
             checkBox_canMove.Checked = Setting.CanMove;
             comboBox_theme.DataSource = Enum.GetValues(typeof(Theme));
             comboBox_theme.SelectedItem = Setting.Theme;
+
+            // Hide TabControl Header
+            tabControl.Appearance = TabAppearance.FlatButtons;
+            tabControl.ItemSize = new Size(0, 1);
+            tabControl.SizeMode = TabSizeMode.Fixed;
+
+            foreach (ListViewItem li in listView.Items)
+            {
+                if (li.Text == "General")
+                {
+                    li.Tag = tabPage_general;
+                }
+                else if (li.Text == "Layout")
+                {
+                    li.Tag = tabPage_layout;
+                }
+                else if (li.Text == "Capture")
+                {
+                    li.Tag = tabPage_capture;
+                }
+            }
+
+            listView.Items[0].Focused = true;
+            listView.Items[0].Selected = true;
+        }
+
+        private void listView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView.FocusedItem == null) return;
+
+            tabControl.SelectedTab = (TabPage) listView.FocusedItem.Tag;
+        }
+
+        private void listView_DrawItem(object sender, DrawListViewItemEventArgs e)
+        {
+            if (e.Item.Focused)
+            {
+                e.Item.BackColor = Color.LightSkyBlue;
+            }
+            else
+            {
+                e.Item.BackColor = Color.White;
+            }
+
+            e.DrawBackground();
+            e.DrawText();
         }
 
         private void button_save_Click(object sender, EventArgs e)
@@ -49,12 +96,6 @@ namespace GTControl
             Setting.RunOnStartup = checkBox_runOnStartup.Checked;
             Setting.CanMove = checkBox_canMove.Checked;
             Setting.Theme = (Theme) comboBox_theme.SelectedItem;
-            Setting.DockMode = _dockMode;
-            Setting.SizeModeWidth = _sizeModeWidth;
-            Setting.SizeModeHeight = _sizeModeHeight;
-            Setting.Pages = _pages;
-            Setting.PageItems = _pageItems;
-
             Setting.Save();
 
             DialogResult = DialogResult.OK;
@@ -72,7 +113,20 @@ namespace GTControl
                 _sizeModeHeight = dialog.SizeModeHeight;
                 _pages = dialog.Pages;
                 _pageItems = dialog.PageItems;
+
+                Setting.DockMode = _dockMode;
+                Setting.SizeModeWidth = _sizeModeWidth;
+                Setting.SizeModeHeight = _sizeModeHeight;
+                Setting.Pages = _pages;
+                Setting.PageItems = _pageItems;
+                Setting.Save();
             }
+        }
+
+        private void button_capture_Click(object sender, EventArgs e)
+        {
+            var capture = new Capture(Handle);
+            capture.ShowSettingForm();
         }
         #endregion
     }

@@ -85,6 +85,11 @@ namespace GTCapture
                 if (dialog.ShowDialog() != DialogResult.OK) return;
             }
         }
+
+        public string GetSaveFolderPath()
+        {
+            return Setting.SaveDirectory;
+        }
         #endregion
 
         #region Private Method

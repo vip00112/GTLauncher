@@ -30,6 +30,13 @@ namespace GTCapture
         #endregion
 
         #region Control Event
+        private void CaptureRegionForm_Load(object sender, EventArgs e)
+        {
+            // 듀얼 모니터 처리
+            Size = new Size(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height);
+            Location = new Point(SystemInformation.VirtualScreen.Left, SystemInformation.VirtualScreen.Top);
+        }
+
         private void CaptureRegionForm_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;
