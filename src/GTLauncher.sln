@@ -11,10 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTCapture", "GTCapture\GTCa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTUtil", "GTUtil\GTUtil.csproj", "{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTVoiceChat", "GTVoiceChat\GTVoiceChat.csproj", "{BAED4E91-B104-490A-B7D8-0D9FF4A3D51F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceChat", "VoiceChat\VoiceChat.csproj", "{0E7F4939-5C10-45DC-945C-4DE789347A47}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,14 +33,6 @@ Global
 		{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAED4E91-B104-490A-B7D8-0D9FF4A3D51F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAED4E91-B104-490A-B7D8-0D9FF4A3D51F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAED4E91-B104-490A-B7D8-0D9FF4A3D51F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAED4E91-B104-490A-B7D8-0D9FF4A3D51F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E7F4939-5C10-45DC-945C-4DE789347A47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E7F4939-5C10-45DC-945C-4DE789347A47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E7F4939-5C10-45DC-945C-4DE789347A47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E7F4939-5C10-45DC-945C-4DE789347A47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

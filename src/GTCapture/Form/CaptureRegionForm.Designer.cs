@@ -46,7 +46,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select region";
             this.TransparencyKey = System.Drawing.Color.Lime;
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.CaptureRegionForm_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.CaptureRegionForm_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CaptureRegionForm_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CaptureRegionForm_MouseMove);

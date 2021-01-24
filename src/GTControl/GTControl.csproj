@@ -129,6 +129,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GTCapture\GTCapture.csproj">
+      <Project>{B47C9B70-2295-428B-A006-E3AA9C08D8FD}</Project>
+      <Name>GTCapture</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GTUtil\GTUtil.csproj">
       <Project>{3e47b9d4-ea18-4f1b-9eef-f586bb1a1f0d}</Project>
       <Name>GTUtil</Name>
