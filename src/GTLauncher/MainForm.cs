@@ -13,14 +13,20 @@ using System.Windows.Forms;
 
 namespace GTLauncher
 {
+    /// <summary>
+    /// GTControl.PageContainer에서 모든 Control을 불러오도록 처리한다.
+    /// Form에 GTControl.PageContainer를 상속받으면 자동 처리된다.
+    /// </summary>
     public partial class MainForm : PageContainer
     {
         private Capture _capture;
 
+        #region Constructor
         public MainForm()
         {
             InitializeComponent();
         }
+        #endregion
 
         #region Control Event
         private void MainForm_Load(object sender, EventArgs e)
@@ -52,7 +58,7 @@ namespace GTLauncher
         }
         #endregion
 
-        #region GTCapture.Capture Event
+        #region GTCapture.Capture Event Handler
         private void OnCaptured(object sender, EventArgs e)
         {
             notifyIcon.BalloonTipText = "Capture completed.";
