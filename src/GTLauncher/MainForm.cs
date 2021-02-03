@@ -1,4 +1,5 @@
-﻿using GTCapture;
+﻿using GoodbyeDPI;
+using GTCapture;
 using GTControl;
 using GTUtil;
 using System;
@@ -20,6 +21,7 @@ namespace GTLauncher
     public partial class MainForm : PageContainer
     {
         private Capture _capture;
+        private Manager _goobyedpiManager;
 
         #region Constructor
         public MainForm()
@@ -35,6 +37,13 @@ namespace GTLauncher
 
             _capture = new Capture(Handle);
             _capture.OnCaptured += OnCaptured;
+
+            _goobyedpiManager = new Manager();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _goobyedpiManager.Stop();
         }
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -55,6 +64,20 @@ namespace GTLauncher
             if (string.IsNullOrWhiteSpace(dirPath)) return;
 
             System.Diagnostics.Process.Start(dirPath);
+        }
+
+        private void menuItem_goodbyeDPI_Click(object sender, EventArgs e)
+        {
+            if (_goobyedpiManager.IsStarted)
+            {
+                _goobyedpiManager.Stop();
+                menuItem_goodbyeDPI.Checked = false;
+            }
+            else
+            {
+                _goobyedpiManager.Start();
+                menuItem_goodbyeDPI.Checked = true;
+            }
         }
         #endregion
 

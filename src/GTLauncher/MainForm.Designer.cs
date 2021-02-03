@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuItem_goodbyeDPI = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_captureFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_exit = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIconMenu.SuspendLayout();
@@ -49,10 +50,18 @@
             // 
             this.notifyIconMenu.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_goodbyeDPI,
             this.menuItem_captureFolder,
             this.menuItem_exit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(181, 70);
+            this.notifyIconMenu.Size = new System.Drawing.Size(181, 92);
+            // 
+            // menuItem_goodbyeDPI
+            // 
+            this.menuItem_goodbyeDPI.Name = "menuItem_goodbyeDPI";
+            this.menuItem_goodbyeDPI.Size = new System.Drawing.Size(180, 22);
+            this.menuItem_goodbyeDPI.Text = "GoodbyeDPI";
+            this.menuItem_goodbyeDPI.Click += new System.EventHandler(this.menuItem_goodbyeDPI_Click);
             // 
             // menuItem_captureFolder
             // 
@@ -82,6 +91,7 @@
             this.SizeModeHeight = GTControl.SizeMode.Medium;
             this.SizeModeWidth = GTControl.SizeMode.Medium;
             this.Text = "MainForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.notifyIconMenu.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -94,6 +104,7 @@
         private System.Windows.Forms.ContextMenuStrip notifyIconMenu;
         private System.Windows.Forms.ToolStripMenuItem menuItem_exit;
         private System.Windows.Forms.ToolStripMenuItem menuItem_captureFolder;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_goodbyeDPI;
     }
 }
 
