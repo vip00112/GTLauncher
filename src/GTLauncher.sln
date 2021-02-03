@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTCapture", "GTCapture\GTCa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTUtil", "GTUtil\GTUtil.csproj", "{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodbyeDPI", "GoodbyeDPI\GoodbyeDPI.csproj", "{9C758FF2-1514-4250-BEBC-7A37CA20E8D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E47B9D4-EA18-4F1B-9EEF-F586BB1A1F0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C758FF2-1514-4250-BEBC-7A37CA20E8D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C758FF2-1514-4250-BEBC-7A37CA20E8D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C758FF2-1514-4250-BEBC-7A37CA20E8D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C758FF2-1514-4250-BEBC-7A37CA20E8D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
