@@ -233,6 +233,7 @@ namespace GTControl
                     props.Add("TextFont_Underline", pageItem.TextFont.Underline);
 
                     props.Add("ClickMode", pageItem.ClickMode.ToString());
+                    props.Add("StartWithAdministrator", pageItem.StartWithAdministrator);
                     props.Add("FilePath", pageItem.FilePath);
                     props.Add("Arguments", pageItem.Arguments);
                     props.Add("LinkPageName", pageItem.LinkPageName);
@@ -370,6 +371,7 @@ namespace GTControl
                 item.TextFont = font;
 
                 item.ClickMode = JsonUtil.GetValue<ClickMode>(props, "ClickMode");
+                item.StartWithAdministrator = JsonUtil.GetValue<bool>(props, "StartWithAdministrator");
                 item.FilePath = JsonUtil.GetValue<string>(props, "FilePath");
                 item.Arguments = JsonUtil.GetValue<string>(props, "Arguments");
                 item.LinkPageName = JsonUtil.GetValue<string>(props, "LinkPageName");

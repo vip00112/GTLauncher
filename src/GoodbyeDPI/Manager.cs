@@ -40,12 +40,13 @@ namespace GoodbyeDPI
                 proc.Kill();
             }
 
-            File.WriteAllBytes(_fileNameExe, Properties.Resources.goodbyedpi);
-            File.WriteAllBytes(_fileNameDll, Properties.Resources.WinDivert);
-            File.WriteAllBytes(_fileNameSys, Properties.Resources.WinDivert64);
+            try { File.WriteAllBytes(_fileNameExe, Properties.Resources.goodbyedpi); } catch { }
+            try { File.WriteAllBytes(_fileNameDll, Properties.Resources.WinDivert); } catch { }
+            try { File.WriteAllBytes(_fileNameSys, Properties.Resources.WinDivert64); } catch { }
 
             _proc = new Process();
             _proc.StartInfo.FileName = _fileNameExe;
+            _proc.StartInfo.WorkingDirectory = Application.StartupPath;
             _proc.StartInfo.UseShellExecute = true;
             _proc.StartInfo.Verb = "runas";
             _proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;

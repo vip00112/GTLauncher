@@ -100,6 +100,9 @@ namespace GTControl
         [Category("Page Option")]
         public ClickMode ClickMode { get; set; }
 
+        [Category("Page Option")]
+        public bool StartWithAdministrator { get; set; }
+
         /// <summary>
         /// 실행 파일 경로
         /// </summary>
@@ -296,6 +299,11 @@ namespace GTControl
                 // 네트워크 연결
                 if (!FilePath.Contains("://"))
                 {
+                    if (StartWithAdministrator)
+                    {
+                        si.UseShellExecute = true;
+                        si.Verb = "runas";
+                    }
                     si.Arguments = Arguments;
                     si.WorkingDirectory = Path.GetDirectoryName(FilePath);
                 }
@@ -335,6 +343,7 @@ namespace GTControl
                 item.TextAlign = TextAlign;
                 item.TextFont = TextFont;
                 item.ClickMode = ClickMode;
+                item.StartWithAdministrator = StartWithAdministrator;
                 item.FilePath = FilePath;
                 item.Arguments = Arguments;
                 item.LinkPageName = LinkPageName;
