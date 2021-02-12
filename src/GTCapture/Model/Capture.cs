@@ -35,8 +35,8 @@ namespace GTCapture
             base.WndProc(ref m);
             if (_bw != null) return;
 
-            var modifier = (KeyModifiers) ((int) m.LParam & 0xFFFF);
-            var key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
+            var modifier = (KeyModifiers) ((long) m.LParam & 0xFFFF);
+            var key = (Keys) (((long) m.LParam >> 16) & 0xFFFF);
 
             CaptureMode mode = Setting.GetCaptureMode(modifier, key);
             if (mode == CaptureMode.None) return;
