@@ -250,21 +250,17 @@ namespace GTControl
                 string json = JsonUtil.FromProperties(properties);
                 File.WriteAllText(path, json);
 
-#pragma warning disable CA1416 // 플랫폼 호환성 유효성 검사
                 // 시작프로그램 등록
                 string name = "GTLauncher";
-                using (var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+                var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                if (reg.GetValue(name) != null)
                 {
-                    if (reg.GetValue(name) != null)
-                    {
-                        reg.DeleteValue(name, false);
-                    }
-                    if (RunOnStartup)
-                    {
-                        reg.SetValue(name, Application.ExecutablePath);
-                    }
+                    reg.DeleteValue(name, false);
                 }
-#pragma warning restore CA1416 // 플랫폼 호환성 유효성 검사
+                if (RunOnStartup)
+                {
+                    reg.SetValue(name, Application.ExecutablePath);
+                }
             }
             catch (Exception e)
             {

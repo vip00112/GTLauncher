@@ -48,44 +48,43 @@
             // 
             // notifyIconMenu
             // 
-            this.notifyIconMenu.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.notifyIconMenu.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItem_goodbyeDPI,
             this.menuItem_captureFolder,
             this.menuItem_exit});
             this.notifyIconMenu.Name = "notifyIconMenu";
-            this.notifyIconMenu.Size = new System.Drawing.Size(153, 70);
+            this.notifyIconMenu.Size = new System.Drawing.Size(181, 92);
             // 
             // menuItem_goodbyeDPI
             // 
             this.menuItem_goodbyeDPI.Name = "menuItem_goodbyeDPI";
-            this.menuItem_goodbyeDPI.Size = new System.Drawing.Size(152, 22);
+            this.menuItem_goodbyeDPI.Size = new System.Drawing.Size(180, 22);
             this.menuItem_goodbyeDPI.Text = "GoodbyeDPI";
             this.menuItem_goodbyeDPI.Click += new System.EventHandler(this.menuItem_goodbyeDPI_Click);
             // 
             // menuItem_captureFolder
             // 
             this.menuItem_captureFolder.Name = "menuItem_captureFolder";
-            this.menuItem_captureFolder.Size = new System.Drawing.Size(152, 22);
+            this.menuItem_captureFolder.Size = new System.Drawing.Size(180, 22);
             this.menuItem_captureFolder.Text = "Capture Folder";
             this.menuItem_captureFolder.Click += new System.EventHandler(this.menuItem_captureFolder_Click);
             // 
             // menuItem_exit
             // 
             this.menuItem_exit.Name = "menuItem_exit";
-            this.menuItem_exit.Size = new System.Drawing.Size(152, 22);
+            this.menuItem_exit.Size = new System.Drawing.Size(180, 22);
             this.menuItem_exit.Text = "Exit";
             this.menuItem_exit.Click += new System.EventHandler(this.menuItem_exit_Click);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 400);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(0, 0);
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MainForm";
