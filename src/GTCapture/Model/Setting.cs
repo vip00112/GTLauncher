@@ -169,10 +169,11 @@ namespace GTCapture
             {
                 SaveImageFormat = ImageFormats[0];
             }
-            if (HotKeys == null)
+
+            if (HotKeys == null) HotKeys = new Dictionary<CaptureMode, HotKey>();
+            foreach (CaptureMode mode in Enum.GetValues(typeof(CaptureMode)))
             {
-                HotKeys = new Dictionary<CaptureMode, HotKey>();
-                foreach (CaptureMode mode in Enum.GetValues(typeof(CaptureMode)))
+                if (!HotKeys.ContainsKey(mode))
                 {
                     HotKeys.Add(mode, HotKey.GetDefault(mode));
                 }

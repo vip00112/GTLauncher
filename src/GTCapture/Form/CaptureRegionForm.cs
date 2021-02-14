@@ -37,6 +37,13 @@ namespace GTCapture
             Location = new Point(SystemInformation.VirtualScreen.Left, SystemInformation.VirtualScreen.Top);
         }
 
+        private void CaptureRegionForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData != Keys.Escape) return;
+
+            DialogResult = DialogResult.Cancel;
+        }
+
         private void CaptureRegionForm_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left) return;

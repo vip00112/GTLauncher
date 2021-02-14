@@ -1,6 +1,7 @@
-﻿namespace GTCapture
+﻿
+namespace GTCapture
 {
-    partial class CaptureRegionForm
+    partial class CaptureBorderForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,30 +31,28 @@
         {
             this.SuspendLayout();
             // 
-            // CaptureRegionForm
+            // CaptureBorderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.BackColor = System.Drawing.Color.Red;
+            this.ClientSize = new System.Drawing.Size(400, 400);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "CaptureRegionForm";
-            this.Opacity = 0.5D;
+            this.Name = "CaptureBorderForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Select region";
+            this.Text = "Capture";
             this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.Lime;
-            this.Load += new System.EventHandler(this.CaptureRegionForm_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.CaptureRegionForm_Paint);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CaptureRegionForm_KeyDown);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CaptureRegionForm_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CaptureRegionForm_MouseMove);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CaptureRegionForm_MouseUp);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.CaptureBorderForm_Paint);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CaptureBorderForm_KeyDown);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CaptureBorderForm_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CaptureBorderForm_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CaptureBorderForm_MouseUp);
             this.ResumeLayout(false);
 
         }

@@ -305,13 +305,11 @@ namespace GTControl
         {
             SetDefault();
 
-            foreach (Form form in Application.OpenForms)
+            var containers = FormUtil.FindForms<PageContainer>();
+            foreach (var container in containers)
             {
-                var container = form as PageContainer;
-                if (container == null) return;
-
                 container.ResetLayout();
-                SetTheme(form, Theme);
+                SetTheme(container, Theme);
             }
         }
         #endregion

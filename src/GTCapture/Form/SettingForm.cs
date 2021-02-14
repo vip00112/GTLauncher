@@ -39,10 +39,16 @@ namespace GTCapture
             _textBoxs.Add(textBox_fullScreen);
             _textBoxs.Add(textBox_activeProcess);
             _textBoxs.Add(textBox_region);
+            _textBoxs.Add(textBox_recordRegion);
+            _textBoxs.Add(textBox_recordStart);
+            _textBoxs.Add(textBox_recordStop);
 
             textBox_fullScreen.Tag = CaptureMode.FullScreen;
             textBox_activeProcess.Tag = CaptureMode.ActiveProcess;
             textBox_region.Tag = CaptureMode.Region;
+            textBox_recordRegion.Tag = CaptureMode.RecordRegion;
+            textBox_recordStart.Tag = CaptureMode.RecordStart;
+            textBox_recordStop.Tag = CaptureMode.RecordStop;
 
             _hotKeys = Setting.HotKeys.ToDictionary(o => o.Key, o => o.Value);
             foreach (var mode in _hotKeys.Keys)

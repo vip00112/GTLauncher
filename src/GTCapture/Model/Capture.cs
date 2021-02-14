@@ -16,7 +16,8 @@ namespace GTCapture
     {
         public EventHandler OnCaptured;
 
-        private BackgroundWorker _bw;
+        private BackgroundWorker _captureTimer;
+        private BackgroundWorker _gifRecorder;
 
         #region Constructor
         public Capture(IntPtr hWnd)
@@ -33,7 +34,8 @@ namespace GTCapture
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
-            if (_bw != null) return;
+            if (m.Msg != 0x0312) return;
+            if (_captureTimer != null) return;
 
             var modifier = (KeyModifiers) ((int) m.LParam & 0xFFFF);
             var key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
@@ -41,39 +43,116 @@ namespace GTCapture
             CaptureMode mode = Setting.GetCaptureMode(modifier, key);
             if (mode == CaptureMode.None) return;
 
-            _bw = new BackgroundWorker();
-            _bw.DoWork += delegate (object sender, DoWorkEventArgs e)
+            switch (mode)
             {
-                int delay = Setting.Timer;
-                while (delay > 0)
-                {
-                    Thread.Sleep(1000);
-                    delay--;
-                }
-                e.Result = CaptureWindow(mode);
-            };
-            _bw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
-            {
-                try
-                {
-                    using (var img = e.Result as Image)
+                #region Capture
+                case CaptureMode.FullScreen:
+                case CaptureMode.ActiveProcess:
+                case CaptureMode.Region:
+                    _captureTimer = new BackgroundWorker();
+                    _captureTimer.DoWork += delegate (object sender, DoWorkEventArgs e)
                     {
-                        if (img == null) return;
+                        int delay = Setting.Timer;
+                        while (delay > 0)
+                        {
+                            Thread.Sleep(1000);
+                            delay--;
+                        }
+                        e.Result = CaptureWindow(mode);
+                    };
+                    _captureTimer.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
+                    {
+                        try
+                        {
+                            using (var img = e.Result as Image)
+                            {
+                                if (img == null) return;
 
-                        OnCaptured?.Invoke(this, EventArgs.Empty);
-                        SaveImage(img);
+                                OnCaptured?.Invoke(this, EventArgs.Empty);
+                                SaveImage(img);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex);
+                        }
+                        finally
+                        {
+                            _captureTimer = null;
+                        }
+                    };
+                    _captureTimer.RunWorkerAsync();
+                    break;
+                #endregion
+
+                #region GIF Record
+                case CaptureMode.RecordRegion:
+                    if (FormUtil.FindForm<CaptureBorderForm>() != null) return;
+
+                    using (var dialog = new CaptureBorderForm())
+                    {
+                        if (dialog.ShowDialog() != DialogResult.OK) return;
                     }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex);
-                }
-                finally
-                {
-                    _bw = null;
-                }
-            };
-            _bw.RunWorkerAsync();
+                    break;
+                case CaptureMode.RecordStart:
+                    {
+                        var form = FormUtil.FindForm<CaptureBorderForm>();
+                        if (form == null) return;
+
+                        form.StartRecord();
+
+                        if (_gifRecorder != null) return;
+                        _gifRecorder = new BackgroundWorker();
+                        _gifRecorder.DoWork += delegate (object sender, DoWorkEventArgs e)
+                        {
+                            var frames = new List<Image>();
+
+                            CaptureBorderForm target;
+                            while ((target = FormUtil.FindForm<CaptureBorderForm>()) != null)
+                            {
+                                if (!target.IsStartedRecored) break;
+
+                                var handle = WindowsAPI.GetDesktopWindow();
+                                var rec = target.RecordRec;
+                                var frame = CaptureWindow(handle, rec.X, rec.Y, rec.Width, rec.Height);
+                                frames.Add(frame);
+
+                                Thread.Sleep(60);
+                            }
+                            e.Result = frames;
+                        };
+                        _gifRecorder.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
+                        {
+                            try
+                            {
+                                var frames = e.Result as List<Image>;
+                                if (frames == null) return;
+
+                                OnCaptured?.Invoke(this, EventArgs.Empty);
+                                SaveFrames(frames);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Error(ex);
+                            }
+                            finally
+                            {
+                                _gifRecorder = null;
+                            }
+                        };
+                        _gifRecorder.RunWorkerAsync();
+                    }
+                    break;
+                case CaptureMode.RecordStop:
+                    {
+                        var form = FormUtil.FindForm<CaptureBorderForm>();
+                        if (form == null) return;
+
+                        form.StopRecord();
+                    }
+                    break;
+                    #endregion
+            }
         }
         #endregion
 
@@ -210,6 +289,33 @@ namespace GTCapture
                 string savePath = Path.Combine(Setting.SaveDirectory, fileName);
                 img.Save(savePath, Setting.GetImageFormat());
                 Clipboard.SetImage(img);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+        }
+
+        private void SaveFrames(List<Image> frames)
+        {
+            if (frames == null || frames.Count == 0) return;
+            try
+            {
+                if (!Directory.Exists(Setting.SaveDirectory))
+                {
+                    Directory.CreateDirectory(Setting.SaveDirectory);
+                }
+                string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"), "gif");
+                string savePath = Path.Combine(Setting.SaveDirectory, fileName);
+
+                using (var gif = File.OpenWrite(savePath))
+                using (var encoder = new BumpKit.GifEncoder(gif))
+                {
+                    foreach (var frame in frames)
+                    {
+                        encoder.AddFrame(frame);
+                    }
+                }
             }
             catch (Exception e)
             {

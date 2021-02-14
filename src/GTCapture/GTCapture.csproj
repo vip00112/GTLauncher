@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BumpKit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bumpkit.1.0.2\lib\BumpKit.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -42,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Form\CaptureBorderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\CaptureBorderForm.Designer.cs">
+      <DependentUpon>CaptureBorderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\CaptureRegionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +79,9 @@
     <Compile Include="Structures.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Form\CaptureBorderForm.resx">
+      <DependentUpon>CaptureBorderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\CaptureRegionForm.resx">
       <DependentUpon>CaptureRegionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -85,6 +97,9 @@
       <Project>{3e47b9d4-ea18-4f1b-9eef-f586bb1a1f0d}</Project>
       <Name>GTUtil</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
