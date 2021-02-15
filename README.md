@@ -1,11 +1,14 @@
 # GTLauncher
+GTLauncher is desktop management application by GUI.
 
-GTLauncher is desktop GUI manage application.
+## Dependency
+ - .NET Framework 4.5
+ - FFmpeg ([https://ffmpeg.org/](https://ffmpeg.org/))
 
-Quick start application.
-
-Open directory.
-
-Screen capture by short cut.
-
-Make Simple paging in this application by layout setting.
+## Features
+ - Quick start application.
+ - Open directory.
+ - Screen capture and save jpg/png /bmp file.
+ - Screen recording and save mp4 file.
+ - Screen recording and save gif file.
+ - Make simple paging in this application by layout setting.
