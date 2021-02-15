@@ -1,5 +1,5 @@
 # GTLauncher
-GTLauncher is desktop management application by GUI.
+GTLauncher is desktop management GUI application.
 
 ## Dependency
  - .NET Framework 4.5
