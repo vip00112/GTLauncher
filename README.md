@@ -3,8 +3,7 @@ GTLauncher is desktop management GUI application.
 
 ## Dependency
  - .NET Framework 4.5
- - FFmpeg ([https://ffmpeg.org](https://ffmpeg.org))
- - GoodbyeDPI ([https://github.com/ValdikSS/GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI))
+ - GTLauncherDependency ([https://github.com/vip00112/GTLauncherDependency](https://github.com/vip00112/GTLauncherDependency))
 
 ## Features
  - Quick start application.
