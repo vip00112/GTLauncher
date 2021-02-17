@@ -46,7 +46,7 @@ namespace GTCapture
             textBox_fullScreen.Tag = CaptureMode.FullScreen;
             textBox_activeProcess.Tag = CaptureMode.ActiveProcess;
             textBox_region.Tag = CaptureMode.Region;
-            textBox_recordRegion.Tag = CaptureMode.RecordRegion;
+            textBox_recordRegion.Tag = CaptureMode.RecordGif;
             textBox_recordStart.Tag = CaptureMode.RecordStart;
             textBox_recordStop.Tag = CaptureMode.RecordStop;
 

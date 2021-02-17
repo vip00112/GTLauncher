@@ -45,11 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form\CaptureBorderForm.cs">
+    <Compile Include="Form\RecordForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\CaptureBorderForm.Designer.cs">
-      <DependentUpon>CaptureBorderForm.cs</DependentUpon>
+    <Compile Include="Form\RecordForm.Designer.cs">
+      <DependentUpon>RecordForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Form\CaptureRegionForm.cs">
       <SubType>Form</SubType>
@@ -59,6 +59,7 @@
     </Compile>
     <Compile Include="Model\Capture.cs" />
     <Compile Include="Model\Enums.cs" />
+    <Compile Include="Model\FFmpeg.cs" />
     <Compile Include="Model\HotKey.cs" />
     <Compile Include="Form\HotKeySettingForm.cs">
       <SubType>Form</SubType>
@@ -79,8 +80,8 @@
     <Compile Include="Structures.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Form\CaptureBorderForm.resx">
-      <DependentUpon>CaptureBorderForm.cs</DependentUpon>
+    <EmbeddedResource Include="Form\RecordForm.resx">
+      <DependentUpon>RecordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\CaptureRegionForm.resx">
       <DependentUpon>CaptureRegionForm.cs</DependentUpon>

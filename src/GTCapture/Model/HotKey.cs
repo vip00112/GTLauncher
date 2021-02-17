@@ -56,8 +56,10 @@ namespace GTCapture
                     return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.D2 };
                 case CaptureMode.Region:
                     return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.D3 };
-                case CaptureMode.RecordRegion:
+                case CaptureMode.RecordGif:
                     return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.D4 };
+                case CaptureMode.RecordVideo:
+                    return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Alt, Key = Keys.D5 };
                 case CaptureMode.RecordStart:
                     return new HotKey() { CaptureMode = mode, Modifiers = KeyModifiers.Control, Key = Keys.D1 };
                 case CaptureMode.RecordStop:

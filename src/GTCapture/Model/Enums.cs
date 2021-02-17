@@ -13,7 +13,7 @@ namespace GTCapture
 
     public enum CaptureMode
     {
-        None, FullScreen, ActiveProcess, Region, RecordRegion, RecordStart, RecordStop
+        None, FullScreen, ActiveProcess, Region, RecordGif, RecordVideo, RecordStart, RecordStop
     }
 
     public enum DeviceCap
@@ -21,7 +21,7 @@ namespace GTCapture
         VERTRES = 10, DESKTOPVERTRES = 117,
     }
 
-    public enum ActionType
+    public enum FormActionType
     {
         None,
 

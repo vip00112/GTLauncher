@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,8 +17,10 @@ namespace GTCapture
     {
         public EventHandler OnCaptured;
 
-        private BackgroundWorker _captureTimer;
-        private BackgroundWorker _gifRecorder;
+        private BackgroundWorker _captureThread;
+        private BackgroundWorker _recordThread;
+        private FFmpeg _ffmpeg;
+        private Process _ffmpegProc;
 
         #region Constructor
         public Capture(IntPtr hWnd)
@@ -27,6 +30,8 @@ namespace GTCapture
 
             Setting.Handle = hWnd;
             Setting.Load();
+
+            _ffmpeg = new FFmpeg();
         }
         #endregion
 
@@ -35,7 +40,7 @@ namespace GTCapture
         {
             base.WndProc(ref m);
             if (m.Msg != 0x0312) return;
-            if (_captureTimer != null) return;
+            if (_captureThread != null) return;
 
             var modifier = (KeyModifiers) ((int) m.LParam & 0xFFFF);
             var key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
@@ -49,8 +54,8 @@ namespace GTCapture
                 case CaptureMode.FullScreen:
                 case CaptureMode.ActiveProcess:
                 case CaptureMode.Region:
-                    _captureTimer = new BackgroundWorker();
-                    _captureTimer.DoWork += delegate (object sender, DoWorkEventArgs e)
+                    _captureThread = new BackgroundWorker();
+                    _captureThread.DoWork += delegate (object sender, DoWorkEventArgs e)
                     {
                         int delay = Setting.Timer;
                         while (delay > 0)
@@ -60,7 +65,7 @@ namespace GTCapture
                         }
                         e.Result = CaptureWindow(mode);
                     };
-                    _captureTimer.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
+                    _captureThread.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
                     {
                         try
                         {
@@ -78,78 +83,36 @@ namespace GTCapture
                         }
                         finally
                         {
-                            _captureTimer = null;
+                            _captureThread = null;
                         }
                     };
-                    _captureTimer.RunWorkerAsync();
+                    _captureThread.RunWorkerAsync();
                     break;
                 #endregion
 
-                #region GIF Record
-                case CaptureMode.RecordRegion:
-                    if (FormUtil.FindForm<CaptureBorderForm>() != null) return;
+                #region Record
+                case CaptureMode.RecordGif:
+                case CaptureMode.RecordVideo:
+                    if (_recordThread != null) return;
 
-                    using (var dialog = new CaptureBorderForm())
+                    var form = FormUtil.FindForm<RecordForm>();
+                    if (form != null)
                     {
-                        if (dialog.ShowDialog() != DialogResult.OK) return;
+                        form.Cancel();
+                        return;
                     }
+
+                    form = new RecordForm(mode);
+                    form.OnStart += StartRecord;
+                    form.OnStop += StopRecord;
+                    form.OnClose += CloseRecordForm;
+                    form.Show();
                     break;
                 case CaptureMode.RecordStart:
-                    {
-                        var form = FormUtil.FindForm<CaptureBorderForm>();
-                        if (form == null) return;
-
-                        form.StartRecord();
-
-                        if (_gifRecorder != null) return;
-                        _gifRecorder = new BackgroundWorker();
-                        _gifRecorder.DoWork += delegate (object sender, DoWorkEventArgs e)
-                        {
-                            var frames = new List<Image>();
-
-                            CaptureBorderForm target;
-                            while ((target = FormUtil.FindForm<CaptureBorderForm>()) != null)
-                            {
-                                if (!target.IsStartedRecored) break;
-
-                                var handle = WindowsAPI.GetDesktopWindow();
-                                var rec = target.RecordRec;
-                                var frame = CaptureWindow(handle, rec.X, rec.Y, rec.Width, rec.Height);
-                                frames.Add(frame);
-
-                                Thread.Sleep(60);
-                            }
-                            e.Result = frames;
-                        };
-                        _gifRecorder.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
-                        {
-                            try
-                            {
-                                var frames = e.Result as List<Image>;
-                                if (frames == null) return;
-
-                                OnCaptured?.Invoke(this, EventArgs.Empty);
-                                SaveFrames(frames);
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.Error(ex);
-                            }
-                            finally
-                            {
-                                _gifRecorder = null;
-                            }
-                        };
-                        _gifRecorder.RunWorkerAsync();
-                    }
+                    StartRecord(null, EventArgs.Empty);
                     break;
                 case CaptureMode.RecordStop:
-                    {
-                        var form = FormUtil.FindForm<CaptureBorderForm>();
-                        if (form == null) return;
-
-                        form.StopRecord();
-                    }
+                    StopRecord(null, EventArgs.Empty);
                     break;
                     #endregion
             }
@@ -276,17 +239,88 @@ namespace GTCapture
             }
         }
 
+        private string CreateFFmpegArgs(RecordForm form, string output)
+        {
+            var rec = form.RecordRec;
+            int width = (rec.Width % 2 == 0) ? rec.Width : rec.Width - 1;
+            int height = (rec.Height % 2 == 0) ? rec.Height : rec.Height - 1;
+            int framerate = 0;
+            string option = "";
+            if (form.Mode == CaptureMode.RecordGif)
+            {
+                framerate = 15;
+                option = " -qp 0 -y";
+            }
+            else if (form.Mode == CaptureMode.RecordVideo)
+            {
+                framerate = 30;
+                option = " -crf 28 -pix_fmt yuv420p -movflags +faststart -y";
+            }
+
+            var sb = new StringBuilder();
+            sb.Append("-rtbufsize 150M -f gdigrab -framerate " + framerate);
+            sb.Append(string.Format(" -offset_x {0} -offset_y {1} -video_size {2}x{3}", rec.X, rec.Y, width, height));
+            sb.Append(" -draw_mouse 1 -i desktop -c:v libx264 -r " + framerate);
+            sb.Append(" -preset ultrafast -tune zerolatency");
+            sb.Append(option + " \"" + output + "\"");
+            return sb.ToString();
+        }
+
+        private void ConvertGif(string srcFilePath)
+        {
+            string ffmpegPath = Path.Combine(Application.StartupPath, "FFmpeg.exe");
+            if (!File.Exists(ffmpegPath))
+            {
+                MessageBoxUtil.Error("Can't find 'FFmpeg.exe'");
+                return;
+            }
+
+            // gif변환 args
+            string dirPath = Path.GetDirectoryName(srcFilePath);
+            string fileName = Path.GetFileNameWithoutExtension(srcFilePath) + ".gif";
+            string newFilePath = Path.Combine(dirPath, fileName);
+            string args = string.Format("-i \"{0}\" -lavfi \"palettegen=stats_mode=full[palette],[0:v][palette]paletteuse=dither=sierra2_4a\" -y \"{1}\"",
+                                        srcFilePath, newFilePath);
+            using (var proc = new Process())
+            {
+                var psi = new ProcessStartInfo()
+                {
+                    FileName = ffmpegPath,
+                    WorkingDirectory = Path.GetDirectoryName(ffmpegPath),
+                    Arguments = args,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    StandardErrorEncoding = Encoding.UTF8
+                };
+
+                // TEST
+                //proc.EnableRaisingEvents = true;
+                //proc.ErrorDataReceived += delegate (object debugSender, DataReceivedEventArgs debugEvent)
+                //{
+                //    if (string.IsNullOrWhiteSpace(debugEvent.Data)) return;
+                //    Console.WriteLine(debugEvent.Data);
+                //};
+                proc.StartInfo = psi;
+                proc.Start();
+
+                proc.BeginOutputReadLine();
+                proc.BeginErrorReadLine();
+                proc.WaitForExit();
+            }
+
+            File.Delete(srcFilePath);
+        }
+
         private void SaveImage(Image img)
         {
             if (img == null) return;
             try
             {
-                if (!Directory.Exists(Setting.SaveDirectory))
-                {
-                    Directory.CreateDirectory(Setting.SaveDirectory);
-                }
-                string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"), Setting.SaveImageFormat);
-                string savePath = Path.Combine(Setting.SaveDirectory, fileName);
+                string savePath = GetSaveFilePath(Setting.SaveImageFormat);
                 img.Save(savePath, Setting.GetImageFormat());
                 Clipboard.SetImage(img);
             }
@@ -296,31 +330,106 @@ namespace GTCapture
             }
         }
 
-        private void SaveFrames(List<Image> frames)
+        private string GetSaveFilePath(string extension)
         {
-            if (frames == null || frames.Count == 0) return;
-            try
+            if (!Directory.Exists(Setting.SaveDirectory))
             {
-                if (!Directory.Exists(Setting.SaveDirectory))
-                {
-                    Directory.CreateDirectory(Setting.SaveDirectory);
-                }
-                string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"), "gif");
-                string savePath = Path.Combine(Setting.SaveDirectory, fileName);
+                Directory.CreateDirectory(Setting.SaveDirectory);
+            }
+            string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss"), extension);
+            return Path.Combine(Setting.SaveDirectory, fileName);
+        }
+        #endregion
 
-                using (var gif = File.OpenWrite(savePath))
-                using (var encoder = new BumpKit.GifEncoder(gif))
-                {
-                    foreach (var frame in frames)
-                    {
-                        encoder.AddFrame(frame);
-                    }
-                }
-            }
-            catch (Exception e)
+        #region Event Handler
+        private void StartRecord(object s, EventArgs ev)
+        {
+            var form = FormUtil.FindForm<RecordForm>();
+            if (form == null) return;
+
+            string ffmpegPath = Path.Combine(Application.StartupPath, "FFmpeg.exe");
+            if (!File.Exists(ffmpegPath))
             {
-                Logger.Error(e);
+                MessageBoxUtil.Error("Can't find 'FFmpeg.exe'");
+                return;
             }
+
+            if (!Directory.Exists(Setting.SaveDirectory))
+            {
+                Directory.CreateDirectory(Setting.SaveDirectory);
+            }
+            string savePath = GetSaveFilePath("mp4");
+
+            form.StartRecord();
+
+            if (_recordThread != null) return;
+
+            _recordThread = new BackgroundWorker();
+            _recordThread.DoWork += delegate (object sender, DoWorkEventArgs e)
+            {
+                string args = CreateFFmpegArgs(form, savePath);
+                using (_ffmpegProc = new Process())
+                {
+                    var psi = new ProcessStartInfo()
+                    {
+                        FileName = ffmpegPath,
+                        WorkingDirectory = Path.GetDirectoryName(ffmpegPath),
+                        Arguments = args,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardInput = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        StandardOutputEncoding = Encoding.UTF8,
+                        StandardErrorEncoding = Encoding.UTF8
+                    };
+
+                    // TEST
+                    //_ffmpegProc.EnableRaisingEvents = true;
+                    //_ffmpegProc.ErrorDataReceived += delegate (object debugSender, DataReceivedEventArgs debugEvent)
+                    //{
+                    //    if (string.IsNullOrWhiteSpace(debugEvent.Data)) return;
+                    //    Console.WriteLine(debugEvent.Data);
+                    //};
+                    _ffmpegProc.StartInfo = psi;
+                    _ffmpegProc.Start();
+
+                    _ffmpegProc.BeginOutputReadLine();
+                    _ffmpegProc.BeginErrorReadLine();
+                    _ffmpegProc.WaitForExit();
+                }
+            };
+            _recordThread.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
+            {
+                _ffmpegProc = null;
+                _recordThread = null;
+
+                if (form.Mode == CaptureMode.RecordGif)
+                {
+                    ConvertGif(savePath);
+                }
+            };
+            _recordThread.RunWorkerAsync();
+        }
+
+        private void StopRecord(object sender, EventArgs e)
+        {
+            var form = FormUtil.FindForm<RecordForm>();
+            if (form == null) return;
+
+            form.StopRecord();
+
+            if (_ffmpegProc != null) _ffmpegProc.StandardInput.WriteLine("q");
+        }
+
+        private void CloseRecordForm(object sender, EventArgs e)
+        {
+            var form = sender as RecordForm;
+            if (form == null) return;
+
+            form.OnStart -= StartRecord;
+            form.OnStop -= StopRecord;
+            form.OnClose -= CloseRecordForm;
         }
         #endregion
     }

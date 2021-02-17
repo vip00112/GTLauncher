@@ -13,7 +13,7 @@ namespace GTCapture
     public static class Setting
     {
         private const string SaveFileName = "Setting.Capture.json";
-        public static readonly string[] ImageFormats = new string[] { "jpg", "png", "gif", "bmp" };
+        public static readonly string[] ImageFormats = new string[] { "jpg", "png", "bmp" };
 
         #region Properties
         public static IntPtr Handle { get; set; }

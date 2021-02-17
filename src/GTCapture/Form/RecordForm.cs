@@ -5,43 +5,56 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GTCapture
 {
-    public partial class CaptureBorderForm : Form
+    public partial class RecordForm : Form
     {
         private const int LineSize = 4;
-        private const int MinSize = LineSize * 10;
+
+        public EventHandler OnStart;
+        public EventHandler OnStop;
+        public EventHandler OnClose;
 
         private Point _moveLoc;
+        private Size _minSize;
 
         #region Constructor
-        public CaptureBorderForm()
+        public RecordForm(CaptureMode mode)
         {
             InitializeComponent();
 
             DoubleBuffered = true;
+
+            _minSize = new Size(80 + (LineSize * 2), 80 + (LineSize * 2) + HeaderSize);
+            Mode = mode;
+
+            if (Mode == CaptureMode.RecordGif) label_type.Text = "GIF";
+            else if (Mode == CaptureMode.RecordVideo) label_type.Text = "VIDEO";
         }
         #endregion
 
         #region Properties
-        private ActionType ActionType { get; set; }
+        private FormActionType FormActionType { get; set; }
+
+        private int HeaderSize { get { return panel_header.Height; } }
 
         private Rectangle LeftRec
         {
-            get { return new Rectangle(0, 0, LineSize, Height); }
+            get { return new Rectangle(0, HeaderSize, LineSize, Height - HeaderSize); }
         }
 
         private Rectangle TopRec
         {
-            get { return new Rectangle(0, 0, Width, LineSize); }
+            get { return new Rectangle(0, HeaderSize, Width, LineSize); }
         }
 
         private Rectangle RightRec
         {
-            get { return new Rectangle(Width - LineSize, 0, LineSize, Height); }
+            get { return new Rectangle(Width - LineSize, HeaderSize, LineSize, Height - HeaderSize); }
         }
 
         private Rectangle BottomRec
@@ -51,12 +64,12 @@ namespace GTCapture
 
         private Rectangle TopLeftRec
         {
-            get { return new Rectangle(0, 0, LineSize, LineSize); }
+            get { return new Rectangle(0, HeaderSize, LineSize, LineSize); }
         }
 
         private Rectangle TopRightRec
         {
-            get { return new Rectangle(Width - LineSize, 0, LineSize, LineSize); }
+            get { return new Rectangle(Width - LineSize, HeaderSize, LineSize, LineSize); }
         }
 
         private Rectangle BottomRightRec
@@ -74,30 +87,34 @@ namespace GTCapture
             get
             {
                 int value = LineSize * 2;
-                return new Rectangle(Width / 2 - value / 2, Height / 2 - value / 2, value, value);
+                int x = (Width / 2) - (value / 2);
+                int y = (HeaderSize / 2) + (Height / 2) - (value / 2);
+                return new Rectangle(x, y, value, value);
             }
         }
 
-        public bool IsStartedRecored { get; private set; }
+        public bool IsStartedRecord { get; private set; }
 
         public Rectangle RecordRec
         {
             get 
             {
                 int x = Location.X + LineSize;
-                int y = Location.Y + LineSize;
+                int y = Location.Y + LineSize + HeaderSize;
                 int w = Width - (LineSize * 2);
-                int h = Height - (LineSize * 2);
+                int h = Height - (LineSize * 2) - HeaderSize;
                 return new Rectangle(x, y, w, h); 
             }
         }
+
+        public CaptureMode Mode { get; private set; }
 
         new public int Width
         {
             get { return base.Width; }
             set
             {
-                if (value < MinSize) value = MinSize;
+                if (value < _minSize.Width) value = _minSize.Width;
                 base.Width = value;
             }
         }
@@ -107,7 +124,7 @@ namespace GTCapture
             get { return base.Height; }
             set
             {
-                if (value < MinSize) value = MinSize;
+                if (value < _minSize.Height) value = _minSize.Height;
                 base.Height = value;
             }
         }
@@ -118,7 +135,7 @@ namespace GTCapture
             set
             {
                 int diff = value - base.Left;
-                if (Width <= MinSize && diff > 0) value = base.Left;
+                if (Width <= _minSize.Width && diff > 0) value = base.Left;
                 base.Left = value;
             }
         }
@@ -129,18 +146,23 @@ namespace GTCapture
             set
             {
                 int diff = value - base.Top;
-                if (Height <= MinSize && diff > 0) value = base.Top;
+                if (Height <= _minSize.Height && diff > 0) value = base.Top;
                 base.Top = value;
             }
         }
         #endregion
 
         #region Control Event
+        private void RecordForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            OnClose?.Invoke(this, EventArgs.Empty);
+        }
+
         private void CaptureBorderForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Escape)
             {
-                DialogResult = DialogResult.Cancel;
+                Cancel();
             }
         }
 
@@ -148,62 +170,62 @@ namespace GTCapture
         {
             if (CenterRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.Move;
+                FormActionType = FormActionType.Move;
                 _moveLoc = e.Location;
             }
             else if (TopLeftRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.ResizeTopLeft;
+                FormActionType = FormActionType.ResizeTopLeft;
             }
             else if (TopRightRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.ResizeTopRight;
+                FormActionType = FormActionType.ResizeTopRight;
             }
             else if (BottomRightRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.ResizeBottomRight;
+                FormActionType = FormActionType.ResizeBottomRight;
             }
             else if (BottomLeftRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.ResizeBottomLeft;
+                FormActionType = FormActionType.ResizeBottomLeft;
             }
             else if (LeftRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.ResizeLeft;
+                FormActionType = FormActionType.ResizeLeft;
             }
             else if (TopRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.ResizeTop;
+                FormActionType = FormActionType.ResizeTop;
             }
             else if (RightRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.ResizeRight;
+                FormActionType = FormActionType.ResizeRight;
             }
             else if (BottomRec.Contains(e.X, e.Y))
             {
-                ActionType = ActionType.ResizeBottom;
+                FormActionType = FormActionType.ResizeBottom;
             }
             else
             {
-                ActionType = ActionType.None;
+                FormActionType = FormActionType.None;
             }
         }
 
         private void CaptureBorderForm_MouseMove(object sender, MouseEventArgs e)
         {
-            switch (ActionType)
+            switch (FormActionType)
             {
-                case ActionType.Move:
+                case FormActionType.Move:
                     Location = new Point(Location.X - (_moveLoc.X - e.X), Location.Y - (_moveLoc.Y - e.Y));
                     break;
-                case ActionType.ResizeLeft:
-                case ActionType.ResizeTop:
-                case ActionType.ResizeRight:
-                case ActionType.ResizeBottom:
-                case ActionType.ResizeTopLeft:
-                case ActionType.ResizeTopRight:
-                case ActionType.ResizeBottomRight:
-                case ActionType.ResizeBottomLeft:
+                case FormActionType.ResizeLeft:
+                case FormActionType.ResizeTop:
+                case FormActionType.ResizeRight:
+                case FormActionType.ResizeBottom:
+                case FormActionType.ResizeTopLeft:
+                case FormActionType.ResizeTopRight:
+                case FormActionType.ResizeBottomRight:
+                case FormActionType.ResizeBottomLeft:
                     ResizeAction();
                     break;
                 default:
@@ -215,47 +237,101 @@ namespace GTCapture
 
         private void CaptureBorderForm_MouseUp(object sender, MouseEventArgs e)
         {
-            ActionType = ActionType.None;
+            FormActionType = FormActionType.None;
         }
 
         private void CaptureBorderForm_Paint(object sender, PaintEventArgs e)
         {
-            var rec = new Rectangle(LineSize, LineSize, Width - (LineSize * 2), Height - (LineSize * 2));
+            var rec = new Rectangle(LineSize, LineSize + HeaderSize, RecordRec.Width, RecordRec.Height);
             using (var b = new SolidBrush(Color.Lime))
             {
                 e.Graphics.FillRectangle(b, rec);
             }
 
-            if (!IsStartedRecored)
+            if (!IsStartedRecord)
             {
                 using (var b = new SolidBrush(BackColor))
                 {
                     e.Graphics.FillRectangle(b, CenterRec);
 
                     var recordRec = RecordRec;
-                    e.Graphics.DrawString(string.Format("{0}x{1}", recordRec.Width, recordRec.Height), Font, b, LineSize + 1, LineSize + 1);
+                    e.Graphics.DrawString(string.Format("{0}x{1}", recordRec.Width, recordRec.Height), Font, b, LineSize + 1, HeaderSize + LineSize + 1);
                 }
             }
+        }
+
+        private void label_start_Click(object sender, EventArgs e)
+        {
+            if (IsStartedRecord)
+            {
+                OnStop?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                OnStart?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void label_close_Click(object sender, EventArgs e)
+        {
+            Cancel();
         }
         #endregion
 
         #region Public Method
         public void StartRecord()
         {
-            if (IsStartedRecored) return;
+            if (IsStartedRecord) return;
 
-            IsStartedRecored = true;
+            label_start.Text = "■";
+            IsStartedRecord = true;
             BackColor = Color.Green;
+            label_start.ForeColor = Color.Green;
+            label_type.ForeColor = Color.Green;
+            label_time.ForeColor = Color.Green;
+            label_close.ForeColor = Color.Green;
+
+            var timerThread = new BackgroundWorker();
+            timerThread.WorkerReportsProgress = true;
+            timerThread.DoWork += delegate (object sender, DoWorkEventArgs e)
+            {
+                int time = 0;
+                while (IsStartedRecord)
+                {
+                    Thread.Sleep(1000);
+                    timerThread.ReportProgress(++time);
+                }
+            };
+            timerThread.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e)
+            {
+                label_time.Text = TimeSpan.FromSeconds(e.ProgressPercentage).ToString("mm':'ss");
+            };
+            timerThread.RunWorkerAsync();
         }
 
         public void StopRecord()
         {
-            if (!IsStartedRecored) return;
+            if (!IsStartedRecord) return;
 
-            IsStartedRecored = false;
+            IsStartedRecord = false;
             BackColor = Color.Red;
+            label_start.ForeColor = Color.Red;
+            label_type.ForeColor = Color.Red;
+            label_time.ForeColor = Color.Red;
+            label_close.ForeColor = Color.Red;
 
-            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        public void Cancel()
+        {
+            if (IsStartedRecord)
+            {
+                OnStop?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+
+            Close();
         }
         #endregion
 
@@ -310,38 +386,41 @@ namespace GTCapture
             int locY = Location.Y;
             int currentX = Cursor.Position.X;
             int currentY = Cursor.Position.Y;
-            switch (ActionType)
+            switch (FormActionType)
             {
-                case ActionType.ResizeLeft:
+                case FormActionType.ResizeLeft:
                     Width = (locX + Width) - currentX;
                     Left = currentX;
                     break;
-                case ActionType.ResizeTop:
+                case FormActionType.ResizeTop:
+                    currentY -= HeaderSize;
                     Height = (locY + Height) - currentY;
                     Top = currentY;
                     break;
-                case ActionType.ResizeRight:
+                case FormActionType.ResizeRight:
                     Width = currentX - locX;
                     break;
-                case ActionType.ResizeBottom:
+                case FormActionType.ResizeBottom:
                     Height = currentY - locY;
                     break;
-                case ActionType.ResizeTopLeft:
+                case FormActionType.ResizeTopLeft:
+                    currentY -= HeaderSize;
                     Height = (locY + Height) - currentY;
                     Top = currentY;
                     Width = (locX + Width) - currentX;
                     Left = currentX;
                     break;
-                case ActionType.ResizeTopRight:
+                case FormActionType.ResizeTopRight:
+                    currentY -= HeaderSize;
                     Height = (locY + Height) - currentY;
                     Top = currentY;
                     Width = currentX - locX;
                     break;
-                case ActionType.ResizeBottomRight:
+                case FormActionType.ResizeBottomRight:
                     Height = currentY - locY;
                     Width = currentX - locX;
                     break;
-                case ActionType.ResizeBottomLeft:
+                case FormActionType.ResizeBottomLeft:
                     Height = currentY - locY;
                     Width = (locX + Width) - currentX;
                     Left = currentX;

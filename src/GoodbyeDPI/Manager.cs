@@ -61,10 +61,6 @@ namespace GoodbyeDPI
             _proc.Kill();
             _proc.WaitForExit();
 
-            try { File.Delete(_fileNameExe); } catch { }
-            try { File.Delete(_fileNameDll); } catch { }
-            try { File.Delete(_fileNameSys); } catch { }
-
             _proc = null;
             IsStarted = false;
         }

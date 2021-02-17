@@ -56,11 +56,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\goodbyedpi.exe" />
-    <None Include="Resources\WinDivert64.sys" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\WinDivert.dll" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
