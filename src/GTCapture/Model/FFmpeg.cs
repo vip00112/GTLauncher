@@ -24,12 +24,13 @@ namespace GTCapture
             _ffmpegPath = Path.Combine(Application.StartupPath, "Tools", "FFmpeg.exe");
         }
 
-        public void StartRecord()
+        public void StartRecord(string outputFilePath)
         {
             if (!File.Exists(_ffmpegPath))
             {
                 string msg = "Can't find 'FFmpeg.exe'\r\nAre you download 'FFmpeg.exe'?";
                 if (!MessageBoxUtil.Confirm(msg)) return;
+
             }
 
             switch (_mode)

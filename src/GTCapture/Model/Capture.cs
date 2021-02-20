@@ -19,8 +19,8 @@ namespace GTCapture
 
         private BackgroundWorker _captureThread;
         private BackgroundWorker _recordThread;
-        private FFmpeg _ffmpeg;
         private Process _ffmpegProc;
+        private FFmpeg _ffmpeg;
 
         #region Constructor
         public Capture(IntPtr hWnd)
@@ -28,10 +28,7 @@ namespace GTCapture
             // WndProc 이벤트가 발생하도록 핸들 등록
             AssignHandle(hWnd);
 
-            Setting.Handle = hWnd;
-            Setting.Load();
-
-            _ffmpeg = new FFmpeg();
+            CaptureSetting.Handle = hWnd;
         }
         #endregion
 
@@ -45,7 +42,7 @@ namespace GTCapture
             var modifier = (KeyModifiers) ((int) m.LParam & 0xFFFF);
             var key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
 
-            CaptureMode mode = Setting.GetCaptureMode(modifier, key);
+            CaptureMode mode = CaptureSetting.GetCaptureMode(modifier, key);
             if (mode == CaptureMode.None) return;
 
             switch (mode)
@@ -57,7 +54,7 @@ namespace GTCapture
                     _captureThread = new BackgroundWorker();
                     _captureThread.DoWork += delegate (object sender, DoWorkEventArgs e)
                     {
-                        int delay = Setting.Timer;
+                        int delay = CaptureSetting.Timer;
                         while (delay > 0)
                         {
                             Thread.Sleep(1000);
@@ -120,17 +117,9 @@ namespace GTCapture
         #endregion
 
         #region Public Method
-        public void ShowSettingForm()
-        {
-            using (var dialog = new SettingForm())
-            {
-                if (dialog.ShowDialog() != DialogResult.OK) return;
-            }
-        }
-
         public string GetSaveFolderPath()
         {
-            return Setting.SaveDirectory;
+            return CaptureSetting.SaveDirectory;
         }
         #endregion
 
@@ -150,7 +139,7 @@ namespace GTCapture
                     img = CaptureWindow(handle, 0, 0, 0, 0);
                     break;
                 case CaptureMode.Region:
-                    using (var dialog = new CaptureRegionForm())
+                    using (var dialog = new CaptureRegionDialog())
                     {
                         if (dialog.ShowDialog() != DialogResult.OK) return null;
 
@@ -320,8 +309,8 @@ namespace GTCapture
             if (img == null) return;
             try
             {
-                string savePath = GetSaveFilePath(Setting.SaveImageFormat);
-                img.Save(savePath, Setting.GetImageFormat());
+                string savePath = GetSaveFilePath(CaptureSetting.SaveImageFormat);
+                img.Save(savePath, CaptureSetting.GetImageFormat());
                 Clipboard.SetImage(img);
             }
             catch (Exception e)
@@ -332,12 +321,12 @@ namespace GTCapture
 
         private string GetSaveFilePath(string extension)
         {
-            if (!Directory.Exists(Setting.SaveDirectory))
+            if (!Directory.Exists(CaptureSetting.SaveDirectory))
             {
-                Directory.CreateDirectory(Setting.SaveDirectory);
+                Directory.CreateDirectory(CaptureSetting.SaveDirectory);
             }
             string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss"), extension);
-            return Path.Combine(Setting.SaveDirectory, fileName);
+            return Path.Combine(CaptureSetting.SaveDirectory, fileName);
         }
         #endregion
 
@@ -354,9 +343,9 @@ namespace GTCapture
                 return;
             }
 
-            if (!Directory.Exists(Setting.SaveDirectory))
+            if (!Directory.Exists(CaptureSetting.SaveDirectory))
             {
-                Directory.CreateDirectory(Setting.SaveDirectory);
+                Directory.CreateDirectory(CaptureSetting.SaveDirectory);
             }
             string savePath = GetSaveFilePath("mp4");
 
@@ -410,6 +399,13 @@ namespace GTCapture
                 }
             };
             _recordThread.RunWorkerAsync();
+
+            var mode = FFmpeg.RecordMode.Mp4;
+            if (form.Mode == CaptureMode.RecordGif) mode = FFmpeg.RecordMode.Gif;
+            _ffmpeg = new FFmpeg(mode);
+
+            string outputFilePath = "";
+            _ffmpeg.StartRecord(outputFilePath);
         }
 
         private void StopRecord(object sender, EventArgs e)

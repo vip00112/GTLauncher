@@ -40,9 +40,9 @@ namespace GoodbyeDPI
                 proc.Kill();
             }
 
-            try { File.WriteAllBytes(_fileNameExe, Properties.Resources.goodbyedpi); } catch { }
-            try { File.WriteAllBytes(_fileNameDll, Properties.Resources.WinDivert); } catch { }
-            try { File.WriteAllBytes(_fileNameSys, Properties.Resources.WinDivert64); } catch { }
+            //try { File.WriteAllBytes(_fileNameExe, Properties.Resources.goodbyedpi); } catch { }
+            //try { File.WriteAllBytes(_fileNameDll, Properties.Resources.WinDivert); } catch { }
+            //try { File.WriteAllBytes(_fileNameSys, Properties.Resources.WinDivert64); } catch { }
 
             _proc = new Process();
             _proc.StartInfo.FileName = _fileNameExe;

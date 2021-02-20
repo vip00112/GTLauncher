@@ -43,89 +43,86 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Control\Page.cs">
+    <Compile Include="Control\Page\Page.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Control\Page.Designer.cs">
+    <Compile Include="Control\Page\Page.Designer.cs">
       <DependentUpon>Page.cs</DependentUpon>
     </Compile>
-    <Compile Include="Control\PageBody.cs">
+    <Compile Include="Control\Page\PageBody.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Form\CreatePageForm.cs">
+    <Compile Include="Control\CreatePageDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\CreatePageForm.Designer.cs">
-      <DependentUpon>CreatePageForm.cs</DependentUpon>
+    <Compile Include="Control\CreatePageDialog.Designer.cs">
+      <DependentUpon>CreatePageDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\LayoutSettingForm.cs">
+    <Compile Include="Control\LayoutSettingDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\LayoutSettingForm.Designer.cs">
-      <DependentUpon>LayoutSettingForm.cs</DependentUpon>
+    <Compile Include="Control\LayoutSettingDialog.Designer.cs">
+      <DependentUpon>LayoutSettingDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Control\PageButton.cs">
+    <Compile Include="Control\ThemeButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Control\PageContainer.cs">
+    <Compile Include="Control\Page\PageContainer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Control\PageHeader.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Control\PageItem.cs">
+    <Compile Include="Control\Page\PageItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Control\PageItem.Designer.cs">
+    <Compile Include="Control\Page\PageItem.Designer.cs">
       <DependentUpon>PageItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\NoteForm.cs">
+    <Compile Include="Control\NoteDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\NoteForm.Designer.cs">
-      <DependentUpon>NoteForm.cs</DependentUpon>
+    <Compile Include="Control\NoteDialog.Designer.cs">
+      <DependentUpon>NoteDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Control\DownloadDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Control\DownloadDialog.Designer.cs">
+      <DependentUpon>DownloadDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Cell.cs" />
     <Compile Include="Model\Enums.cs" />
+    <Compile Include="Model\LayoutSetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Model\Setting.cs" />
-    <Compile Include="Form\SettingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\SettingForm.Designer.cs">
-      <DependentUpon>SettingForm.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Control\Page.resx">
+    <EmbeddedResource Include="Control\Page\Page.resx">
       <DependentUpon>Page.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\CreatePageForm.resx">
-      <DependentUpon>CreatePageForm.cs</DependentUpon>
+    <EmbeddedResource Include="Control\CreatePageDialog.resx">
+      <DependentUpon>CreatePageDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\LayoutSettingForm.resx">
-      <DependentUpon>LayoutSettingForm.cs</DependentUpon>
+    <EmbeddedResource Include="Control\LayoutSettingDialog.resx">
+      <DependentUpon>LayoutSettingDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Control\PageContainer.resx">
+    <EmbeddedResource Include="Control\Page\PageContainer.resx">
       <DependentUpon>PageContainer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Control\PageItem.resx">
+    <EmbeddedResource Include="Control\Page\PageItem.resx">
       <DependentUpon>PageItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\NoteForm.resx">
-      <DependentUpon>NoteForm.cs</DependentUpon>
+    <EmbeddedResource Include="Control\NoteDialog.resx">
+      <DependentUpon>NoteDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\DownloadDialog.resx">
+      <DependentUpon>DownloadDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form\SettingForm.resx">
-      <DependentUpon>SettingForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
