@@ -41,7 +41,7 @@
             this.richTextBox_content.TabIndex = 0;
             this.richTextBox_content.Text = "";
             // 
-            // NoteForm
+            // NoteDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -50,10 +50,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "NoteForm";
+            this.Name = "NoteDialog";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Note";
+            this.Load += new System.EventHandler(this.NoteDialog_Load);
             this.ResumeLayout(false);
 
         }

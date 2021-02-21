@@ -24,5 +24,10 @@ namespace GTControl
             Width = width;
             Height = height;
         }
+
+        private void NoteDialog_Load(object sender, EventArgs e)
+        {
+            LayoutSetting.Invalidate(this);
+        }
     }
 }

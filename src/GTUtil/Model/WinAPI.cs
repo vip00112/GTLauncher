@@ -10,6 +10,7 @@ namespace GTUtil
 {
     public class WinAPI
     {
+        #region Public Method
         public static void SetTitleBarTheme(IntPtr handle, bool isDarkMode)
         {
             if (IsWindows10OrGreater(17763))
@@ -34,17 +35,20 @@ namespace GTUtil
             var margins = new WindowNative.MARGINS()
             {
                 bottomHeight = 1,
-                leftWidth = 0,
-                rightWidth = 0,
-                topHeight = 0,
+                leftWidth = 1,
+                rightWidth = 1,
+                topHeight = 1,
             };
             WindowNative.DwmExtendFrameIntoClientArea(handle, ref margins);
         }
+        #endregion
 
+        #region Private Method
         private static bool IsWindows10OrGreater(int build = -1)
         {
             var version = Environment.OSVersion.Version;
             return version.Major >= 10 && version.Build >= build;
         }
+        #endregion
     }
 }

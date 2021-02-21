@@ -32,7 +32,9 @@ namespace GTLauncher
         #region Control Event
         private void SettingForm_Load(object sender, EventArgs e)
         {
-            if (DesignMode) return;
+            if (Runtime.DesignMode) return;
+
+            LayoutSetting.Invalidate(this);
 
             // Load From Settings
             LoadGeneralSetting();
@@ -76,21 +78,6 @@ namespace GTLauncher
             tabControl.SelectedTab = tabPage;
         }
 
-        private void listView_DrawItem(object sender, DrawListViewItemEventArgs e)
-        {
-            if (e.Item.Focused)
-            {
-                e.Item.BackColor = Color.LightSkyBlue;
-            }
-            else
-            {
-                e.Item.BackColor = Color.White;
-            }
-
-            e.DrawBackground();
-            e.DrawText();
-        }
-
         #region GeneralSetting
         private void checkBox_runOnStartup_CheckedChanged(object sender, EventArgs e)
         {
@@ -125,6 +112,7 @@ namespace GTLauncher
             var hotKey = CaptureSetting.HotKeys[mode];
             using (var dialog = new HotKeySettingDialog(hotKey))
             {
+                LayoutSetting.Invalidate(dialog);
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
                 var addeds = CaptureSetting.HotKeys.Where(o => o.Value.Modifiers == hotKey.Modifiers && o.Value.Key == hotKey.Key);

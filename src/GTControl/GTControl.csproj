@@ -88,6 +88,15 @@
     <Compile Include="Control\DownloadDialog.Designer.cs">
       <DependentUpon>DownloadDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Control\ThemePropertyGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Control\ThemeTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Control\ThemeListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Model\Cell.cs" />
     <Compile Include="Model\Enums.cs" />
     <Compile Include="Model\LayoutSetting.cs" />
@@ -97,6 +106,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Model\ThemeColorTable.cs" />
+    <Compile Include="Model\ThemeToolStripRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Control\Page\Page.resx">

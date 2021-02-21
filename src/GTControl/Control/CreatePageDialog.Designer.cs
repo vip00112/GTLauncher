@@ -59,7 +59,7 @@
             this.button_create.UseVisualStyleBackColor = true;
             this.button_create.Click += new System.EventHandler(this.button_create_Click);
             // 
-            // AddPageForm
+            // CreatePageDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -70,10 +70,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "AddPageForm";
+            this.Name = "CreatePageDialog";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Create Page";
+            this.Load += new System.EventHandler(this.CreatePageDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

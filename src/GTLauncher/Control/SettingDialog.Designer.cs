@@ -33,18 +33,16 @@
             "General"}, -1);
             System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("Layout");
             System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Capture");
-            this.comboBox_theme = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.tabControl = new GTControl.ThemeTabControl();
+            this.tabPage_general = new System.Windows.Forms.TabPage();
+            this.checkBox_runOnStartup = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.tabPage_layout = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.comboBox_theme = new System.Windows.Forms.ComboBox();
             this.button_layout = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.checkBox_runOnStartup = new System.Windows.Forms.CheckBox();
-            this.listView = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabPage_general = new System.Windows.Forms.TabPage();
-            this.tabPage_layout = new System.Windows.Forms.TabPage();
             this.tabPage_capture = new System.Windows.Forms.TabPage();
             this.comboBox_imageFormat = new System.Windows.Forms.ComboBox();
             this.button_dirPath = new System.Windows.Forms.Button();
@@ -71,12 +69,105 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
+            this.listView = new GTControl.ThemeListView();
             this.tabControl.SuspendLayout();
             this.tabPage_general.SuspendLayout();
             this.tabPage_layout.SuspendLayout();
             this.tabPage_capture.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_timer)).BeginInit();
             this.SuspendLayout();
+            // 
+            // tabControl
+            // 
+            this.tabControl.Controls.Add(this.tabPage_general);
+            this.tabControl.Controls.Add(this.tabPage_layout);
+            this.tabControl.Controls.Add(this.tabPage_capture);
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.tabControl.Location = new System.Drawing.Point(125, 0);
+            this.tabControl.Multiline = true;
+            this.tabControl.Name = "tabControl";
+            this.tabControl.Padding = new System.Drawing.Point(0, 0);
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(329, 541);
+            this.tabControl.TabIndex = 6;
+            // 
+            // tabPage_general
+            // 
+            this.tabPage_general.Controls.Add(this.checkBox_runOnStartup);
+            this.tabPage_general.Controls.Add(this.label2);
+            this.tabPage_general.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.tabPage_general.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_general.Name = "tabPage_general";
+            this.tabPage_general.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_general.Size = new System.Drawing.Size(321, 515);
+            this.tabPage_general.TabIndex = 0;
+            this.tabPage_general.Text = "General";
+            this.tabPage_general.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_runOnStartup
+            // 
+            this.checkBox_runOnStartup.AutoSize = true;
+            this.checkBox_runOnStartup.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.checkBox_runOnStartup.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox_runOnStartup.Location = new System.Drawing.Point(8, 8);
+            this.checkBox_runOnStartup.Margin = new System.Windows.Forms.Padding(5);
+            this.checkBox_runOnStartup.Name = "checkBox_runOnStartup";
+            this.checkBox_runOnStartup.Size = new System.Drawing.Size(113, 16);
+            this.checkBox_runOnStartup.TabIndex = 1;
+            this.checkBox_runOnStartup.Text = "RunOnStartup";
+            this.checkBox_runOnStartup.UseVisualStyleBackColor = true;
+            this.checkBox_runOnStartup.CheckedChanged += new System.EventHandler(this.checkBox_runOnStartup_CheckedChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label2.Location = new System.Drawing.Point(6, 29);
+            this.label2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(209, 12);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "- Launcher run on windows startup.";
+            // 
+            // tabPage_layout
+            // 
+            this.tabPage_layout.Controls.Add(this.label1);
+            this.tabPage_layout.Controls.Add(this.label3);
+            this.tabPage_layout.Controls.Add(this.comboBox_theme);
+            this.tabPage_layout.Controls.Add(this.button_layout);
+            this.tabPage_layout.Controls.Add(this.label4);
+            this.tabPage_layout.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.tabPage_layout.Location = new System.Drawing.Point(4, 22);
+            this.tabPage_layout.Name = "tabPage_layout";
+            this.tabPage_layout.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage_layout.Size = new System.Drawing.Size(321, 515);
+            this.tabPage_layout.TabIndex = 1;
+            this.tabPage_layout.Text = "Layout";
+            this.tabPage_layout.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label1.Location = new System.Drawing.Point(6, 73);
+            this.label1.Margin = new System.Windows.Forms.Padding(5);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(120, 20);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Theme";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label3.Location = new System.Drawing.Point(6, 98);
+            this.label3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(264, 12);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "- Launcher change color by selected Theme.";
             // 
             // comboBox_theme
             // 
@@ -90,39 +181,10 @@
             this.comboBox_theme.TabIndex = 3;
             this.comboBox_theme.SelectedIndexChanged += new System.EventHandler(this.comboBox_theme_SelectedIndexChanged);
             // 
-            // label1
-            // 
-            this.label1.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(6, 73);
-            this.label1.Margin = new System.Windows.Forms.Padding(5);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(120, 20);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Theme";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 29);
-            this.label2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(209, 12);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "- Launcher run on windows startup.";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 98);
-            this.label3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(264, 12);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "- Launcher change color by selected Theme.";
-            // 
             // button_layout
             // 
+            this.button_layout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_layout.ForeColor = System.Drawing.SystemColors.ControlText;
             this.button_layout.Location = new System.Drawing.Point(8, 8);
             this.button_layout.Margin = new System.Windows.Forms.Padding(5);
             this.button_layout.Name = "button_layout";
@@ -135,97 +197,13 @@
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label4.Location = new System.Drawing.Point(6, 36);
             this.label4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(133, 12);
             this.label4.TabIndex = 4;
             this.label4.Text = "- Change main layout.";
-            // 
-            // checkBox_runOnStartup
-            // 
-            this.checkBox_runOnStartup.AutoSize = true;
-            this.checkBox_runOnStartup.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.checkBox_runOnStartup.Location = new System.Drawing.Point(8, 8);
-            this.checkBox_runOnStartup.Margin = new System.Windows.Forms.Padding(5);
-            this.checkBox_runOnStartup.Name = "checkBox_runOnStartup";
-            this.checkBox_runOnStartup.Size = new System.Drawing.Size(113, 16);
-            this.checkBox_runOnStartup.TabIndex = 1;
-            this.checkBox_runOnStartup.Text = "RunOnStartup";
-            this.checkBox_runOnStartup.UseVisualStyleBackColor = true;
-            this.checkBox_runOnStartup.CheckedChanged += new System.EventHandler(this.checkBox_runOnStartup_CheckedChanged);
-            // 
-            // listView
-            // 
-            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-            this.listView.Dock = System.Windows.Forms.DockStyle.Left;
-            this.listView.FullRowSelect = true;
-            this.listView.GridLines = true;
-            this.listView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.listView.HideSelection = false;
-            listViewItem1.Tag = "General";
-            listViewItem2.Tag = "Layout";
-            listViewItem3.StateImageIndex = 0;
-            listViewItem3.Tag = "Capture";
-            this.listView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3});
-            this.listView.Location = new System.Drawing.Point(0, 0);
-            this.listView.MultiSelect = false;
-            this.listView.Name = "listView";
-            this.listView.OwnerDraw = true;
-            this.listView.Size = new System.Drawing.Size(125, 541);
-            this.listView.TabIndex = 5;
-            this.listView.UseCompatibleStateImageBehavior = false;
-            this.listView.View = System.Windows.Forms.View.Details;
-            this.listView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.listView_DrawItem);
-            this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Option";
-            this.columnHeader1.Width = 100;
-            // 
-            // tabControl
-            // 
-            this.tabControl.Controls.Add(this.tabPage_general);
-            this.tabControl.Controls.Add(this.tabPage_layout);
-            this.tabControl.Controls.Add(this.tabPage_capture);
-            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl.Location = new System.Drawing.Point(125, 0);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(329, 541);
-            this.tabControl.TabIndex = 6;
-            // 
-            // tabPage_general
-            // 
-            this.tabPage_general.Controls.Add(this.checkBox_runOnStartup);
-            this.tabPage_general.Controls.Add(this.label2);
-            this.tabPage_general.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_general.Name = "tabPage_general";
-            this.tabPage_general.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_general.Size = new System.Drawing.Size(321, 515);
-            this.tabPage_general.TabIndex = 0;
-            this.tabPage_general.Text = "General";
-            this.tabPage_general.UseVisualStyleBackColor = true;
-            // 
-            // tabPage_layout
-            // 
-            this.tabPage_layout.Controls.Add(this.label1);
-            this.tabPage_layout.Controls.Add(this.label3);
-            this.tabPage_layout.Controls.Add(this.comboBox_theme);
-            this.tabPage_layout.Controls.Add(this.button_layout);
-            this.tabPage_layout.Controls.Add(this.label4);
-            this.tabPage_layout.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_layout.Name = "tabPage_layout";
-            this.tabPage_layout.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_layout.Size = new System.Drawing.Size(321, 515);
-            this.tabPage_layout.TabIndex = 1;
-            this.tabPage_layout.Text = "Layout";
-            this.tabPage_layout.UseVisualStyleBackColor = true;
             // 
             // tabPage_capture
             // 
@@ -254,6 +232,7 @@
             this.tabPage_capture.Controls.Add(this.label6);
             this.tabPage_capture.Controls.Add(this.label18);
             this.tabPage_capture.Controls.Add(this.label19);
+            this.tabPage_capture.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPage_capture.Location = new System.Drawing.Point(4, 22);
             this.tabPage_capture.Name = "tabPage_capture";
             this.tabPage_capture.Padding = new System.Windows.Forms.Padding(3);
@@ -275,6 +254,7 @@
             // 
             // button_dirPath
             // 
+            this.button_dirPath.ForeColor = System.Drawing.SystemColors.ControlText;
             this.button_dirPath.Location = new System.Drawing.Point(290, 450);
             this.button_dirPath.Margin = new System.Windows.Forms.Padding(5);
             this.button_dirPath.Name = "button_dirPath";
@@ -310,6 +290,7 @@
             // label10
             // 
             this.label10.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label10.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label10.Location = new System.Drawing.Point(8, 476);
             this.label10.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
             this.label10.Name = "label10";
@@ -321,6 +302,7 @@
             // label9
             // 
             this.label9.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label9.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label9.Location = new System.Drawing.Point(8, 106);
             this.label9.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
             this.label9.Name = "label9";
@@ -332,6 +314,7 @@
             // label8
             // 
             this.label8.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label8.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label8.Location = new System.Drawing.Point(6, 34);
             this.label8.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
             this.label8.Name = "label8";
@@ -343,6 +326,7 @@
             // label13
             // 
             this.label13.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label13.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label13.Location = new System.Drawing.Point(8, 404);
             this.label13.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
             this.label13.Name = "label13";
@@ -354,6 +338,7 @@
             // label7
             // 
             this.label7.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label7.Location = new System.Drawing.Point(8, 239);
             this.label7.Margin = new System.Windows.Forms.Padding(0, 0, 0, 20);
             this.label7.Name = "label7";
@@ -391,6 +376,7 @@
             // label11
             // 
             this.label11.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label11.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label11.Location = new System.Drawing.Point(8, 80);
             this.label11.Margin = new System.Windows.Forms.Padding(5);
             this.label11.Name = "label11";
@@ -402,6 +388,7 @@
             // label12
             // 
             this.label12.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label12.Location = new System.Drawing.Point(8, 8);
             this.label12.Margin = new System.Windows.Forms.Padding(5);
             this.label12.Name = "label12";
@@ -413,6 +400,7 @@
             // label14
             // 
             this.label14.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label14.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label14.Location = new System.Drawing.Point(8, 378);
             this.label14.Margin = new System.Windows.Forms.Padding(5);
             this.label14.Name = "label14";
@@ -424,6 +412,7 @@
             // label15
             // 
             this.label15.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label15.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label15.Location = new System.Drawing.Point(8, 213);
             this.label15.Margin = new System.Windows.Forms.Padding(5);
             this.label15.Name = "label15";
@@ -461,6 +450,7 @@
             // label16
             // 
             this.label16.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label16.Location = new System.Drawing.Point(8, 347);
             this.label16.Margin = new System.Windows.Forms.Padding(5);
             this.label16.Name = "label16";
@@ -472,6 +462,7 @@
             // label17
             // 
             this.label17.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label17.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label17.Location = new System.Drawing.Point(8, 182);
             this.label17.Margin = new System.Windows.Forms.Padding(5);
             this.label17.Name = "label17";
@@ -522,6 +513,7 @@
             // label6
             // 
             this.label6.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label6.Location = new System.Drawing.Point(8, 316);
             this.label6.Margin = new System.Windows.Forms.Padding(5);
             this.label6.Name = "label6";
@@ -533,6 +525,7 @@
             // label18
             // 
             this.label18.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label18.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label18.Location = new System.Drawing.Point(8, 285);
             this.label18.Margin = new System.Windows.Forms.Padding(5);
             this.label18.Name = "label18";
@@ -544,6 +537,7 @@
             // label19
             // 
             this.label19.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label19.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label19.Location = new System.Drawing.Point(8, 151);
             this.label19.Margin = new System.Windows.Forms.Padding(5);
             this.label19.Name = "label19";
@@ -551,6 +545,31 @@
             this.label19.TabIndex = 20;
             this.label19.Text = "FullScreen";
             this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // listView
+            // 
+            this.listView.Dock = System.Windows.Forms.DockStyle.Left;
+            this.listView.FullRowSelect = true;
+            this.listView.GridLines = true;
+            this.listView.HideSelection = false;
+            listViewItem1.Tag = "General";
+            listViewItem2.Tag = "Layout";
+            listViewItem3.StateImageIndex = 0;
+            listViewItem3.Tag = "Capture";
+            this.listView.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3});
+            this.listView.Location = new System.Drawing.Point(0, 0);
+            this.listView.MultiSelect = false;
+            this.listView.Name = "listView";
+            this.listView.OwnerDraw = true;
+            this.listView.Size = new System.Drawing.Size(125, 541);
+            this.listView.TabIndex = 5;
+            this.listView.TileSize = new System.Drawing.Size(120, 30);
+            this.listView.UseCompatibleStateImageBehavior = false;
+            this.listView.View = System.Windows.Forms.View.Tile;
+            this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
             // 
             // SettingDialog
             // 
@@ -588,9 +607,8 @@
         private System.Windows.Forms.Button button_layout;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox checkBox_runOnStartup;
-        private System.Windows.Forms.ListView listView;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.TabControl tabControl;
+        private GTControl.ThemeListView listView;
+        private GTControl.ThemeTabControl tabControl;
         private System.Windows.Forms.TabPage tabPage_general;
         private System.Windows.Forms.TabPage tabPage_layout;
         private System.Windows.Forms.TabPage tabPage_capture;

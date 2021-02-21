@@ -32,6 +32,11 @@ namespace GTControl
         #endregion
 
         #region Control Event
+        private void CreatePageDialog_Load(object sender, EventArgs e)
+        {
+            LayoutSetting.Invalidate(this);
+        }
+
         private void button_create_Click(object sender, EventArgs e)
         {
             string pageName = textBox_pageName.Text;

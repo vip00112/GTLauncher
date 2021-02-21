@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.propertyGrid_page = new System.Windows.Forms.PropertyGrid();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.menuItem_add = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_addPage = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,23 +37,18 @@
             this.menuItem_deleteItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_save = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_specialFolder = new System.Windows.Forms.ToolStripMenuItem();
-            this.tabControl_pages = new System.Windows.Forms.TabControl();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.propertyGrid_layout = new System.Windows.Forms.PropertyGrid();
+            this.tabControl_pages = new GTControl.ThemeTabControl();
+            this.propertyGrid_page = new GTControl.ThemePropertyGrid();
+            this.propertyGrid_layout = new GTControl.ThemePropertyGrid();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.menuStrip.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+            this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.Panel2.SuspendLayout();
+            this.splitContainer.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // propertyGrid_page
-            // 
-            this.propertyGrid_page.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid_page.HelpVisible = false;
-            this.propertyGrid_page.Location = new System.Drawing.Point(0, 149);
-            this.propertyGrid_page.Name = "propertyGrid_page";
-            this.propertyGrid_page.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid_page.Size = new System.Drawing.Size(250, 388);
-            this.propertyGrid_page.TabIndex = 1;
-            this.propertyGrid_page.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // menuStrip
             // 
@@ -134,48 +128,78 @@
             this.menuItem_specialFolder.Text = "SpecialFolder";
             this.menuItem_specialFolder.Click += new System.EventHandler(this.menuItem_specialFolder_Click);
             // 
-            // tabControl_pages
-            // 
-            this.tabControl_pages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl_pages.Location = new System.Drawing.Point(0, 24);
-            this.tabControl_pages.Name = "tabControl_pages";
-            this.tabControl_pages.SelectedIndex = 0;
-            this.tabControl_pages.Size = new System.Drawing.Size(534, 537);
-            this.tabControl_pages.TabIndex = 1;
-            this.tabControl_pages.SelectedIndexChanged += new System.EventHandler(this.tabControl_pages_SelectedIndexChanged);
-            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.propertyGrid_page);
             this.panel1.Controls.Add(this.propertyGrid_layout);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(534, 24);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(250, 537);
+            this.panel1.Size = new System.Drawing.Size(280, 537);
             this.panel1.TabIndex = 3;
+            // 
+            // tabControl_pages
+            // 
+            this.tabControl_pages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl_pages.Location = new System.Drawing.Point(0, 0);
+            this.tabControl_pages.Name = "tabControl_pages";
+            this.tabControl_pages.SelectedIndex = 0;
+            this.tabControl_pages.Size = new System.Drawing.Size(500, 537);
+            this.tabControl_pages.TabIndex = 1;
+            this.tabControl_pages.SelectedIndexChanged += new System.EventHandler(this.tabControl_pages_SelectedIndexChanged);
+            // 
+            // propertyGrid_page
+            // 
+            this.propertyGrid_page.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid_page.HelpBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
+            this.propertyGrid_page.HelpVisible = false;
+            this.propertyGrid_page.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.propertyGrid_page.Location = new System.Drawing.Point(0, 149);
+            this.propertyGrid_page.Name = "propertyGrid_page";
+            this.propertyGrid_page.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            this.propertyGrid_page.Size = new System.Drawing.Size(280, 388);
+            this.propertyGrid_page.TabIndex = 1;
+            this.propertyGrid_page.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // propertyGrid_layout
             // 
             this.propertyGrid_layout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.propertyGrid_layout.HelpBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
             this.propertyGrid_layout.HelpVisible = false;
+            this.propertyGrid_layout.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
             this.propertyGrid_layout.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid_layout.Name = "propertyGrid_layout";
             this.propertyGrid_layout.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid_layout.Size = new System.Drawing.Size(250, 149);
+            this.propertyGrid_layout.Size = new System.Drawing.Size(280, 149);
             this.propertyGrid_layout.TabIndex = 1;
-            this.propertyGrid_layout.ToolbarVisible = false;
             this.propertyGrid_layout.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
-            // LayoutSettingForm
+            // splitContainer
+            // 
+            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer.Name = "splitContainer";
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.tabControl_pages);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.panel1);
+            this.splitContainer.Size = new System.Drawing.Size(784, 537);
+            this.splitContainer.SplitterDistance = 500;
+            this.splitContainer.TabIndex = 4;
+            // 
+            // LayoutSettingDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.tabControl_pages);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.menuStrip);
             this.KeyPreview = true;
-            this.Name = "LayoutSettingForm";
+            this.Name = "LayoutSettingDialog";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Layout Setting";
@@ -186,13 +210,17 @@
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+            this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.PropertyGrid propertyGrid_page;
+        private GTControl.ThemePropertyGrid propertyGrid_page;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem menuItem_add;
         private System.Windows.Forms.ToolStripMenuItem menuItem_delete;
@@ -201,9 +229,10 @@
         private System.Windows.Forms.ToolStripMenuItem menuItem_addItem;
         private System.Windows.Forms.ToolStripMenuItem menuItem_deletePage;
         private System.Windows.Forms.ToolStripMenuItem menuItem_deleteItem;
-        private System.Windows.Forms.TabControl tabControl_pages;
+        private GTControl.ThemeTabControl tabControl_pages;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PropertyGrid propertyGrid_layout;
+        private GTControl.ThemePropertyGrid propertyGrid_layout;
         private System.Windows.Forms.ToolStripMenuItem menuItem_specialFolder;
+        private System.Windows.Forms.SplitContainer splitContainer;
     }
 }

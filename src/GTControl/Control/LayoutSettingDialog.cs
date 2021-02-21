@@ -54,8 +54,9 @@ namespace GTControl
         #region Control Event
         private void LayoutSettingForm_Load(object sender, EventArgs e)
         {
-            if (DesignMode) return;
+            if (Runtime.DesignMode) return;
 
+            LayoutSetting.Invalidate(this);
             LayoutSetting.IsEditMode = true;
 
             _layout = new LayoutProperty()
@@ -188,7 +189,7 @@ namespace GTControl
             _isPressedCtrl = false;
 
             if (SelectedPage == null) return;
-            if (!MessageBoxUtil.Confirm("Are you sure you want to delete page?")) return;
+            if (!MessageBoxUtil.Confirm("Are you sure want to delete page?")) return;
             if (SelectedPage.PageName == "Main")
             {
                 MessageBoxUtil.Error("Can't remove Main page.");
@@ -214,7 +215,7 @@ namespace GTControl
 
             if (SelectedPage == null) return;
             if (_ancherItems.Count == 0) return;
-            if (!MessageBoxUtil.Confirm("Are you sure you want to delete item?")) return;
+            if (!MessageBoxUtil.Confirm("Are you sure want to delete item?")) return;
 
             foreach (var item in _ancherItems)
             {
@@ -227,7 +228,7 @@ namespace GTControl
         {
             _isPressedCtrl = false;
 
-            if (!MessageBoxUtil.Confirm("Are you sure you want to save layout?")) return;
+            if (!MessageBoxUtil.Confirm("Are you sure want to save layout?")) return;
 
             _pages.Clear();
             _pageItems.Clear();
@@ -446,6 +447,7 @@ namespace GTControl
             page.PageBody.MouseMove += pageBody_MouseMove;
             page.PageBody.MouseUp += pageBody_MouseUp;
             panel.Controls.Add(page);
+            LayoutSetting.Invalidate(tabPage);
 
             return page;
         }
@@ -491,7 +493,7 @@ namespace GTControl
 
         private void DrawCell(Graphics g)
         {
-            using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
+            using (var b = new SolidBrush(Color.FromArgb(70, LayoutSetting.GetBackColorHover(LayoutSetting.Theme))))
             {
                 if (_startCell != null && _endCell != null)
                 {

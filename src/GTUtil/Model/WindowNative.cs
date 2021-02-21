@@ -11,7 +11,8 @@ namespace GTUtil
     public class WindowNative
     {
         #region Structure
-        [EditorBrowsable(EditorBrowsableState.Never)]
+        public struct RECT { public int Left, Top, Right, Bottom; }
+
         public struct MARGINS
         {
             public int leftWidth;
@@ -26,11 +27,9 @@ namespace GTUtil
         public const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
 
         [DllImport("dwmapi.dll")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 
         [DllImport("dwmapi.dll")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS pMarInset);
         #endregion
     }

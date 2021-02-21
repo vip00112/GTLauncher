@@ -30,8 +30,8 @@
         {
             this.panel_header = new System.Windows.Forms.Panel();
             this.label_title = new System.Windows.Forms.Label();
-            this.pageButton_back = new GTControl.ThemeButton();
             this.pageBody = new GTControl.PageBody();
+            this.pageButton_back = new GTControl.ThemeButton();
             this.panel_header.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,20 +57,6 @@
             this.label_title.Text = "Title";
             this.label_title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // pageButton_back
-            // 
-            this.pageButton_back.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pageButton_back.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pageButton_back.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.pageButton_back.Location = new System.Drawing.Point(0, 0);
-            this.pageButton_back.Margin = new System.Windows.Forms.Padding(5);
-            this.pageButton_back.Name = "pageButton_back";
-            this.pageButton_back.Size = new System.Drawing.Size(30, 30);
-            this.pageButton_back.TabIndex = 1;
-            this.pageButton_back.Text = "◀";
-            this.pageButton_back.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.pageButton_back.Click += new System.EventHandler(this.pageButton_back_Click);
-            // 
             // pageBody
             // 
             this.pageBody.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -79,6 +65,19 @@
             this.pageBody.Name = "pageBody";
             this.pageBody.Size = new System.Drawing.Size(800, 370);
             this.pageBody.TabIndex = 1;
+            // 
+            // pageButton_back
+            // 
+            this.pageButton_back.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pageButton_back.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pageButton_back.Location = new System.Drawing.Point(0, 0);
+            this.pageButton_back.Margin = new System.Windows.Forms.Padding(5);
+            this.pageButton_back.Name = "pageButton_back";
+            this.pageButton_back.Size = new System.Drawing.Size(30, 30);
+            this.pageButton_back.TabIndex = 1;
+            this.pageButton_back.Text = "◀";
+            this.pageButton_back.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.pageButton_back.Click += new System.EventHandler(this.pageButton_back_Click);
             // 
             // Page
             // 

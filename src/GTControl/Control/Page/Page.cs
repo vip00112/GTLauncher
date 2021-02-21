@@ -144,7 +144,7 @@ namespace GTControl
                     OnHidden?.Invoke(this, EventArgs.Empty);
                     break;
                 case PageCloseMode.Dispose:
-                    if (!MessageBoxUtil.Confirm("Are you sure you want to close?")) return;
+                    if (!MessageBoxUtil.Confirm("Are you sure want to close?")) return;
 
                     if (Parent != null)
                     {

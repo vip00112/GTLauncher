@@ -30,10 +30,10 @@ namespace GTControl
 
         public bool IsInRange(Cell start, Cell end)
         {
-            int startX = start.X;
-            int endX = end.X;
-            int startY = start.Y;
-            int endY = end.Y;
+            int startX = Math.Min(start.X, end.X);
+            int startY = Math.Min(start.Y, end.Y);
+            int endX = Math.Max(start.X, end.X);
+            int endY = Math.Max(start.Y, end.Y);
             return X >= startX && X <= endX && Y >= startY && Y <= endY;
         }
     }

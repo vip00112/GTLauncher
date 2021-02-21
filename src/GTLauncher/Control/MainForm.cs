@@ -28,13 +28,16 @@ namespace GTLauncher
         public MainForm()
         {
             InitializeComponent();
+
+            var d = new DownloadDialog("", "");
+            d.Show();
         }
         #endregion
 
         #region Control Event
         private void MainForm_Load(object sender, EventArgs e)
         {
-            if (DesignMode) return;
+            if (Runtime.DesignMode) return;
 
             _capture = new Capture(Handle);
             _capture.OnCaptured += OnCaptured;
@@ -44,14 +47,8 @@ namespace GTLauncher
             GeneralSetting.Load();
             LayoutSetting.Load();
             CaptureSetting.Load();
-
+            
             BuildLayout();
-
-
-
-            var d = new DownloadDialog("", "");
-            d.Show();
-            //new DropShadow().SetTheme(d, true);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -66,6 +63,8 @@ namespace GTLauncher
 
         private void menuItem_setting_Click(object sender, EventArgs e)
         {
+            if (FormUtil.FindForm<SettingDialog>() != null) return;
+
             using (var dialog = new SettingDialog())
             {
                 dialog.ShowDialog();
@@ -76,7 +75,7 @@ namespace GTLauncher
 
         private void menuItem_exit_Click(object sender, EventArgs e)
         {
-            if (!MessageBoxUtil.Confirm("Are you sure you want to close?")) return;
+            if (!MessageBoxUtil.Confirm("Are you sure want to close?")) return;
 
             Close();
         }

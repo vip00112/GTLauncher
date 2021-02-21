@@ -57,9 +57,10 @@
     <Compile Include="Model\JsonUtil.cs" />
     <Compile Include="Model\Logger.cs" />
     <Compile Include="Model\MessageBoxUtil.cs" />
-    <Compile Include="WindowNative.cs" />
+    <Compile Include="Model\Runtime.cs" />
+    <Compile Include="Model\WindowNative.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WinAPI.cs" />
+    <Compile Include="Model\WinAPI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config">

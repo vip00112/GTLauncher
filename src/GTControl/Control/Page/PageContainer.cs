@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GTUtil;
 
 namespace GTControl
 {
@@ -30,6 +31,8 @@ namespace GTControl
             DockMode = DockMode.BottomCenter;
             SizeModeWidth = SizeMode.Small;
             SizeModeHeight = SizeMode.Small;
+
+            WinAPI.SetFormShadow(Handle);
         }
         #endregion
 
@@ -98,7 +101,7 @@ namespace GTControl
         {
             base.OnControlAdded(e);
 
-            if (DesignMode) return;
+            if (Runtime.DesignMode) return;
 
             var page = e.Control as Page;
             if (page == null) return;
@@ -114,7 +117,7 @@ namespace GTControl
         {
             base.OnControlRemoved(e);
 
-            if (DesignMode) return;
+            if (Runtime.DesignMode) return;
 
             var page = e.Control as Page;
             if (page == null) return;
@@ -181,7 +184,7 @@ namespace GTControl
         #region Private Method
         private void BuildLocation()
         {
-            if (DesignMode) return;
+            if (Runtime.DesignMode) return;
 
             var screen = Screen.AllScreens[0];
             int top = 20;

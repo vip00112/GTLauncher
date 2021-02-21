@@ -84,7 +84,7 @@ namespace GTControl
                 case Theme.Dark:
                     return Color.FromArgb(0x12, 0x12, 0x12);
                 case Theme.Light:
-                    return Color.FromArgb(0xee, 0xee, 0xee);
+                    return Color.FromArgb(0xfa, 0xfa, 0xfa);
                 default:
                     return GetBackColorCommon(Theme.Dark);
             }
@@ -95,7 +95,7 @@ namespace GTControl
             switch (theme)
             {
                 case Theme.Dark:
-                    return Color.FromArgb(0xee, 0xee, 0xee);
+                    return Color.FromArgb(0xfa, 0xfa, 0xfa);
                 case Theme.Light:
                     return Color.FromArgb(0x12, 0x12, 0x12);
                 default:
@@ -108,7 +108,7 @@ namespace GTControl
             switch (theme)
             {
                 case Theme.Dark:
-                    return Color.FromArgb(0xee, 0xee, 0xee);
+                    return Color.FromArgb(0xfa, 0xfa, 0xfa);
                 case Theme.Light:
                     return Color.FromArgb(0x12, 0x12, 0x12);
                 default:
@@ -123,7 +123,7 @@ namespace GTControl
                 case Theme.Dark:
                     return Color.FromArgb(0x12, 0x12, 0x12);
                 case Theme.Light:
-                    return Color.FromArgb(0xee, 0xee, 0xee);
+                    return Color.FromArgb(0xfa, 0xfa, 0xfa);
                 default:
                     return GetForeColorHover(Theme.Dark);
             }
@@ -274,15 +274,21 @@ namespace GTControl
                 WinAPI.SetTitleBarTheme(control.Handle, isDarkMode);
             }
 
-            if (control is Label)
+            if (control is Button)
             {
-                control.BackColor = Color.Transparent;
+                var btn = control as Button;
+                btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(50, GetBackColorHover(Theme));
             }
-            else
+
+            if (ToolStripManager.Renderer is ThemeToolStripRenderer == false)
             {
-                control.BackColor = GetBackColorCommon(Theme);
+                ToolStripManager.Renderer = new ThemeToolStripRenderer();
             }
+
+            var backColor = (control is Label) ? Color.Transparent : GetBackColorCommon(Theme);
+            control.BackColor = backColor;
             control.ForeColor = GetForeColorCommon(Theme);
+            control.Invalidate();
 
             foreach (Control child in control.Controls)
             {
