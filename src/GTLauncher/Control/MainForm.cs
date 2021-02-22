@@ -28,9 +28,6 @@ namespace GTLauncher
         public MainForm()
         {
             InitializeComponent();
-
-            var d = new DownloadDialog("", "");
-            d.Show();
         }
         #endregion
 
@@ -53,7 +50,7 @@ namespace GTLauncher
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_goobyedpiManager != null) _goobyedpiManager.Stop();
+            if (_goobyedpiManager != null) _goobyedpiManager.Kill();
         }
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -90,16 +87,7 @@ namespace GTLauncher
 
         private void menuItem_goodbyeDPI_Click(object sender, EventArgs e)
         {
-            if (_goobyedpiManager.IsStarted)
-            {
-                _goobyedpiManager.Stop();
-                menuItem_goodbyeDPI.Checked = false;
-            }
-            else
-            {
-                _goobyedpiManager.Start();
-                menuItem_goodbyeDPI.Checked = true;
-            }
+            if (_goobyedpiManager != null) _goobyedpiManager.Start();
         }
         #endregion
 

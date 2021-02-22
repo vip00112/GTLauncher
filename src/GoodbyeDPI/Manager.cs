@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GTControl;
+using GTUtil;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,58 +13,81 @@ namespace GoodbyeDPI
 {
     public class Manager
     {
+        private string _downloadFilePath;
         private string _fileNameExe;
         private string _fileNameDll;
         private string _fileNameSys;
-        private Process _proc;
-
-        #region Properties
-        public bool IsStarted { get; private set; }
-        #endregion
 
         #region Constructor
         public Manager()
         {
-            _fileNameExe = Path.Combine(Application.StartupPath, "goodbyedpi.exe");
-            _fileNameDll = Path.Combine(Application.StartupPath, "WinDivert.dll");
-            _fileNameSys = Path.Combine(Application.StartupPath, "WinDivert64.sys");
+            _downloadFilePath = Path.Combine(Application.StartupPath, "Tools", "GoodbyeDPI.zip");
+            _fileNameExe = Path.Combine(Application.StartupPath, "Tools", "goodbyedpi.exe");
+            _fileNameDll = Path.Combine(Application.StartupPath, "Tools", "WinDivert.dll");
+            _fileNameSys = Path.Combine(Application.StartupPath, "Tools", "WinDivert64.sys");
         }
         #endregion
 
         #region Public Method
         public void Start()
         {
-            if (_proc != null) return;
+            if (!CheckExecuteFile()) return;
 
+            Kill();
+
+            var proc = new Process();
+            proc.StartInfo.FileName = _fileNameExe;
+            proc.StartInfo.WorkingDirectory = Application.StartupPath;
+            proc.StartInfo.UseShellExecute = true;
+            proc.StartInfo.Verb = "runas";
+            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.Start();
+        }
+
+        public void Kill()
+        {
             var startedProcs = Process.GetProcessesByName("goodbyedpi");
             foreach (var proc in startedProcs)
             {
                 proc.Kill();
             }
+        }
+        #endregion
 
-            //try { File.WriteAllBytes(_fileNameExe, Properties.Resources.goodbyedpi); } catch { }
-            //try { File.WriteAllBytes(_fileNameDll, Properties.Resources.WinDivert); } catch { }
-            //try { File.WriteAllBytes(_fileNameSys, Properties.Resources.WinDivert64); } catch { }
+        #region Private Method
+        private bool CheckExecuteFile()
+        {
+            if (!File.Exists(_fileNameExe) || !File.Exists(_fileNameDll) || !File.Exists(_fileNameSys))
+            {
+                string msg = "Can't find required files for execute.\r\nAre you download files?";
+                if (!MessageBoxUtil.Confirm(msg)) return false;
+                return DownloadExecuteFile();
+            }
 
-            _proc = new Process();
-            _proc.StartInfo.FileName = _fileNameExe;
-            _proc.StartInfo.WorkingDirectory = Application.StartupPath;
-            _proc.StartInfo.UseShellExecute = true;
-            _proc.StartInfo.Verb = "runas";
-            _proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            _proc.Start();
-            IsStarted = true;
+            return true;
         }
 
-        public void Stop()
+        private bool DownloadExecuteFile()
         {
-            if (_proc == null) return;
+            string dirPath = Path.GetDirectoryName(_downloadFilePath);
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
 
-            _proc.Kill();
-            _proc.WaitForExit();
+            string url = GithubUtil.GetDownloadUrlForLastReleaseAsset("vip00112", "GTLauncherDependency", "GoodbyeDPI-0.1.6-x64.zip");
+            if (string.IsNullOrWhiteSpace(url)) return false;
 
-            _proc = null;
-            IsStarted = false;
+            using (var dialog = new DownloadDialog(url, _downloadFilePath))
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Unzip
+                    return ZipUtil.Unzip(_downloadFilePath, Path.GetDirectoryName(_downloadFilePath), true);
+                }
+            }
+
+            return false;
         }
         #endregion
     }

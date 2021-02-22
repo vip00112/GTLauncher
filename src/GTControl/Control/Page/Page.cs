@@ -146,11 +146,6 @@ namespace GTControl
                 case PageCloseMode.Dispose:
                     if (!MessageBoxUtil.Confirm("Are you sure want to close?")) return;
 
-                    if (Parent != null)
-                    {
-                        Parent.Controls.Remove(this);
-                    }
-                    Dispose();
                     OnDisposed?.Invoke(this, EventArgs.Empty);
                     break;
             }

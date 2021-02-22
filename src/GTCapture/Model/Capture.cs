@@ -18,8 +18,6 @@ namespace GTCapture
         public EventHandler OnCaptured;
 
         private BackgroundWorker _captureThread;
-        private BackgroundWorker _recordThread;
-        private Process _ffmpegProc;
         private FFmpeg _ffmpeg;
 
         #region Constructor
@@ -90,7 +88,7 @@ namespace GTCapture
                 #region Record
                 case CaptureMode.RecordGif:
                 case CaptureMode.RecordVideo:
-                    if (_recordThread != null) return;
+                    if (_ffmpeg != null) return;
 
                     var form = FormUtil.FindForm<RecordForm>();
                     if (form != null)
@@ -228,82 +226,6 @@ namespace GTCapture
             }
         }
 
-        private string CreateFFmpegArgs(RecordForm form, string output)
-        {
-            var rec = form.RecordRec;
-            int width = (rec.Width % 2 == 0) ? rec.Width : rec.Width - 1;
-            int height = (rec.Height % 2 == 0) ? rec.Height : rec.Height - 1;
-            int framerate = 0;
-            string option = "";
-            if (form.Mode == CaptureMode.RecordGif)
-            {
-                framerate = 15;
-                option = " -qp 0 -y";
-            }
-            else if (form.Mode == CaptureMode.RecordVideo)
-            {
-                framerate = 30;
-                option = " -crf 28 -pix_fmt yuv420p -movflags +faststart -y";
-            }
-
-            var sb = new StringBuilder();
-            sb.Append("-rtbufsize 150M -f gdigrab -framerate " + framerate);
-            sb.Append(string.Format(" -offset_x {0} -offset_y {1} -video_size {2}x{3}", rec.X, rec.Y, width, height));
-            sb.Append(" -draw_mouse 1 -i desktop -c:v libx264 -r " + framerate);
-            sb.Append(" -preset ultrafast -tune zerolatency");
-            sb.Append(option + " \"" + output + "\"");
-            return sb.ToString();
-        }
-
-        private void ConvertGif(string srcFilePath)
-        {
-            string ffmpegPath = Path.Combine(Application.StartupPath, "FFmpeg.exe");
-            if (!File.Exists(ffmpegPath))
-            {
-                MessageBoxUtil.Error("Can't find 'FFmpeg.exe'");
-                return;
-            }
-
-            // gif변환 args
-            string dirPath = Path.GetDirectoryName(srcFilePath);
-            string fileName = Path.GetFileNameWithoutExtension(srcFilePath) + ".gif";
-            string newFilePath = Path.Combine(dirPath, fileName);
-            string args = string.Format("-i \"{0}\" -lavfi \"palettegen=stats_mode=full[palette],[0:v][palette]paletteuse=dither=sierra2_4a\" -y \"{1}\"",
-                                        srcFilePath, newFilePath);
-            using (var proc = new Process())
-            {
-                var psi = new ProcessStartInfo()
-                {
-                    FileName = ffmpegPath,
-                    WorkingDirectory = Path.GetDirectoryName(ffmpegPath),
-                    Arguments = args,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    StandardOutputEncoding = Encoding.UTF8,
-                    StandardErrorEncoding = Encoding.UTF8
-                };
-
-                // TEST
-                //proc.EnableRaisingEvents = true;
-                //proc.ErrorDataReceived += delegate (object debugSender, DataReceivedEventArgs debugEvent)
-                //{
-                //    if (string.IsNullOrWhiteSpace(debugEvent.Data)) return;
-                //    Console.WriteLine(debugEvent.Data);
-                //};
-                proc.StartInfo = psi;
-                proc.Start();
-
-                proc.BeginOutputReadLine();
-                proc.BeginErrorReadLine();
-                proc.WaitForExit();
-            }
-
-            File.Delete(srcFilePath);
-        }
-
         private void SaveImage(Image img)
         {
             if (img == null) return;
@@ -335,87 +257,37 @@ namespace GTCapture
         {
             var form = FormUtil.FindForm<RecordForm>();
             if (form == null) return;
+            if (_ffmpeg != null) return;
 
-            string ffmpegPath = Path.Combine(Application.StartupPath, "FFmpeg.exe");
-            if (!File.Exists(ffmpegPath))
-            {
-                MessageBoxUtil.Error("Can't find 'FFmpeg.exe'");
-                return;
-            }
-
-            if (!Directory.Exists(CaptureSetting.SaveDirectory))
-            {
-                Directory.CreateDirectory(CaptureSetting.SaveDirectory);
-            }
-            string savePath = GetSaveFilePath("mp4");
-
-            form.StartRecord();
-
-            if (_recordThread != null) return;
-
-            _recordThread = new BackgroundWorker();
-            _recordThread.DoWork += delegate (object sender, DoWorkEventArgs e)
-            {
-                string args = CreateFFmpegArgs(form, savePath);
-                using (_ffmpegProc = new Process())
-                {
-                    var psi = new ProcessStartInfo()
-                    {
-                        FileName = ffmpegPath,
-                        WorkingDirectory = Path.GetDirectoryName(ffmpegPath),
-                        Arguments = args,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        RedirectStandardInput = true,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        StandardOutputEncoding = Encoding.UTF8,
-                        StandardErrorEncoding = Encoding.UTF8
-                    };
-
-                    // TEST
-                    //_ffmpegProc.EnableRaisingEvents = true;
-                    //_ffmpegProc.ErrorDataReceived += delegate (object debugSender, DataReceivedEventArgs debugEvent)
-                    //{
-                    //    if (string.IsNullOrWhiteSpace(debugEvent.Data)) return;
-                    //    Console.WriteLine(debugEvent.Data);
-                    //};
-                    _ffmpegProc.StartInfo = psi;
-                    _ffmpegProc.Start();
-
-                    _ffmpegProc.BeginOutputReadLine();
-                    _ffmpegProc.BeginErrorReadLine();
-                    _ffmpegProc.WaitForExit();
-                }
-            };
-            _recordThread.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
-            {
-                _ffmpegProc = null;
-                _recordThread = null;
-
-                if (form.Mode == CaptureMode.RecordGif)
-                {
-                    ConvertGif(savePath);
-                }
-            };
-            _recordThread.RunWorkerAsync();
-
-            var mode = FFmpeg.RecordMode.Mp4;
-            if (form.Mode == CaptureMode.RecordGif) mode = FFmpeg.RecordMode.Gif;
+            var mode = (form.Mode == CaptureMode.RecordGif) ? FFmpeg.RecordMode.Gif : FFmpeg.RecordMode.Mp4;
             _ffmpeg = new FFmpeg(mode);
+            _ffmpeg.OnRecordCompleted += FFmpegRecordCompleted;
 
-            string outputFilePath = "";
-            _ffmpeg.StartRecord(outputFilePath);
+            // FFmpeg.exe check and download
+            if (!_ffmpeg.CheckExecuteFile()) return;
+
+            string savePath = GetSaveFilePath("mp4");
+            if (_ffmpeg.StartRecord(form.RecordRegion, savePath))
+            {
+                form.StartRecord();
+            }
         }
 
         private void StopRecord(object sender, EventArgs e)
         {
             var form = FormUtil.FindForm<RecordForm>();
             if (form == null) return;
+            if (_ffmpeg == null) return;
 
-            form.StopRecord();
+            if (_ffmpeg.StopRecord())
+            {
+                form.StopRecord();
+            }
+        }
 
-            if (_ffmpegProc != null) _ffmpegProc.StandardInput.WriteLine("q");
+        private void FFmpegRecordCompleted(object sender, EventArgs e)
+        {
+            _ffmpeg = null;
         }
 
         private void CloseRecordForm(object sender, EventArgs e)

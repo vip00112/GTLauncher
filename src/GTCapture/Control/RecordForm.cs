@@ -95,7 +95,7 @@ namespace GTCapture
 
         public bool IsStartedRecord { get; private set; }
 
-        public Rectangle RecordRec
+        public Rectangle RecordRegion
         {
             get 
             {
@@ -242,7 +242,7 @@ namespace GTCapture
 
         private void CaptureBorderForm_Paint(object sender, PaintEventArgs e)
         {
-            var rec = new Rectangle(LineSize, LineSize + HeaderSize, RecordRec.Width, RecordRec.Height);
+            var rec = new Rectangle(LineSize, LineSize + HeaderSize, RecordRegion.Width, RecordRegion.Height);
             using (var b = new SolidBrush(Color.Lime))
             {
                 e.Graphics.FillRectangle(b, rec);
@@ -254,7 +254,7 @@ namespace GTCapture
                 {
                     e.Graphics.FillRectangle(b, CenterRec);
 
-                    var recordRec = RecordRec;
+                    var recordRec = RecordRegion;
                     e.Graphics.DrawString(string.Format("{0}x{1}", recordRec.Width, recordRec.Height), Font, b, LineSize + 1, HeaderSize + LineSize + 1);
                 }
             }

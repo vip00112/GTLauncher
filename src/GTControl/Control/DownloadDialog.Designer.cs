@@ -30,12 +30,8 @@ namespace GTControl
         private void InitializeComponent()
         {
             this.label_title = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label_per = new System.Windows.Forms.Label();
-            this.themeTabControl1 = new GTControl.ThemeTabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.themeTabControl1.SuspendLayout();
+            this.progressBar = new GTControl.ThemeProgressBar();
             this.SuspendLayout();
             // 
             // label_title
@@ -46,16 +42,8 @@ namespace GTControl
             this.label_title.Name = "label_title";
             this.label_title.Size = new System.Drawing.Size(300, 20);
             this.label_title.TabIndex = 0;
-            this.label_title.Text = "Title";
+            this.label_title.Text = "Downloaded {0} of {1} bytes";
             this.label_title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(16, 44);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(5);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(300, 20);
-            this.progressBar1.TabIndex = 1;
             // 
             // label_per
             // 
@@ -68,43 +56,20 @@ namespace GTControl
             this.label_per.Text = "0%";
             this.label_per.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // themeTabControl1
+            // progressBar
             // 
-            this.themeTabControl1.Controls.Add(this.tabPage1);
-            this.themeTabControl1.Controls.Add(this.tabPage2);
-            this.themeTabControl1.Location = new System.Drawing.Point(82, 34);
-            this.themeTabControl1.Name = "themeTabControl1";
-            this.themeTabControl1.SelectedIndex = 0;
-            this.themeTabControl1.Size = new System.Drawing.Size(200, 100);
-            this.themeTabControl1.TabIndex = 2;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Location = new System.Drawing.Point(0, 18);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(199, 81);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(0, 18);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(199, 81);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.progressBar.Location = new System.Drawing.Point(16, 44);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(5);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(300, 20);
+            this.progressBar.TabIndex = 1;
             // 
             // DownloadDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(330, 108);
-            this.Controls.Add(this.themeTabControl1);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.label_per);
             this.Controls.Add(this.label_title);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -114,9 +79,8 @@ namespace GTControl
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Download";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DownloadDialog_FormClosing);
             this.Load += new System.EventHandler(this.DownloadDialog_Load);
-            this.themeTabControl1.ResumeLayout(false);
+            this.Shown += new System.EventHandler(this.DownloadDialog_Shown);
             this.ResumeLayout(false);
 
         }
@@ -124,10 +88,7 @@ namespace GTControl
         #endregion
 
         private System.Windows.Forms.Label label_title;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private GTControl.ThemeProgressBar progressBar;
         private System.Windows.Forms.Label label_per;
-        private ThemeTabControl themeTabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
     }
 }
