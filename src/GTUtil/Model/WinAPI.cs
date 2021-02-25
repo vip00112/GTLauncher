@@ -32,7 +32,7 @@ namespace GTUtil
             int value = 2;
             WindowNative.DwmSetWindowAttribute(handle, attr, ref value, sizeof(int));
 
-            var margins = new WindowNative.MARGINS()
+            var margins = new WindowNative.Margins()
             {
                 bottomHeight = 1,
                 leftWidth = 1,

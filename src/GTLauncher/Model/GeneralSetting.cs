@@ -33,17 +33,14 @@ namespace GTLauncher
                 string json = JsonUtil.FromProperties(properties);
                 File.WriteAllText(path, json);
 
+#if DEBUG
+#else
                 // 시작프로그램 등록
                 string name = "GTLauncher";
                 var reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                if (reg.GetValue(name) != null)
-                {
-                    reg.DeleteValue(name, false);
-                }
-                if (RunOnStartup)
-                {
-                    reg.SetValue(name, Application.ExecutablePath);
-                }
+                if (reg.GetValue(name) != null) reg.DeleteValue(name, false);
+                if (RunOnStartup) reg.SetValue(name, Application.ExecutablePath);
+#endif
             }
             catch (Exception e)
             {

@@ -14,6 +14,11 @@ namespace GTLauncher
         [STAThread]
         static void Main()
         {
+#if DEBUG
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
+#else
             bool createdNew;
             var mutex = new Mutex(true, "GTLauncher", out createdNew);
             if (!createdNew) return;
@@ -23,6 +28,7 @@ namespace GTLauncher
             Application.Run(new MainForm());
 
             mutex.ReleaseMutex();
+#endif
         }
     }
 }

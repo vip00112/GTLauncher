@@ -42,6 +42,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\CaptureBackgroundDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Control\CaptureBackgroundDialog.Designer.cs">
+      <DependentUpon>CaptureBackgroundDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Control\RecordForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,27 +64,18 @@
     <Compile Include="Model\Enums.cs" />
     <Compile Include="Model\FFmpeg.cs" />
     <Compile Include="Model\HotKey.cs" />
-    <Compile Include="Control\HotKeySettingDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Control\HotKeySettingDialog.Designer.cs">
-      <DependentUpon>HotKeySettingDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Model\LowLevelKeyboardHook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\CaptureSetting.cs" />
-    <Compile Include="Model\WindowsAPI.cs" />
-    <Compile Include="Structures.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Control\CaptureBackgroundDialog.resx">
+      <DependentUpon>CaptureBackgroundDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Control\RecordForm.resx">
       <DependentUpon>RecordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Control\CaptureRegionDialog.resx">
       <DependentUpon>CaptureRegionDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Control\HotKeySettingDialog.resx">
-      <DependentUpon>HotKeySettingDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,7 @@ namespace GTControl
         {
             if (m.Msg == TCM_ADJUSTRECT)
             {
-                var rect = (WindowNative.RECT) (m.GetLParam(typeof(WindowNative.RECT)));
+                var rect = (WindowNative.Rect) (m.GetLParam(typeof(WindowNative.Rect)));
                 rect.Left -= 3;
                 rect.Right += 3;
                 rect.Top -= 4;

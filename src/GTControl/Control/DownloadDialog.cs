@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -16,51 +17,70 @@ namespace GTControl
     {
         private string _url;
         private string _filePath;
+        private WebClient _wc;
 
         #region Constructor
         private DownloadDialog()
         {
             InitializeComponent();
         }
-        #endregion
 
-        #region Control Event
         public DownloadDialog(string url, string filePath) : this()
         {
             _url = url;
             _filePath = filePath;
 
+            string fileName = Path.GetFileName(filePath);
+            Text += " for " + fileName;
             label_title.Tag = label_title.Text;
         }
+        #endregion
 
+        #region Control Event
         private void DownloadDialog_Load(object sender, EventArgs e)
         {
             LayoutSetting.Invalidate(this);
+
+            string title = string.Format(label_title.Tag as string, 0, 0);
+            label_title.Text = title;
         }
 
         private void DownloadDialog_Shown(object sender, EventArgs e)
         {
             StartDownload();
         }
+
+        private void DownloadDialog_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_wc != null)
+            {
+                _wc.CancelAsync();
+                e.Cancel = true;
+                return;
+            }
+        }
         #endregion
 
         #region Private Method
         private void StartDownload()
         {
-            using (var wc = new WebClient())
+            using (_wc = new WebClient())
             {
-                wc.DownloadFileCompleted += delegate (object sender, AsyncCompletedEventArgs e)
+                _wc.DownloadFileCompleted += delegate (object sender, AsyncCompletedEventArgs e)
                 {
+                    _wc = null;
                     if (e.Cancelled)
                     {
+                        File.Delete(_filePath);
                         MessageBoxUtil.Error("Download has been cancelled.");
                         DialogResult = DialogResult.Cancel;
-                        return;
                     }
-
-                    DialogResult = DialogResult.OK;
+                    else
+                    {
+                        DialogResult = DialogResult.OK;
+                    }
                 };
-                wc.DownloadProgressChanged += delegate (object sender, DownloadProgressChangedEventArgs e)
+                _wc.DownloadProgressChanged += delegate (object sender, DownloadProgressChangedEventArgs e)
                 {
                     string title = string.Format(label_title.Tag as string, e.BytesReceived, e.TotalBytesToReceive);
                     label_title.Text = title;
@@ -71,7 +91,7 @@ namespace GTControl
 
                 try
                 {
-                    wc.DownloadFileAsync(new Uri(_url), _filePath);
+                    _wc.DownloadFileAsync(new Uri(_url), _filePath);
                 }
                 catch (Exception e)
                 {

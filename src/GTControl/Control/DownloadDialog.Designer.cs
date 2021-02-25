@@ -36,7 +36,7 @@ namespace GTControl
             // 
             // label_title
             // 
-            this.label_title.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label_title.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label_title.Location = new System.Drawing.Point(14, 14);
             this.label_title.Margin = new System.Windows.Forms.Padding(5);
             this.label_title.Name = "label_title";
@@ -79,6 +79,8 @@ namespace GTControl
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Download";
+            this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DownloadDialog_FormClosing);
             this.Load += new System.EventHandler(this.DownloadDialog_Load);
             this.Shown += new System.EventHandler(this.DownloadDialog_Shown);
             this.ResumeLayout(false);

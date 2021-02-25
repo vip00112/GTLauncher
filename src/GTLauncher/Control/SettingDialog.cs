@@ -16,6 +16,7 @@ namespace GTLauncher
     public partial class SettingDialog : Form
     {
         private bool _isLoaded;
+        private bool _isChkecedFFmpeg;
         private List<TextBox> _textBoxs;
 
         #region Constructor
@@ -54,6 +55,8 @@ namespace GTLauncher
                 if (tag == "General") li.Tag = tabPage_general;
                 else if (tag == "Layout") li.Tag = tabPage_layout;
                 else if (tag == "Capture") li.Tag = tabPage_capture;
+                else if (tag == "Record") li.Tag = tabPage_record;
+                else if (tag == "HotKey") li.Tag = tabPage_hotKey;
             }
             listView.Items[0].Focused = true;
             listView.Items[0].Selected = true;
@@ -76,6 +79,23 @@ namespace GTLauncher
             if (tabPage == null) return;
 
             tabControl.SelectedTab = tabPage;
+
+            // Record 페이지일시 FFmpeg 확인
+            if (tabPage == tabPage_record && !_isChkecedFFmpeg)
+            {
+                var ffmpeg = new FFmpeg();
+                if (ffmpeg.CheckAndDownloadExecuteFile())
+                {
+                    EnableRecordTabPage(true);
+                    comboBox_sourceAudio.DataSource = GetAudioSources();
+                    comboBox_sourceAudio.SelectedItem = CaptureSetting.AudioSource;
+                    _isChkecedFFmpeg = true;
+                }
+                else
+                {
+                    EnableRecordTabPage(false);
+                }
+            }
         }
 
         #region GeneralSetting
@@ -102,35 +122,34 @@ namespace GTLauncher
         #endregion
 
         #region CaptureSetting
-        private void textBox_hotKey_Click(object sender, EventArgs e)
+        private void textBox_hotKey_KeyDown(object sender, KeyEventArgs e)
         {
             var textBox = sender as TextBox;
             if (textBox == null) return;
             if (textBox.Tag == null) return;
 
-            var mode = (CaptureMode) textBox.Tag;
-            var hotKey = CaptureSetting.HotKeys[mode];
-            using (var dialog = new HotKeySettingDialog(hotKey))
-            {
-                LayoutSetting.Invalidate(dialog);
-                if (dialog.ShowDialog() != DialogResult.OK) return;
+            e.SuppressKeyPress = true;
+            if (e.KeyCode != Keys.Escape && !InvalidateHotKey(e.Modifiers, e.KeyCode)) return;
 
-                var addeds = CaptureSetting.HotKeys.Where(o => o.Value.Modifiers == hotKey.Modifiers && o.Value.Key == hotKey.Key);
+            var tmp = HotKey.CreateTemplate(e.Modifiers, e.KeyCode);
+            if (e.KeyCode != Keys.Escape)
+            {
+                var addeds = CaptureSetting.HotKeys.Where(o => o.Value.Modifiers == tmp.Modifiers && o.Value.Key == tmp.Key);
                 foreach (var added in addeds)
                 {
-                    if (added.Value == hotKey) continue;
+                    if (added.Value == tmp) continue;
+
+                    added.Value.Update(WindowNative.KeyModifiers.None, Keys.None);
 
                     var owner = _textBoxs.FirstOrDefault(o => (CaptureMode) o.Tag == added.Key);
-                    if (owner != null) owner.Text = "";
-
-                    added.Value.Modifiers = KeyModifiers.None;
-                    added.Value.Key = Keys.None;
+                    if (owner != null) owner.Text = added.Value.ToString();
                 }
-
-                hotKey.Modifiers = dialog.HotKey.Modifiers;
-                hotKey.Key = dialog.HotKey.Key;
-                textBox.Text = dialog.HotKey.ToString();
             }
+
+            var mode = (CaptureMode) textBox.Tag;
+            var hotKey = CaptureSetting.HotKeys[mode];
+            hotKey.Update(tmp.Modifiers, tmp.Key);
+            textBox.Text = tmp.ToString();
         }
 
         private void numericUpDown_timer_ValueChanged(object sender, EventArgs e)
@@ -144,15 +163,42 @@ namespace GTLauncher
             CaptureSetting.SaveImageFormat = (string) comboBox_imageFormat.SelectedItem;
         }
 
-        private void button_dirPath_Click(object sender, EventArgs e)
+        private void button_dirPathCapture_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fb = new FolderBrowserDialog();
             fb.RootFolder = Environment.SpecialFolder.Desktop;
-            fb.SelectedPath = CaptureSetting.SaveDirectory;
+            fb.SelectedPath = CaptureSetting.CaptureSaveDirectory;
             if (fb.ShowDialog() != DialogResult.OK) return;
 
-            CaptureSetting.SaveDirectory = fb.SelectedPath;
-            textBox_dirPath.Text = fb.SelectedPath;
+            CaptureSetting.CaptureSaveDirectory = fb.SelectedPath;
+            textBox_dirPathCapture.Text = fb.SelectedPath;
+        }
+
+        private void numericUpDown_fpsGif_ValueChanged(object sender, EventArgs e)
+        {
+            CaptureSetting.GifFPS = (int) numericUpDown_fpsGif.Value;
+        }
+
+        private void numericUpDown_fpsVideo_ValueChanged(object sender, EventArgs e)
+        {
+            CaptureSetting.VideoFPS = (int) numericUpDown_fpsVideo.Value;
+        }
+
+        private void comboBox_sourceAudio_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isLoaded || !_isChkecedFFmpeg) return;
+            CaptureSetting.AudioSource = (string) comboBox_sourceAudio.SelectedItem;
+        }
+
+        private void button_dirPathRecord_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fb = new FolderBrowserDialog();
+            fb.RootFolder = Environment.SpecialFolder.Desktop;
+            fb.SelectedPath = CaptureSetting.RecordSaveDirectory;
+            if (fb.ShowDialog() != DialogResult.OK) return;
+
+            CaptureSetting.RecordSaveDirectory = fb.SelectedPath;
+            textBox_dirPathRecord.Text = fb.SelectedPath;
         }
         #endregion
         #endregion
@@ -197,9 +243,37 @@ namespace GTLauncher
             }
 
             numericUpDown_timer.Value = CaptureSetting.Timer;
-            textBox_dirPath.Text = CaptureSetting.SaveDirectory;
+            textBox_dirPathCapture.Text = CaptureSetting.CaptureSaveDirectory;
             comboBox_imageFormat.DataSource = CaptureSetting.ImageFormats;
             comboBox_imageFormat.SelectedItem = CaptureSetting.SaveImageFormat;
+
+            numericUpDown_fpsGif.Value = CaptureSetting.GifFPS;
+            numericUpDown_fpsVideo.Value = CaptureSetting.VideoFPS;
+            textBox_dirPathRecord.Text = CaptureSetting.RecordSaveDirectory;
+            // comboBox_sourceAudio의 값은 listView_SelectedIndexChanged이벤트에서 FFmpeg 체크 후 처리함
+        }
+
+        private List<string> GetAudioSources()
+        {
+            var ffmpeg = new FFmpeg();
+            var deviceNames = ffmpeg.GetDeviceNames();
+            return deviceNames["Audio"];
+        }
+
+        private void EnableRecordTabPage(bool isUse)
+        {
+            foreach (Control control in tabPage_record.Controls)
+            {
+                control.Enabled = isUse;
+            }
+        }
+
+        private bool InvalidateHotKey(Keys modifiers, Keys key)
+        {
+            if (modifiers == Keys.None) return false;
+
+            var nums = new Keys[] { Keys.D0, Keys.D1, Keys.D2, Keys.D3, Keys.D4, Keys.D5, Keys.D6, Keys.D7, Keys.D8, Keys.D9 };
+            return nums.Contains(key);
         }
         #endregion
     }

@@ -13,7 +13,7 @@ namespace GTCapture
     public class CaptureSetting
     {
         private const string SaveFileName = "Setting.Capture.json";
-        public static readonly string[] ImageFormats = new string[] { "jpg", "png", "bmp" };
+        public static readonly string[] ImageFormats = new string[] { "png", "jpg", "bmp" };
 
         #region Properties
         public static IntPtr Handle { get; set; }
@@ -22,9 +22,17 @@ namespace GTCapture
 
         public static int Timer { get; set; }
 
-        public static string SaveDirectory { get; set; }
+        public static string CaptureSaveDirectory { get; set; }
 
         public static string SaveImageFormat { get; set; }
+
+        public static int GifFPS { get; set; }
+
+        public static int VideoFPS { get; set; }
+
+        public static string AudioSource { get; set; }
+
+        public static string RecordSaveDirectory { get; set; }
         #endregion
 
         #region Public Method
@@ -34,8 +42,12 @@ namespace GTCapture
             {
                 var properties = new Dictionary<string, object>();
                 properties.Add("Timer", Timer);
-                properties.Add("SaveDirectory", SaveDirectory);
+                properties.Add("CaptureSaveDirectory", CaptureSaveDirectory);
                 properties.Add("SaveImageFormat", SaveImageFormat);
+                properties.Add("GifFPS", GifFPS);
+                properties.Add("VideoFPS", VideoFPS);
+                properties.Add("AudioSource", AudioSource);
+                properties.Add("RecordSaveDirectory", RecordSaveDirectory);
 
                 var hotKeyProperties = new List<Dictionary<string, object>>();
                 foreach (var hotKey in HotKeys.Values)
@@ -72,8 +84,12 @@ namespace GTCapture
                 string json = File.ReadAllText(path);
                 var properties = JsonUtil.FromJson(json);
                 Timer = (int) JsonUtil.GetValue<long>(properties, "Timer");
-                SaveDirectory = JsonUtil.GetValue<string>(properties, "SaveDirectory");
+                CaptureSaveDirectory = JsonUtil.GetValue<string>(properties, "CaptureSaveDirectory");
                 SaveImageFormat = JsonUtil.GetValue<string>(properties, "SaveImageFormat");
+                GifFPS = (int) JsonUtil.GetValue<long>(properties, "GifFPS");
+                VideoFPS = (int) JsonUtil.GetValue<long>(properties, "VideoFPS");
+                AudioSource = JsonUtil.GetValue<string>(properties, "AudioSource");
+                RecordSaveDirectory = JsonUtil.GetValue<string>(properties, "RecordSaveDirectory");
 
                 LoadHotKeys(properties);
             }
@@ -87,7 +103,7 @@ namespace GTCapture
             }
         }
 
-        public static CaptureMode GetCaptureMode(KeyModifiers modifiers, Keys key)
+        public static CaptureMode GetCaptureMode(WindowNative.KeyModifiers modifiers, Keys key)
         {
             var hotKey = HotKeys.FirstOrDefault(o => o.Value.Modifiers == modifiers && o.Value.Key == key);
             return (hotKey.Value != null) ? hotKey.Key : CaptureMode.None;
@@ -102,6 +118,41 @@ namespace GTCapture
                 case "gif": return ImageFormat.Gif;
                 case "bmp": return ImageFormat.Bmp;
                 default: return ImageFormat.Jpeg;
+            }
+        }
+
+        public static void RegisterHotKey(CaptureMode mode)
+        {
+            if (Handle == IntPtr.Zero) return;
+            if (!HotKeys.ContainsKey(mode)) return;
+
+            var hotKey = HotKeys[mode];
+            if (hotKey == null) return;
+
+            if (hotKey.IsRegistered)
+            {
+                UnregisterHotKey(mode);
+            }
+
+            if (hotKey.Modifiers == WindowNative.KeyModifiers.None && hotKey.Key == Keys.None) return;
+
+            if (WindowNative.RegisterHotKey(Handle, (int) mode, hotKey.Modifiers, hotKey.Key))
+            {
+                hotKey.IsRegistered = true;
+            }
+        }
+
+        public static void UnregisterHotKey(CaptureMode mode)
+        {
+            if (Handle == IntPtr.Zero) return;
+            if (!HotKeys.ContainsKey(mode)) return;
+
+            var hotKey = HotKeys[mode];
+            if (hotKey == null) return;
+
+            if (WindowNative.UnregisterHotKey(Handle, (int) mode))
+            {
+                hotKey.IsRegistered = false;
             }
         }
         #endregion
@@ -119,55 +170,39 @@ namespace GTCapture
             {
                 var hotKey = new HotKey();
                 hotKey.CaptureMode = JsonUtil.GetValue<CaptureMode>(props, "CaptureMode");
-                hotKey.Modifiers = JsonUtil.GetValue<KeyModifiers>(props, "Modifiers");
-                hotKey.Key = JsonUtil.GetValue<Keys>(props, "Key");
+                var modifiers = JsonUtil.GetValue<WindowNative.KeyModifiers>(props, "Modifiers");
+                var key = JsonUtil.GetValue<Keys>(props, "Key");
+                hotKey.Update(modifiers, key);
 
                 HotKeys.Add(hotKey.CaptureMode, hotKey);
             }
         }
 
-        private static void RegisterHotKey(CaptureMode mode)
-        {
-            if (Handle == IntPtr.Zero) return;
-            if (!HotKeys.ContainsKey(mode)) return;
-
-            var hotKey = HotKeys[mode];
-            if (hotKey == null) return;
-
-            if (hotKey.IsRegistered)
-            {
-                UnregisterHotKey(mode);
-            }
-
-            if (WindowsAPI.RegisterHotKey(Handle, (int) mode, hotKey.Modifiers, hotKey.Key))
-            {
-                hotKey.IsRegistered = true;
-            }
-        }
-
-        private static void UnregisterHotKey(CaptureMode mode)
-        {
-            if (Handle == IntPtr.Zero) return;
-            if (!HotKeys.ContainsKey(mode)) return;
-
-            var hotKey = HotKeys[mode];
-            if (hotKey == null) return;
-
-            if (WindowsAPI.UnregisterHotKey(Handle, (int) mode))
-            {
-                hotKey.IsRegistered = false;
-            }
-        }
-
         private static void SetDefault()
         {
-            if (string.IsNullOrWhiteSpace(SaveDirectory))
+            if (string.IsNullOrWhiteSpace(CaptureSaveDirectory))
             {
-                SaveDirectory = Path.Combine(Application.StartupPath, "Capture");
+                CaptureSaveDirectory = Path.Combine(Application.StartupPath, "Capture");
             }
             if (string.IsNullOrWhiteSpace(SaveImageFormat))
             {
                 SaveImageFormat = ImageFormats[0];
+            }
+            if (GifFPS == 0)
+            {
+                GifFPS = 15;
+            }
+            if (VideoFPS == 0)
+            {
+                VideoFPS = 30;
+            }
+            if (string.IsNullOrWhiteSpace(AudioSource))
+            {
+                AudioSource = FFmpeg.DefaultAudioSource;
+            }
+            if (string.IsNullOrWhiteSpace(RecordSaveDirectory))
+            {
+                RecordSaveDirectory = Path.Combine(Application.StartupPath, "Capture");
             }
 
             if (HotKeys == null) HotKeys = new Dictionary<CaptureMode, HotKey>();
@@ -175,7 +210,8 @@ namespace GTCapture
             {
                 if (!HotKeys.ContainsKey(mode))
                 {
-                    HotKeys.Add(mode, HotKey.GetDefault(mode));
+                    HotKeys.Add(mode, HotKey.CreateDefault(mode));
+                    RegisterHotKey(mode);
                 }
             }
 

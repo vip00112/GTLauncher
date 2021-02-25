@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GTControl;
@@ -13,31 +14,43 @@ using GTUtil;
 
 namespace GTCapture
 {
+    // GDI grab + None
+    //-rtbufsize 150M -f gdigrab -framerate 60 -offset_x 0 -offset_y 0 -video_size 1920x1080 -draw_mouse 1 -i desktop -c:v libx264 -r 60 -preset ultrafast -tune zerolatency -crf 28 -pix_fmt yuv420p -movflags +faststart -y "output.mp4"
+
+    // GDI grab + 마이크
+    //-rtbufsize 150M -f gdigrab -framerate 60 -offset_x 0 -offset_y 0 -video_size 1920x1080 -draw_mouse 1 -i desktop -f dshow -i audio="마이크(USB PnP Audio Device(EEPROM))" -c:v libx264 -r 60 -preset ultrafast -tune zerolatency -crf 28 -pix_fmt yuv420p -movflags +faststart -c:a aac -ac 2 -b:a 128k -y "output.mp4"
+
+    // GDI grab + virtual_audio_capture
+    //-rtbufsize 150M -f gdigrab -framerate 60 -offset_x 0 -offset_y 0 -video_size 1920x1080 -draw_mouse 1 -i desktop -f dshow -i audio="virtual-audio-capturer" -c:v libx264 -r 60 -preset ultrafast -tune zerolatency -crf 28 -pix_fmt yuv420p -movflags +faststart -c:a aac -ac 2 -b:a 128k -y "output.mp4"
+
     public class FFmpeg
     {
+        public const string DefaultVideoSource = "GDI grab";
+        public const string DefaultAudioSource = "None";
+
         public enum RecordMode { Gif, Mp4 }
 
         public EventHandler OnRecordCompleted;
 
         private Process _proc;
-        private RecordMode _mode;
         private BackgroundWorker _recordThread;
         private string _downloadFilePath;
         private string _executeFilePath;
+        private StringBuilder _output;
 
         #region Constructor
-        public FFmpeg(RecordMode mode)
+        public FFmpeg()
         {
-            _mode = mode;
             _downloadFilePath = Path.Combine(Application.StartupPath, "Tools", "FFmpeg.zip");
             _executeFilePath = Path.Combine(Application.StartupPath, "Tools", "ffmpeg.exe");
+            _output = new StringBuilder();
         }
         #endregion
 
         #region Public Method
-        public bool CheckExecuteFile()
+        public bool CheckAndDownloadExecuteFile()
         {
-            if (!File.Exists(_executeFilePath))
+            if (!CheckExecuteFile())
             {
                 string msg = "Can't find 'FFmpeg.exe'\r\nAre you download 'FFmpeg.exe'?";
                 if (!MessageBoxUtil.Confirm(msg)) return false;
@@ -46,8 +59,12 @@ namespace GTCapture
 
             return true;
         }
+        public bool CheckExecuteFile()
+        {
+            return File.Exists(_executeFilePath);
+        }
 
-        public bool StartRecord(Rectangle recordRegion, string outputFilePath)
+        public bool StartRecord(RecordMode mode, Rectangle recordRegion, string outputFilePath)
         {
             if (_proc != null) return false;
 
@@ -56,14 +73,15 @@ namespace GTCapture
                 _recordThread = new BackgroundWorker();
                 _recordThread.DoWork += delegate (object sender, DoWorkEventArgs e)
                 {
-                    string args = CreateFFmpegArgs(recordRegion, outputFilePath);
+                    string args = CreateFFmpegArgs(mode, recordRegion, outputFilePath);
                     Excute(args);
                 };
                 _recordThread.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
                 {
                     _recordThread = null;
 
-                    if (_mode == RecordMode.Gif)
+                    // Gif 모드일 경우 컨버팅(mp4 -> gif) 작업 추가
+                    if (mode == RecordMode.Gif)
                     {
                         ConvertMp4ToGif(outputFilePath);
                     }
@@ -99,33 +117,107 @@ namespace GTCapture
                 return false;
             }
         }
+
+        public Dictionary<string , List<string>> GetDeviceNames()
+        {
+            var deviceNames = new Dictionary<string, List<string>>();
+            var videoDeviceNames = new List<string>() { DefaultVideoSource };
+            var audioDeviceNames = new List<string>() { DefaultAudioSource };
+            deviceNames.Add("Video", videoDeviceNames);
+            deviceNames.Add("Audio", audioDeviceNames);
+
+            if (!CheckExecuteFile()) return deviceNames;
+
+            string args = "-list_devices true -f dshow -i dummy";
+            Excute(args);
+
+            string result = _output.ToString();
+            if (string.IsNullOrWhiteSpace(result)) return deviceNames;
+
+            bool isVideoDevices = false;
+            var regex = new Regex(@"\[dshow @ \w+\]  ""(.+)""", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+            var lines = result.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                if (!line.StartsWith("[dshow @")) continue;
+
+                // Catch Video Devices
+                if (line.Contains("DirectShow video devices"))
+                {
+                    isVideoDevices = true;
+                    continue;
+                }
+
+                // Catch Audio Devices
+                if (line.Contains("DirectShow audio devices"))
+                {
+                    isVideoDevices = false;
+                    continue;
+                }
+
+                // Get Devices
+                Match match = regex.Match(line);
+
+                if (match.Success)
+                {
+                    string deviceName = match.Groups[1].Value;
+                    if (isVideoDevices)
+                    {
+                        videoDeviceNames.Add(deviceName);
+                    }
+                    else
+                    {
+                        audioDeviceNames.Add(deviceName);
+                    }
+                }
+            }
+
+            return deviceNames;
+        }
         #endregion
 
         #region Private Method
-        private string CreateFFmpegArgs(Rectangle recordRegion, string output)
+        private string CreateFFmpegArgs(RecordMode mode, Rectangle recordRegion, string output)
         {
             var rec = recordRegion;
             int width = (rec.Width % 2 == 0) ? rec.Width : rec.Width - 1;
             int height = (rec.Height % 2 == 0) ? rec.Height : rec.Height - 1;
-            int framerate = 0;
+            int fps = 0;
+            string audio = "";
             string option = "";
-            if (_mode == RecordMode.Gif)
+            if (mode == RecordMode.Gif)
             {
-                framerate = 15;
-                option = " -qp 0 -y";
+                fps = CaptureSetting.GifFPS;
+                option = " -qp 0";
             }
-            else if (_mode == RecordMode.Mp4)
+            else if (mode == RecordMode.Mp4)
             {
-                framerate = 30;
-                option = " -crf 28 -pix_fmt yuv420p -movflags +faststart -y";
+                fps = CaptureSetting.VideoFPS;
+                option = " -crf 28 -pix_fmt yuv420p -movflags +faststart";
+
+                // AudioSource
+                if (!string.IsNullOrWhiteSpace(CaptureSetting.AudioSource) && CaptureSetting.AudioSource != DefaultAudioSource)
+                {
+                    var deviceNames = GetDeviceNames()["Audio"];
+                    var audioSource = deviceNames.FirstOrDefault(o => o == CaptureSetting.AudioSource);
+                    if (!string.IsNullOrWhiteSpace(audioSource))
+                    {
+                        audio = " -f dshow -i audio=\"" + audioSource + "\"";
+                        option += " -c:a aac -ac 2 -b:a 128k";
+                    }
+                }
             }
 
             var sb = new StringBuilder();
-            sb.Append("-rtbufsize 150M -f gdigrab -framerate " + framerate);
+            sb.Append("-rtbufsize 150M -f gdigrab -framerate " + fps);
             sb.Append(string.Format(" -offset_x {0} -offset_y {1} -video_size {2}x{3}", rec.X, rec.Y, width, height));
-            sb.Append(" -draw_mouse 1 -i desktop -c:v libx264 -r " + framerate);
+            sb.Append(" -draw_mouse 1 -i desktop");
+            sb.Append(audio);
+            sb.Append(" -c:v libx264 -r " + fps);
             sb.Append(" -preset ultrafast -tune zerolatency");
-            sb.Append(option + " \"" + output + "\"");
+            sb.Append(option);
+            sb.Append(" -y \"" + output + "\"");
             return sb.ToString();
         }
 
@@ -133,6 +225,8 @@ namespace GTCapture
         {
             try
             {
+                // 기존 CommandLine 출력 값 초기화
+                _output.Clear();
 
                 using (_proc = new Process())
                 {
@@ -150,13 +244,9 @@ namespace GTCapture
                         StandardErrorEncoding = Encoding.UTF8
                     };
 
-                    // TEST
-                    //_ffmpegProc.EnableRaisingEvents = true;
-                    //_ffmpegProc.ErrorDataReceived += delegate (object debugSender, DataReceivedEventArgs debugEvent)
-                    //{
-                    //    if (string.IsNullOrWhiteSpace(debugEvent.Data)) return;
-                    //    Console.WriteLine(debugEvent.Data);
-                    //};
+                    _proc.EnableRaisingEvents = true;
+                    _proc.OutputDataReceived += FFmpegCommandLineReceive;
+                    _proc.ErrorDataReceived += FFmpegCommandLineReceive;
                     _proc.StartInfo = psi;
                     _proc.Start();
 
@@ -209,6 +299,14 @@ namespace GTCapture
             }
 
             return false;
+        }
+        #endregion
+
+        #region Event Handler
+        private void FFmpegCommandLineReceive(object sender, DataReceivedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(e.Data)) return;
+            _output.AppendLine(e.Data);
         }
         #endregion
     }

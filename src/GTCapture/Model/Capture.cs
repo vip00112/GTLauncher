@@ -33,16 +33,31 @@ namespace GTCapture
         #region Protected Method
         protected override void WndProc(ref Message m)
         {
-            base.WndProc(ref m);
-            if (m.Msg != 0x0312) return;
-            if (_captureThread != null) return;
+            if (FindHotKey(m)) return;
 
-            var modifier = (KeyModifiers) ((int) m.LParam & 0xFFFF);
+            base.WndProc(ref m);
+        }
+        #endregion
+
+        #region Private Method
+        private bool FindHotKey(Message m)
+        {
+            if (m.Msg != WindowNative.WM_HOTKEY) return false;
+            if (_captureThread != null) return false;
+
+            var modifier = (WindowNative.KeyModifiers) ((int) m.LParam & 0xFFFF);
             var key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
 
             CaptureMode mode = CaptureSetting.GetCaptureMode(modifier, key);
-            if (mode == CaptureMode.None) return;
+            if (mode == CaptureMode.None) return false;
 
+            DoCapture(mode);
+
+            return true;
+        }
+
+        private void DoCapture(CaptureMode mode)
+        {
             switch (mode)
             {
                 #region Capture
@@ -112,16 +127,7 @@ namespace GTCapture
                     #endregion
             }
         }
-        #endregion
 
-        #region Public Method
-        public string GetSaveFolderPath()
-        {
-            return CaptureSetting.SaveDirectory;
-        }
-        #endregion
-
-        #region Private Method
         private Image CaptureWindow(CaptureMode mode)
         {
             Image img = null;
@@ -129,21 +135,23 @@ namespace GTCapture
             switch (mode)
             {
                 case CaptureMode.FullScreen:
-                    handle = WindowsAPI.GetDesktopWindow();
+                    handle = WindowNative.GetDesktopWindow();
                     img = CaptureWindow(handle, 0, 0, 0, 0);
                     break;
                 case CaptureMode.ActiveProcess:
-                    handle = WindowsAPI.GetForegroundWindow();
+                    handle = WindowNative.GetForegroundWindow();
                     img = CaptureWindow(handle, 0, 0, 0, 0);
                     break;
                 case CaptureMode.Region:
-                    using (var dialog = new CaptureRegionDialog())
+                    var fullSize = new Size(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height);
+                    using (var tmp = CaptureWindow(handle, 0, 0, fullSize.Width, fullSize.Height))
+                    using (var dialog = new CaptureBackgroundDialog(tmp))
                     {
+                        dialog.TopMost = true;
+                        dialog.BringToFront();
                         if (dialog.ShowDialog() != DialogResult.OK) return null;
 
-                        handle = WindowsAPI.GetDesktopWindow();
-                        var region = dialog.SelectedRegion;
-                        img = CaptureWindow(handle, region.X, region.Y, region.Width, region.Height);
+                        img = dialog.Image;
                     }
                     break;
                 default: return null;
@@ -162,10 +170,10 @@ namespace GTCapture
                 // 해당 Handle의 크기 취득
                 if (width == 0 || height == 0)
                 {
-                    var windowRect = new WinStructRect();
-                    var clientRect = new WinStructRect();
-                    WindowsAPI.GetWindowRect(handle, ref windowRect);
-                    WindowsAPI.GetClientRect(handle, ref clientRect);
+                    var windowRect = new WindowNative.Rect();
+                    var clientRect = new WindowNative.Rect();
+                    WindowNative.GetWindowRect(handle, ref windowRect);
+                    WindowNative.GetClientRect(handle, ref clientRect);
                     if (x == 0) x = windowRect.Left;
                     if (y == 0) y = windowRect.Top;
                     if (width == 0) width = clientRect.Width;
@@ -190,14 +198,14 @@ namespace GTCapture
                     height = (int) (height * scale);
                 }
 
-                handle = WindowsAPI.GetDesktopWindow();
-                srcDC = WindowsAPI.GetWindowDC(handle);
-                memoryDC = WindowsAPI.CreateCompatibleDC(srcDC);
-                bitmap = WindowsAPI.CreateCompatibleBitmap(srcDC, width, height);
+                handle = WindowNative.GetDesktopWindow();
+                srcDC = WindowNative.GetWindowDC(handle);
+                memoryDC = WindowNative.CreateCompatibleDC(srcDC);
+                bitmap = WindowNative.CreateCompatibleBitmap(srcDC, width, height);
 
-                IntPtr oldBitmap = WindowsAPI.SelectObject(memoryDC, bitmap);
-                WindowsAPI.BitBlt(memoryDC, 0, 0, width, height, srcDC, x, y, WindowsAPI.SRCCOPY | WindowsAPI.CAPTUREBLT);
-                WindowsAPI.SelectObject(memoryDC, oldBitmap);
+                IntPtr oldBitmap = WindowNative.SelectObject(memoryDC, bitmap);
+                WindowNative.BitBlt(memoryDC, 0, 0, width, height, srcDC, x, y, WindowNative.SRCCOPY | WindowNative.CAPTUREBLT);
+                WindowNative.SelectObject(memoryDC, oldBitmap);
 
                 img = Image.FromHbitmap(bitmap);
             }
@@ -207,9 +215,9 @@ namespace GTCapture
             }
             finally
             {
-                WindowsAPI.DeleteObject(bitmap);
-                WindowsAPI.DeleteDC(memoryDC);
-                WindowsAPI.ReleaseDC(handle, srcDC);
+                WindowNative.DeleteObject(bitmap);
+                WindowNative.DeleteDC(memoryDC);
+                WindowNative.ReleaseDC(handle, srcDC);
             }
 
             return img;
@@ -220,8 +228,8 @@ namespace GTCapture
             using (var g = Graphics.FromHwnd(IntPtr.Zero))
             {
                 IntPtr desktop = g.GetHdc();
-                int logicalScreenHeight = WindowsAPI.GetDeviceCaps(desktop, (int) DeviceCap.VERTRES);
-                int physicalScreenHeight = WindowsAPI.GetDeviceCaps(desktop, (int) DeviceCap.DESKTOPVERTRES);
+                int logicalScreenHeight = WindowNative.GetDeviceCaps(desktop, (int) WindowNative.DeviceCap.VERTRES);
+                int physicalScreenHeight = WindowNative.GetDeviceCaps(desktop, (int) WindowNative.DeviceCap.DESKTOPVERTRES);
                 return (float) physicalScreenHeight / logicalScreenHeight;
             }
         }
@@ -231,7 +239,7 @@ namespace GTCapture
             if (img == null) return;
             try
             {
-                string savePath = GetSaveFilePath(CaptureSetting.SaveImageFormat);
+                string savePath = GetCaptureSaveFilePath(CaptureSetting.SaveImageFormat);
                 img.Save(savePath, CaptureSetting.GetImageFormat());
                 Clipboard.SetImage(img);
             }
@@ -241,14 +249,24 @@ namespace GTCapture
             }
         }
 
-        private string GetSaveFilePath(string extension)
+        private string GetCaptureSaveFilePath(string extension)
         {
-            if (!Directory.Exists(CaptureSetting.SaveDirectory))
+            if (!Directory.Exists(CaptureSetting.CaptureSaveDirectory))
             {
-                Directory.CreateDirectory(CaptureSetting.SaveDirectory);
+                Directory.CreateDirectory(CaptureSetting.CaptureSaveDirectory);
             }
             string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss"), extension);
-            return Path.Combine(CaptureSetting.SaveDirectory, fileName);
+            return Path.Combine(CaptureSetting.CaptureSaveDirectory, fileName);
+        }
+
+        private string GetRecordSaveFilePath(string extension)
+        {
+            if (!Directory.Exists(CaptureSetting.RecordSaveDirectory))
+            {
+                Directory.CreateDirectory(CaptureSetting.RecordSaveDirectory);
+            }
+            string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss"), extension);
+            return Path.Combine(CaptureSetting.RecordSaveDirectory, fileName);
         }
         #endregion
 
@@ -259,15 +277,19 @@ namespace GTCapture
             if (form == null) return;
             if (_ffmpeg != null) return;
 
-            var mode = (form.Mode == CaptureMode.RecordGif) ? FFmpeg.RecordMode.Gif : FFmpeg.RecordMode.Mp4;
-            _ffmpeg = new FFmpeg(mode);
+            _ffmpeg = new FFmpeg();
             _ffmpeg.OnRecordCompleted += FFmpegRecordCompleted;
 
             // FFmpeg.exe check and download
-            if (!_ffmpeg.CheckExecuteFile()) return;
+            if (!_ffmpeg.CheckAndDownloadExecuteFile())
+            {
+                FFmpegRecordCompleted(null, EventArgs.Empty);
+                return;
+            }
 
-            string savePath = GetSaveFilePath("mp4");
-            if (_ffmpeg.StartRecord(form.RecordRegion, savePath))
+            var mode = (form.Mode == CaptureMode.RecordGif) ? FFmpeg.RecordMode.Gif : FFmpeg.RecordMode.Mp4;
+            string savePath = GetRecordSaveFilePath("mp4");
+            if (_ffmpeg.StartRecord(mode, form.RecordRegion, savePath))
             {
                 form.StartRecord();
             }
@@ -287,6 +309,7 @@ namespace GTCapture
 
         private void FFmpegRecordCompleted(object sender, EventArgs e)
         {
+            _ffmpeg.OnRecordCompleted -= FFmpegRecordCompleted;
             _ffmpeg = null;
         }
 

@@ -20,15 +20,56 @@ namespace GTControl
         #region Protected Method
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
         {
-            if (e.Item.Selected || e.Item.Pressed)
+            if (e.ToolStrip is ContextMenuStrip)
             {
-                e.TextColor = LayoutSetting.GetForeColorHover(LayoutSetting.Theme);
+                if (e.Item.Selected)
+                {
+                    e.TextColor = LayoutSetting.GetForeColorHover(LayoutSetting.Theme);
+                }
+                else
+                {
+                    e.TextColor = LayoutSetting.GetForeColorCommon(LayoutSetting.Theme);
+                }
             }
             else
             {
-                e.TextColor = LayoutSetting.GetForeColorCommon(LayoutSetting.Theme);
+                if (e.Item.Selected || e.Item.Pressed)
+                {
+                    e.TextColor = LayoutSetting.GetForeColorHover(LayoutSetting.Theme);
+                }
+                else
+                {
+                    e.TextColor = LayoutSetting.GetForeColorCommon(LayoutSetting.Theme);
+                }
             }
             base.OnRenderItemText(e);
+        }
+
+        protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
+        {
+            if (e.Item.Owner is ContextMenuStrip)
+            {
+                if (e.Item.Selected)
+                {
+                    e.ArrowColor = LayoutSetting.GetForeColorHover(LayoutSetting.Theme);
+                }
+                else
+                {
+                    e.ArrowColor = LayoutSetting.GetForeColorCommon(LayoutSetting.Theme);
+                }
+            }
+            else
+            {
+                if (e.Item.Selected || e.Item.Pressed)
+                {
+                    e.ArrowColor = LayoutSetting.GetForeColorHover(LayoutSetting.Theme);
+                }
+                else
+                {
+                    e.ArrowColor = LayoutSetting.GetForeColorCommon(LayoutSetting.Theme);
+                }
+            }
+            base.OnRenderArrow(e);
         }
         #endregion
     }

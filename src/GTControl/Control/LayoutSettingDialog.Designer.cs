@@ -38,10 +38,10 @@
             this.menuItem_save = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_specialFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.tabControl_pages = new GTControl.ThemeTabControl();
             this.propertyGrid_page = new GTControl.ThemePropertyGrid();
             this.propertyGrid_layout = new GTControl.ThemePropertyGrid();
-            this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.menuStrip.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -138,6 +138,23 @@
             this.panel1.Size = new System.Drawing.Size(280, 537);
             this.panel1.TabIndex = 3;
             // 
+            // splitContainer
+            // 
+            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer.Name = "splitContainer";
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.tabControl_pages);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.panel1);
+            this.splitContainer.Size = new System.Drawing.Size(784, 537);
+            this.splitContainer.SplitterDistance = 500;
+            this.splitContainer.TabIndex = 4;
+            // 
             // tabControl_pages
             // 
             this.tabControl_pages.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -173,23 +190,6 @@
             this.propertyGrid_layout.Size = new System.Drawing.Size(280, 149);
             this.propertyGrid_layout.TabIndex = 1;
             this.propertyGrid_layout.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
-            // 
-            // splitContainer
-            // 
-            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer.Location = new System.Drawing.Point(0, 24);
-            this.splitContainer.Name = "splitContainer";
-            // 
-            // splitContainer.Panel1
-            // 
-            this.splitContainer.Panel1.Controls.Add(this.tabControl_pages);
-            // 
-            // splitContainer.Panel2
-            // 
-            this.splitContainer.Panel2.Controls.Add(this.panel1);
-            this.splitContainer.Size = new System.Drawing.Size(784, 537);
-            this.splitContainer.SplitterDistance = 500;
-            this.splitContainer.TabIndex = 4;
             // 
             // LayoutSettingDialog
             // 

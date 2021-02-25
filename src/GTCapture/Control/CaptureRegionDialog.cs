@@ -40,8 +40,6 @@ namespace GTCapture
 
         private void CaptureRegionForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyData != Keys.Escape) return;
-
             DialogResult = DialogResult.Cancel;
         }
 
