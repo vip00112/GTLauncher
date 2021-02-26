@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GTUtil
 {
-    public class GithubUtil
+    public static class GithubUtil
     {
         private const string API = "https://api.github.com/repos/{0}/{1}/releases/latest";
 

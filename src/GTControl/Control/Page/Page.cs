@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GTUtil;
+using GTLocalization;
 
 namespace GTControl
 {
@@ -144,7 +145,7 @@ namespace GTControl
                     OnHidden?.Invoke(this, EventArgs.Empty);
                     break;
                 case PageCloseMode.Dispose:
-                    if (!MessageBoxUtil.Confirm("Are you sure want to close?")) return;
+                    if (!MessageBoxUtil.Confirm(Resource.GetString(Key.CloseConfirmMsg))) return;
 
                     OnDisposed?.Invoke(this, EventArgs.Empty);
                     break;

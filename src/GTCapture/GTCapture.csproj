@@ -83,6 +83,10 @@
       <Project>{35b70dba-e58c-4dcf-b0cd-addc0aab15fe}</Project>
       <Name>GTControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GTLocalization\GTLocalization.csproj">
+      <Project>{b533b775-1a38-4761-93b2-a50b49b0fbe2}</Project>
+      <Name>GTLocalization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GTUtil\GTUtil.csproj">
       <Project>{3e47b9d4-ea18-4f1b-9eef-f586bb1a1f0d}</Project>
       <Name>GTUtil</Name>

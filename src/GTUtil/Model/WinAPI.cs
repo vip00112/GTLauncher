@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GTUtil
 {
-    public class WinAPI
+    public static class WinAPI
     {
         #region Public Method
         public static void SetTitleBarTheme(IntPtr handle, bool isDarkMode)

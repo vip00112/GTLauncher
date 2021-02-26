@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GTControl;
+using GTLocalization;
 using GTUtil;
 
 namespace GTCapture
@@ -52,7 +53,7 @@ namespace GTCapture
         {
             if (!CheckExecuteFile())
             {
-                string msg = "Can't find 'FFmpeg.exe'\r\nAre you download 'FFmpeg.exe'?";
+                string msg = string.Format(Resource.GetString(Key.DownloadConfirmMsg), "FFmpeg.exe");
                 if (!MessageBoxUtil.Confirm(msg)) return false;
                 return DownloadExecuteFile();
             }

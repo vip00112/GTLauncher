@@ -28,192 +28,195 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.menuItem_add = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem_addPage = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem_addItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem_delete = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem_deletePage = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem_deleteItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem_save = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuItem_specialFolder = new System.Windows.Forms.ToolStripMenuItem();
-            this.panel1 = new System.Windows.Forms.Panel();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayoutSettingDialog));
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.tabControl_pages = new GTControl.ThemeTabControl();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.propertyGrid_page = new GTControl.ThemePropertyGrid();
             this.propertyGrid_layout = new GTControl.ThemePropertyGrid();
-            this.menuStrip.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_addPage = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_deletePage = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuItem_addItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_deleteItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuItem_copy = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_paste = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuItem_save = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItem_specialFolder = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // menuStrip
-            // 
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItem_add,
-            this.menuItem_delete,
-            this.menuItem_save,
-            this.menuItem_specialFolder});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(784, 24);
-            this.menuStrip.TabIndex = 2;
-            this.menuStrip.Text = "menuStrip1";
-            // 
-            // menuItem_add
-            // 
-            this.menuItem_add.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItem_addPage,
-            this.menuItem_addItem});
-            this.menuItem_add.Name = "menuItem_add";
-            this.menuItem_add.Size = new System.Drawing.Size(45, 20);
-            this.menuItem_add.Text = "ADD";
-            // 
-            // menuItem_addPage
-            // 
-            this.menuItem_addPage.Name = "menuItem_addPage";
-            this.menuItem_addPage.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D1)));
-            this.menuItem_addPage.Size = new System.Drawing.Size(141, 22);
-            this.menuItem_addPage.Text = "Page";
-            this.menuItem_addPage.Click += new System.EventHandler(this.menuItem_addPage_Click);
-            // 
-            // menuItem_addItem
-            // 
-            this.menuItem_addItem.Name = "menuItem_addItem";
-            this.menuItem_addItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D2)));
-            this.menuItem_addItem.Size = new System.Drawing.Size(141, 22);
-            this.menuItem_addItem.Text = "Item";
-            this.menuItem_addItem.Click += new System.EventHandler(this.menuItem_addItem_Click);
-            // 
-            // menuItem_delete
-            // 
-            this.menuItem_delete.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItem_deletePage,
-            this.menuItem_deleteItem});
-            this.menuItem_delete.Name = "menuItem_delete";
-            this.menuItem_delete.Size = new System.Drawing.Size(58, 20);
-            this.menuItem_delete.Text = "DELETE";
-            // 
-            // menuItem_deletePage
-            // 
-            this.menuItem_deletePage.Name = "menuItem_deletePage";
-            this.menuItem_deletePage.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D3)));
-            this.menuItem_deletePage.Size = new System.Drawing.Size(141, 22);
-            this.menuItem_deletePage.Text = "Page";
-            this.menuItem_deletePage.Click += new System.EventHandler(this.menuItem_deletePage_Click);
-            // 
-            // menuItem_deleteItem
-            // 
-            this.menuItem_deleteItem.Name = "menuItem_deleteItem";
-            this.menuItem_deleteItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D4)));
-            this.menuItem_deleteItem.Size = new System.Drawing.Size(141, 22);
-            this.menuItem_deleteItem.Text = "Item";
-            this.menuItem_deleteItem.Click += new System.EventHandler(this.menuItem_deleteItem_Click);
-            // 
-            // menuItem_save
-            // 
-            this.menuItem_save.Name = "menuItem_save";
-            this.menuItem_save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.menuItem_save.Size = new System.Drawing.Size(48, 20);
-            this.menuItem_save.Text = "SAVE";
-            this.menuItem_save.Click += new System.EventHandler(this.menuItem_save_Click);
-            // 
-            // menuItem_specialFolder
-            // 
-            this.menuItem_specialFolder.Name = "menuItem_specialFolder";
-            this.menuItem_specialFolder.Size = new System.Drawing.Size(90, 20);
-            this.menuItem_specialFolder.Text = "SpecialFolder";
-            this.menuItem_specialFolder.Click += new System.EventHandler(this.menuItem_specialFolder_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.propertyGrid_page);
-            this.panel1.Controls.Add(this.propertyGrid_layout);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(280, 537);
-            this.panel1.TabIndex = 3;
             // 
             // splitContainer
             // 
-            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer.Location = new System.Drawing.Point(0, 24);
+            resources.ApplyResources(this.splitContainer, "splitContainer");
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
             // 
+            resources.ApplyResources(this.splitContainer.Panel1, "splitContainer.Panel1");
             this.splitContainer.Panel1.Controls.Add(this.tabControl_pages);
             // 
             // splitContainer.Panel2
             // 
+            resources.ApplyResources(this.splitContainer.Panel2, "splitContainer.Panel2");
             this.splitContainer.Panel2.Controls.Add(this.panel1);
-            this.splitContainer.Size = new System.Drawing.Size(784, 537);
-            this.splitContainer.SplitterDistance = 500;
-            this.splitContainer.TabIndex = 4;
             // 
             // tabControl_pages
             // 
-            this.tabControl_pages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl_pages.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.tabControl_pages, "tabControl_pages");
             this.tabControl_pages.Name = "tabControl_pages";
             this.tabControl_pages.SelectedIndex = 0;
-            this.tabControl_pages.Size = new System.Drawing.Size(500, 537);
-            this.tabControl_pages.TabIndex = 1;
             this.tabControl_pages.SelectedIndexChanged += new System.EventHandler(this.tabControl_pages_SelectedIndexChanged);
+            // 
+            // panel1
+            // 
+            resources.ApplyResources(this.panel1, "panel1");
+            this.panel1.Controls.Add(this.propertyGrid_page);
+            this.panel1.Controls.Add(this.propertyGrid_layout);
+            this.panel1.Name = "panel1";
             // 
             // propertyGrid_page
             // 
-            this.propertyGrid_page.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.propertyGrid_page, "propertyGrid_page");
             this.propertyGrid_page.HelpBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
-            this.propertyGrid_page.HelpVisible = false;
             this.propertyGrid_page.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.propertyGrid_page.Location = new System.Drawing.Point(0, 149);
             this.propertyGrid_page.Name = "propertyGrid_page";
             this.propertyGrid_page.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid_page.Size = new System.Drawing.Size(280, 388);
-            this.propertyGrid_page.TabIndex = 1;
             this.propertyGrid_page.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // propertyGrid_layout
             // 
-            this.propertyGrid_layout.Dock = System.Windows.Forms.DockStyle.Top;
+            resources.ApplyResources(this.propertyGrid_layout, "propertyGrid_layout");
             this.propertyGrid_layout.HelpBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(18)))), ((int)(((byte)(18)))), ((int)(((byte)(18)))));
-            this.propertyGrid_layout.HelpVisible = false;
             this.propertyGrid_layout.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.propertyGrid_layout.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid_layout.Name = "propertyGrid_layout";
             this.propertyGrid_layout.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.propertyGrid_layout.Size = new System.Drawing.Size(280, 149);
-            this.propertyGrid_layout.TabIndex = 1;
             this.propertyGrid_layout.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
+            // 
+            // menuStrip
+            // 
+            resources.ApplyResources(this.menuStrip, "menuStrip");
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripMenuItem,
+            this.helpToolStripMenuItem});
+            this.menuStrip.Name = "menuStrip";
+            // 
+            // editToolStripMenuItem
+            // 
+            resources.ApplyResources(this.editToolStripMenuItem, "editToolStripMenuItem");
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_addPage,
+            this.menuItem_deletePage,
+            this.toolStripSeparator3,
+            this.menuItem_addItem,
+            this.menuItem_deleteItem,
+            this.toolStripSeparator2,
+            this.menuItem_copy,
+            this.menuItem_paste,
+            this.toolStripSeparator1,
+            this.menuItem_save});
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            // 
+            // menuItem_addPage
+            // 
+            resources.ApplyResources(this.menuItem_addPage, "menuItem_addPage");
+            this.menuItem_addPage.Name = "menuItem_addPage";
+            this.menuItem_addPage.Click += new System.EventHandler(this.menuItem_addPage_Click);
+            // 
+            // menuItem_deletePage
+            // 
+            resources.ApplyResources(this.menuItem_deletePage, "menuItem_deletePage");
+            this.menuItem_deletePage.Name = "menuItem_deletePage";
+            this.menuItem_deletePage.Click += new System.EventHandler(this.menuItem_deletePage_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            resources.ApplyResources(this.toolStripSeparator3, "toolStripSeparator3");
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            // 
+            // menuItem_addItem
+            // 
+            resources.ApplyResources(this.menuItem_addItem, "menuItem_addItem");
+            this.menuItem_addItem.Name = "menuItem_addItem";
+            this.menuItem_addItem.Click += new System.EventHandler(this.menuItem_addItem_Click);
+            // 
+            // menuItem_deleteItem
+            // 
+            resources.ApplyResources(this.menuItem_deleteItem, "menuItem_deleteItem");
+            this.menuItem_deleteItem.Name = "menuItem_deleteItem";
+            this.menuItem_deleteItem.Click += new System.EventHandler(this.menuItem_deleteItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            // 
+            // menuItem_copy
+            // 
+            resources.ApplyResources(this.menuItem_copy, "menuItem_copy");
+            this.menuItem_copy.Name = "menuItem_copy";
+            this.menuItem_copy.Click += new System.EventHandler(this.menuItem_copy_Click);
+            // 
+            // menuItem_paste
+            // 
+            resources.ApplyResources(this.menuItem_paste, "menuItem_paste");
+            this.menuItem_paste.Name = "menuItem_paste";
+            this.menuItem_paste.Click += new System.EventHandler(this.menuItem_paste_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            // 
+            // menuItem_save
+            // 
+            resources.ApplyResources(this.menuItem_save, "menuItem_save");
+            this.menuItem_save.Name = "menuItem_save";
+            this.menuItem_save.Click += new System.EventHandler(this.menuItem_save_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            resources.ApplyResources(this.helpToolStripMenuItem, "helpToolStripMenuItem");
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_specialFolder});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            // 
+            // menuItem_specialFolder
+            // 
+            resources.ApplyResources(this.menuItem_specialFolder, "menuItem_specialFolder");
+            this.menuItem_specialFolder.Name = "menuItem_specialFolder";
+            this.menuItem_specialFolder.Click += new System.EventHandler(this.menuItem_specialFolder_Click);
             // 
             // LayoutSettingDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.menuStrip);
             this.KeyPreview = true;
             this.Name = "LayoutSettingDialog";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Layout Setting";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LayoutSettingForm_FormClosing);
             this.Load += new System.EventHandler(this.LayoutSettingForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LayoutSettingForm_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LayoutSettingForm_KeyUp);
-            this.menuStrip.ResumeLayout(false);
-            this.menuStrip.PerformLayout();
-            this.panel1.ResumeLayout(false);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -222,17 +225,22 @@
         #endregion
         private GTControl.ThemePropertyGrid propertyGrid_page;
         private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem menuItem_add;
-        private System.Windows.Forms.ToolStripMenuItem menuItem_delete;
-        private System.Windows.Forms.ToolStripMenuItem menuItem_save;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menuItem_addPage;
         private System.Windows.Forms.ToolStripMenuItem menuItem_addItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem menuItem_deletePage;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem menuItem_deleteItem;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_copy;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_paste;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_save;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_specialFolder;
         private GTControl.ThemeTabControl tabControl_pages;
         private System.Windows.Forms.Panel panel1;
         private GTControl.ThemePropertyGrid propertyGrid_layout;
-        private System.Windows.Forms.ToolStripMenuItem menuItem_specialFolder;
         private System.Windows.Forms.SplitContainer splitContainer;
     }
 }

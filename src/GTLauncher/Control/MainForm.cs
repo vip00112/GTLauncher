@@ -1,6 +1,7 @@
 ﻿using GoodbyeDPI;
 using GTCapture;
 using GTControl;
+using GTLocalization;
 using GTUtil;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace GTLauncher
 
         private void menuItem_exit_Click(object sender, EventArgs e)
         {
-            if (!MessageBoxUtil.Confirm("Are you sure want to close?")) return;
+            if (!MessageBoxUtil.Confirm(Resource.GetString(Key.CloseConfirmMsg))) return;
 
             Close();
         }
@@ -100,8 +101,7 @@ namespace GTLauncher
 
             if (Process.GetProcessesByName("goodbyedpi").Length > 0)
             {
-                string msg = "'GoodbyeDPI' is already started.\r\nAre you sure want to close?";
-                if (!MessageBoxUtil.Confirm(msg)) return;
+                if (!MessageBoxUtil.Confirm(Resource.GetString(Key.GoodbyeDPICloseConfirmMsg))) return;
 
                 _goodbyedpiManager.Kill();
             }

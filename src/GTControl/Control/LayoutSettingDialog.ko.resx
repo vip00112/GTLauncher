@@ -117,118 +117,47 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="&gt;&gt;progressBar.Type" xml:space="preserve">
-    <value>GTControl.ThemeProgressBar, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="menuItem_addPage.Text" xml:space="preserve">
+    <value>페이지 추가</value>
   </data>
-  <data name="label_title.Text" xml:space="preserve">
-    <value>Downloaded {0} of {1} bytes</value>
+  <data name="menuItem_deletePage.Text" xml:space="preserve">
+    <value>페이지 삭제</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="label_title.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="menuItem_addItem.Text" xml:space="preserve">
+    <value>아이템 추가</value>
+  </data>
+  <data name="menuItem_deleteItem.Text" xml:space="preserve">
+    <value>아이템 삭제</value>
+  </data>
+  <data name="menuItem_copy.Text" xml:space="preserve">
+    <value>복사</value>
+  </data>
+  <data name="menuItem_paste.Text" xml:space="preserve">
+    <value>붙여넣기</value>
+  </data>
+  <data name="menuItem_save.Text" xml:space="preserve">
+    <value>저장</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label_title.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleLeft</value>
+  <data name="editToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>43, 20</value>
   </data>
-  <data name="&gt;&gt;label_per.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="editToolStripMenuItem.Text" xml:space="preserve">
+    <value>편집</value>
+  </data>
+  <data name="menuItem_specialFolder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>158, 22</value>
+  </data>
+  <data name="menuItem_specialFolder.Text" xml:space="preserve">
+    <value>스페셜 폴더</value>
+  </data>
+  <data name="helpToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>55, 20</value>
+  </data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
+    <value>도움말</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Download</value>
+    <value>레이아웃 설정</value>
   </data>
-  <data name="progressBar.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 20</value>
-  </data>
-  <data name="&gt;&gt;label_title.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>DownloadDialog</value>
-  </data>
-  <data name="label_per.Font" type="System.Drawing.Font, System.Drawing">
-    <value>굴림, 9pt, style=Bold</value>
-  </data>
-  <data name="progressBar.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>330, 108</value>
-  </data>
-  <data name="&gt;&gt;label_per.Name" xml:space="preserve">
-    <value>label_per</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterScreen</value>
-  </data>
-  <data name="label_per.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
-  <data name="progressBar.Location" type="System.Drawing.Point, System.Drawing">
-    <value>16, 44</value>
-  </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_per.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="label_per.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;progressBar.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="label_title.Font" type="System.Drawing.Font, System.Drawing">
-    <value>굴림, 9pt</value>
-  </data>
-  <data name="label_title.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 14</value>
-  </data>
-  <data name="&gt;&gt;progressBar.Name" xml:space="preserve">
-    <value>progressBar</value>
-  </data>
-  <data name="&gt;&gt;label_per.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="progressBar.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
-  <data name="label_title.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
-  <data name="label_per.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 74</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>7, 12</value>
-  </data>
-  <data name="label_per.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 20</value>
-  </data>
-  <data name="label_title.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 20</value>
-  </data>
-  <data name="label_per.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
-  <data name="&gt;&gt;progressBar.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="label_per.Text" xml:space="preserve">
-    <value>0%</value>
-  </data>
-  <data name="&gt;&gt;label_title.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_title.Name" xml:space="preserve">
-    <value>label_title</value>
-  </data>
-  <data name="&gt;&gt;label_title.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
 </root>

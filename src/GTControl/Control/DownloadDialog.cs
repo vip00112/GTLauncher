@@ -9,6 +9,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GTLocalization;
 using GTUtil;
 
 namespace GTControl
@@ -72,7 +73,7 @@ namespace GTControl
                     if (e.Cancelled)
                     {
                         File.Delete(_filePath);
-                        MessageBoxUtil.Error("Download has been cancelled.");
+                        MessageBoxUtil.Error(Resource.GetString(Key.DownloadCancelMsg));
                         DialogResult = DialogResult.Cancel;
                     }
                     else

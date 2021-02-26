@@ -113,6 +113,18 @@
     <Compile Include="Model\ThemeToolStripRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Control\CreatePageDialog.ko.resx">
+      <DependentUpon>CreatePageDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\DownloadDialog.ko.resx">
+      <DependentUpon>DownloadDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\LayoutSettingDialog.ko.resx">
+      <DependentUpon>LayoutSettingDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\NoteDialog.ko.resx">
+      <DependentUpon>NoteDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Control\Page\Page.resx">
       <DependentUpon>Page.cs</DependentUpon>
     </EmbeddedResource>
@@ -140,6 +152,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GTLocalization\GTLocalization.csproj">
+      <Project>{b533b775-1a38-4761-93b2-a50b49b0fbe2}</Project>
+      <Name>GTLocalization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GTUtil\GTUtil.csproj">
       <Project>{3e47b9d4-ea18-4f1b-9eef-f586bb1a1f0d}</Project>
       <Name>GTUtil</Name>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GTUtil
 {
-    public class Runtime
+    public static class Runtime
     {
         public static bool DesignMode { get { return DesignModeForWpf || DesignModeForWinForm; } }
 

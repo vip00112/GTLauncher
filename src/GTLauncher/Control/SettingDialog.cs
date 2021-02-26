@@ -48,6 +48,15 @@ namespace GTLauncher
             tabControl.SizeMode = TabSizeMode.Fixed;
 
             // Listview Setting
+            for (int i = 0; i < listView.Items.Count; i++)
+            {
+                var li = listView.Items[i];
+                if (i == 0) li.Tag = tabPage_general;
+                else if (i == 1) li.Tag = tabPage_layout;
+                else if (i == 2) li.Tag = tabPage_capture;
+                else if (i == 3) li.Tag = tabPage_record;
+                else if (i == 4) li.Tag = tabPage_hotKey;
+            }
             foreach (ListViewItem li in listView.Items)
             {
                 var tag = li.Tag as string;

@@ -1,4 +1,5 @@
-﻿using GTUtil;
+﻿using GTLocalization;
+using GTUtil;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -100,34 +101,6 @@ namespace GTControl
             {
                 _isPressedCtrl = true;
             }
-            if (!_isPressedCtrl) return;
-
-            if (e.KeyCode == Keys.C)
-            {
-                if (!CanCopyPaste()) return;
-
-                ResetCopyItems();
-                foreach (var item in _ancherItems)
-                {
-                    var copy = item.Copy();
-                    if (copy == null) continue;
-
-                    _copyItems.Add(copy);
-                }
-            }
-            else if (e.KeyCode == Keys.V)
-            {
-                if (!CanCopyPaste()) return;
-                if (SelectedPage == null) return;
-                if (_copyItems.Count == 0) return;
-
-                foreach (var copy in _copyItems)
-                {
-                    var item = CreatePageItem(SelectedPage, copy, SelectedPage.PageName);
-                    if (item != null) AddAncherItem(item);
-                }
-                ResetCopyItems();
-            }
         }
 
         private void LayoutSettingForm_KeyUp(object sender, KeyEventArgs e)
@@ -189,10 +162,10 @@ namespace GTControl
             _isPressedCtrl = false;
 
             if (SelectedPage == null) return;
-            if (!MessageBoxUtil.Confirm("Are you sure want to delete page?")) return;
+            if (!MessageBoxUtil.Confirm(Resource.GetString(Key.PageDeleteConfirmMsg))) return;
             if (SelectedPage.PageName == "Main")
             {
-                MessageBoxUtil.Error("Can't remove Main page.");
+                MessageBoxUtil.Error(Resource.GetString(Key.PageDeleteErrorMsg));
                 return;
             }
 
@@ -215,7 +188,7 @@ namespace GTControl
 
             if (SelectedPage == null) return;
             if (_ancherItems.Count == 0) return;
-            if (!MessageBoxUtil.Confirm("Are you sure want to delete item?")) return;
+            if (!MessageBoxUtil.Confirm(Resource.GetString(Key.PageItemDeleteConfirmMsg))) return;
 
             foreach (var item in _ancherItems)
             {
@@ -224,11 +197,39 @@ namespace GTControl
             ResetAncherItems();
         }
 
+        private void menuItem_copy_Click(object sender, EventArgs e)
+        {
+            if (!CanCopyPaste()) return;
+
+            ResetCopyItems();
+            foreach (var item in _ancherItems)
+            {
+                var copy = item.Copy();
+                if (copy == null) continue;
+
+                _copyItems.Add(copy);
+            }
+        }
+
+        private void menuItem_paste_Click(object sender, EventArgs e)
+        {
+            if (!CanCopyPaste()) return;
+            if (SelectedPage == null) return;
+            if (_copyItems.Count == 0) return;
+
+            foreach (var copy in _copyItems)
+            {
+                var item = CreatePageItem(SelectedPage, copy, SelectedPage.PageName);
+                if (item != null) AddAncherItem(item);
+            }
+            ResetCopyItems();
+        }
+
         private void menuItem_save_Click(object sender, EventArgs e)
         {
             _isPressedCtrl = false;
 
-            if (!MessageBoxUtil.Confirm("Are you sure want to save layout?")) return;
+            if (!MessageBoxUtil.Confirm(Resource.GetString(Key.LayoutSaveConfirmMsg))) return;
 
             _pages.Clear();
             _pageItems.Clear();

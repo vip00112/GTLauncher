@@ -29,6 +29,7 @@ namespace GTControl
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DownloadDialog));
             this.label_title = new System.Windows.Forms.Label();
             this.label_per = new System.Windows.Forms.Label();
             this.progressBar = new GTControl.ThemeProgressBar();
@@ -36,39 +37,23 @@ namespace GTControl
             // 
             // label_title
             // 
-            this.label_title.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label_title.Location = new System.Drawing.Point(14, 14);
-            this.label_title.Margin = new System.Windows.Forms.Padding(5);
+            resources.ApplyResources(this.label_title, "label_title");
             this.label_title.Name = "label_title";
-            this.label_title.Size = new System.Drawing.Size(300, 20);
-            this.label_title.TabIndex = 0;
-            this.label_title.Text = "Downloaded {0} of {1} bytes";
-            this.label_title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label_per
             // 
-            this.label_per.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label_per.Location = new System.Drawing.Point(14, 74);
-            this.label_per.Margin = new System.Windows.Forms.Padding(5);
+            resources.ApplyResources(this.label_per, "label_per");
             this.label_per.Name = "label_per";
-            this.label_per.Size = new System.Drawing.Size(300, 20);
-            this.label_per.TabIndex = 0;
-            this.label_per.Text = "0%";
-            this.label_per.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(16, 44);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(5);
+            resources.ApplyResources(this.progressBar, "progressBar");
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(300, 20);
-            this.progressBar.TabIndex = 1;
             // 
             // DownloadDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(330, 108);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.label_per);
             this.Controls.Add(this.label_title);
@@ -77,8 +62,6 @@ namespace GTControl
             this.MinimizeBox = false;
             this.Name = "DownloadDialog";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Download";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DownloadDialog_FormClosing);
             this.Load += new System.EventHandler(this.DownloadDialog_Load);

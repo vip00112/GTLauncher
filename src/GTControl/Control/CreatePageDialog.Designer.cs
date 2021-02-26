@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreatePageDialog));
             this.textBox_pageName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button_create = new System.Windows.Forms.Button();
@@ -35,35 +36,25 @@
             // 
             // textBox_pageName
             // 
-            this.textBox_pageName.Location = new System.Drawing.Point(86, 12);
+            resources.ApplyResources(this.textBox_pageName, "textBox_pageName");
             this.textBox_pageName.Name = "textBox_pageName";
-            this.textBox_pageName.Size = new System.Drawing.Size(150, 21);
-            this.textBox_pageName.TabIndex = 0;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 15);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 12);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "PageName";
             // 
             // button_create
             // 
-            this.button_create.Location = new System.Drawing.Point(242, 10);
+            resources.ApplyResources(this.button_create, "button_create");
             this.button_create.Name = "button_create";
-            this.button_create.Size = new System.Drawing.Size(75, 23);
-            this.button_create.TabIndex = 2;
-            this.button_create.Text = "CREATE";
             this.button_create.UseVisualStyleBackColor = true;
             this.button_create.Click += new System.EventHandler(this.button_create_Click);
             // 
             // CreatePageDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(329, 42);
             this.Controls.Add(this.button_create);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_pageName);
@@ -72,8 +63,6 @@
             this.MinimizeBox = false;
             this.Name = "CreatePageDialog";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Create Page";
             this.Load += new System.EventHandler(this.CreatePageDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

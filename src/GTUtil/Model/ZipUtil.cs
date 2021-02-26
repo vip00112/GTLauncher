@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GTUtil
 {
-    public class ZipUtil
+    public static class ZipUtil
     {
         public static bool Unzip(string zipPath, string targetDir, bool deleteZip)
         {

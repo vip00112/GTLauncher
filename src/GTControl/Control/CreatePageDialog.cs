@@ -1,4 +1,5 @@
-﻿using GTUtil;
+﻿using GTLocalization;
+using GTUtil;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -42,12 +43,12 @@ namespace GTControl
             string pageName = textBox_pageName.Text;
             if (string.IsNullOrWhiteSpace(pageName))
             {
-                MessageBoxUtil.Error("You must input PageName.");
+                MessageBoxUtil.Error(Resource.GetString(Key.PageNameInputErrorMsg));
                 return;
             }
             if (_pageNames.Contains(pageName))
             {
-                MessageBoxUtil.Error("Inputed PageName is already exist.");
+                MessageBoxUtil.Error(Resource.GetString(Key.PageNameAlreadyErrorMsg));
                 return;
             }
 

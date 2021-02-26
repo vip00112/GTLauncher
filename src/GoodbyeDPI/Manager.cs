@@ -1,4 +1,5 @@
 ﻿using GTControl;
+using GTLocalization;
 using GTUtil;
 using System;
 using System.Collections.Generic;
@@ -58,8 +59,8 @@ namespace GoodbyeDPI
         private bool CheckExecuteFile()
         {
             if (!File.Exists(_fileNameExe) || !File.Exists(_fileNameDll) || !File.Exists(_fileNameSys))
-            {
-                string msg = "Can't find required files for execute.\r\nAre you download files?";
+            {                
+                string msg = string.Format(Resource.GetString(Key.DownloadConfirmMsg), "GoodbyeDPI.exe");
                 if (!MessageBoxUtil.Confirm(msg)) return false;
                 return DownloadExecuteFile();
             }

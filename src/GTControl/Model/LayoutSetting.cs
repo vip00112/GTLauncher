@@ -235,7 +235,11 @@ namespace GTControl
             try
             {
                 string path = Path.Combine(Application.StartupPath, SaveFileName);
-                if (!File.Exists(path)) return;
+                if (!File.Exists(path))
+                {
+                    DockMode = DockMode.BottomCenter;
+                    return;
+                }
 
                 string json = File.ReadAllText(path);
                 var properties = JsonUtil.FromJson(json);

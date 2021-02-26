@@ -28,32 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NoteDialog));
             this.richTextBox_content = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // richTextBox_content
             // 
-            this.richTextBox_content.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox_content.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.richTextBox_content, "richTextBox_content");
             this.richTextBox_content.Name = "richTextBox_content";
             this.richTextBox_content.ReadOnly = true;
-            this.richTextBox_content.Size = new System.Drawing.Size(284, 171);
-            this.richTextBox_content.TabIndex = 0;
-            this.richTextBox_content.Text = "";
             // 
             // NoteDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 171);
             this.Controls.Add(this.richTextBox_content);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "NoteDialog";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Note";
             this.Load += new System.EventHandler(this.NoteDialog_Load);
             this.ResumeLayout(false);
 

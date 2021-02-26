@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9C758FF2-1514-4250-BEBC-7A37CA20E8D9}</ProjectGuid>
+    <ProjectGuid>{B533B775-1A38-4761-93B2-A50B49B0FBE2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoodbyeDPI</RootNamespace>
-    <AssemblyName>GoodbyeDPI</AssemblyName>
+    <RootNamespace>GTLocalization</RootNamespace>
+    <AssemblyName>GTLocalization</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,7 +33,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,36 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Manager.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Key.cs" />
+    <Compile Include="Properties\Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="Resource.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="Properties\Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GTControl\GTControl.csproj">
-      <Project>{35b70dba-e58c-4dcf-b0cd-addc0aab15fe}</Project>
-      <Name>GTControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GTLocalization\GTLocalization.csproj">
-      <Project>{b533b775-1a38-4761-93b2-a50b49b0fbe2}</Project>
-      <Name>GTLocalization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GTUtil\GTUtil.csproj">
-      <Project>{3e47b9d4-ea18-4f1b-9eef-f586bb1a1f0d}</Project>
-      <Name>GTUtil</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="Properties\Resource.ko.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
