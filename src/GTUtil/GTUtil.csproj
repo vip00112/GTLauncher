@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.1.9, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.3.1\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -53,10 +56,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JsonUtil.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="MessageBoxUtil.cs" />
+    <Compile Include="Model\GithubJsonContainer.cs" />
+    <Compile Include="Model\GithubUtil.cs" />
+    <Compile Include="Model\FormUtil.cs" />
+    <Compile Include="Model\JsonUtil.cs" />
+    <Compile Include="Model\Logger.cs" />
+    <Compile Include="Model\MessageBoxUtil.cs" />
+    <Compile Include="Model\Runtime.cs" />
+    <Compile Include="Model\WindowNative.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Model\WinAPI.cs" />
+    <Compile Include="Model\ZipUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config">
