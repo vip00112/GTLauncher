@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,8 @@ namespace GTCapture
     {
         public EventHandler OnCaptured;
 
-        private BackgroundWorker _bw;
+        private BackgroundWorker _captureThread;
+        private FFmpeg _ffmpeg;
 
         #region Constructor
         public Capture(IntPtr hWnd)
@@ -24,75 +26,108 @@ namespace GTCapture
             // WndProc 이벤트가 발생하도록 핸들 등록
             AssignHandle(hWnd);
 
-            Setting.Handle = hWnd;
-            Setting.Load();
+            CaptureSetting.Handle = hWnd;
         }
         #endregion
 
         #region Protected Method
         protected override void WndProc(ref Message m)
         {
+            if (FindHotKey(m)) return;
+
             base.WndProc(ref m);
-            if (_bw != null) return;
-
-            var modifier = (KeyModifiers) ((int) m.LParam & 0xFFFF);
-            var key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
-
-            CaptureMode mode = Setting.GetCaptureMode(modifier, key);
-            if (mode == CaptureMode.None) return;
-
-            _bw = new BackgroundWorker();
-            _bw.DoWork += delegate (object sender, DoWorkEventArgs e)
-            {
-                int delay = Setting.Timer;
-                while (delay > 0)
-                {
-                    Thread.Sleep(1000);
-                    delay--;
-                }
-                e.Result = CaptureWindow(mode);
-            };
-            _bw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
-            {
-                try
-                {
-                    using (var img = e.Result as Image)
-                    {
-                        if (img == null) return;
-
-                        OnCaptured?.Invoke(this, EventArgs.Empty);
-                        SaveImage(img);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex);
-                }
-                finally
-                {
-                    _bw = null;
-                }
-            };
-            _bw.RunWorkerAsync();
-        }
-        #endregion
-
-        #region Public Method
-        public void ShowSettingForm()
-        {
-            using (var dialog = new SettingForm())
-            {
-                if (dialog.ShowDialog() != DialogResult.OK) return;
-            }
-        }
-
-        public string GetSaveFolderPath()
-        {
-            return Setting.SaveDirectory;
         }
         #endregion
 
         #region Private Method
+        private bool FindHotKey(Message m)
+        {
+            if (m.Msg != WindowNative.WM_HOTKEY) return false;
+            if (_captureThread != null) return false;
+
+            var modifier = (WindowNative.KeyModifiers) ((int) m.LParam & 0xFFFF);
+            var key = (Keys) (((int) m.LParam >> 16) & 0xFFFF);
+
+            CaptureMode mode = CaptureSetting.GetCaptureMode(modifier, key);
+            if (mode == CaptureMode.None) return false;
+
+            DoCapture(mode);
+
+            return true;
+        }
+
+        private void DoCapture(CaptureMode mode)
+        {
+            switch (mode)
+            {
+                #region Capture
+                case CaptureMode.FullScreen:
+                case CaptureMode.ActiveProcess:
+                case CaptureMode.Region:
+                    _captureThread = new BackgroundWorker();
+                    _captureThread.DoWork += delegate (object sender, DoWorkEventArgs e)
+                    {
+                        int delay = CaptureSetting.Timer;
+                        while (delay > 0)
+                        {
+                            Thread.Sleep(1000);
+                            delay--;
+                        }
+                        e.Result = CaptureWindow(mode);
+                    };
+                    _captureThread.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
+                    {
+                        try
+                        {
+                            using (var img = e.Result as Image)
+                            {
+                                if (img == null) return;
+
+                                OnCaptured?.Invoke(this, EventArgs.Empty);
+                                SaveImage(img);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(ex);
+                        }
+                        finally
+                        {
+                            _captureThread = null;
+                        }
+                    };
+                    _captureThread.RunWorkerAsync();
+                    break;
+                #endregion
+
+                #region Record
+                case CaptureMode.RecordGif:
+                case CaptureMode.RecordVideo:
+                    if (_ffmpeg != null) return;
+
+                    var form = FormUtil.FindForm<RecordForm>();
+                    if (form != null)
+                    {
+                        form.Cancel();
+                        return;
+                    }
+
+                    form = new RecordForm(mode);
+                    form.OnStart += StartRecord;
+                    form.OnStop += StopRecord;
+                    form.OnClose += CloseRecordForm;
+                    form.Show();
+                    break;
+                case CaptureMode.RecordStart:
+                    StartRecord(null, EventArgs.Empty);
+                    break;
+                case CaptureMode.RecordStop:
+                    StopRecord(null, EventArgs.Empty);
+                    break;
+                    #endregion
+            }
+        }
+
         private Image CaptureWindow(CaptureMode mode)
         {
             Image img = null;
@@ -100,21 +135,23 @@ namespace GTCapture
             switch (mode)
             {
                 case CaptureMode.FullScreen:
-                    handle = WindowsAPI.GetDesktopWindow();
+                    handle = WindowNative.GetDesktopWindow();
                     img = CaptureWindow(handle, 0, 0, 0, 0);
                     break;
                 case CaptureMode.ActiveProcess:
-                    handle = WindowsAPI.GetForegroundWindow();
+                    handle = WindowNative.GetForegroundWindow();
                     img = CaptureWindow(handle, 0, 0, 0, 0);
                     break;
                 case CaptureMode.Region:
-                    using (var dialog = new CaptureRegionForm())
+                    var fullSize = new Size(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height);
+                    using (var tmp = CaptureWindow(handle, 0, 0, fullSize.Width, fullSize.Height))
+                    using (var dialog = new CaptureBackgroundDialog(tmp))
                     {
+                        dialog.TopMost = true;
+                        dialog.BringToFront();
                         if (dialog.ShowDialog() != DialogResult.OK) return null;
 
-                        handle = WindowsAPI.GetDesktopWindow();
-                        var region = dialog.SelectedRegion;
-                        img = CaptureWindow(handle, region.X, region.Y, region.Width, region.Height);
+                        img = dialog.Image;
                     }
                     break;
                 default: return null;
@@ -133,10 +170,10 @@ namespace GTCapture
                 // 해당 Handle의 크기 취득
                 if (width == 0 || height == 0)
                 {
-                    var windowRect = new WinStructRect();
-                    var clientRect = new WinStructRect();
-                    WindowsAPI.GetWindowRect(handle, ref windowRect);
-                    WindowsAPI.GetClientRect(handle, ref clientRect);
+                    var windowRect = new WindowNative.Rect();
+                    var clientRect = new WindowNative.Rect();
+                    WindowNative.GetWindowRect(handle, ref windowRect);
+                    WindowNative.GetClientRect(handle, ref clientRect);
                     if (x == 0) x = windowRect.Left;
                     if (y == 0) y = windowRect.Top;
                     if (width == 0) width = clientRect.Width;
@@ -161,14 +198,14 @@ namespace GTCapture
                     height = (int) (height * scale);
                 }
 
-                handle = WindowsAPI.GetDesktopWindow();
-                srcDC = WindowsAPI.GetWindowDC(handle);
-                memoryDC = WindowsAPI.CreateCompatibleDC(srcDC);
-                bitmap = WindowsAPI.CreateCompatibleBitmap(srcDC, width, height);
+                handle = WindowNative.GetDesktopWindow();
+                srcDC = WindowNative.GetWindowDC(handle);
+                memoryDC = WindowNative.CreateCompatibleDC(srcDC);
+                bitmap = WindowNative.CreateCompatibleBitmap(srcDC, width, height);
 
-                IntPtr oldBitmap = WindowsAPI.SelectObject(memoryDC, bitmap);
-                WindowsAPI.BitBlt(memoryDC, 0, 0, width, height, srcDC, x, y, WindowsAPI.SRCCOPY | WindowsAPI.CAPTUREBLT);
-                WindowsAPI.SelectObject(memoryDC, oldBitmap);
+                IntPtr oldBitmap = WindowNative.SelectObject(memoryDC, bitmap);
+                WindowNative.BitBlt(memoryDC, 0, 0, width, height, srcDC, x, y, WindowNative.SRCCOPY | WindowNative.CAPTUREBLT);
+                WindowNative.SelectObject(memoryDC, oldBitmap);
 
                 img = Image.FromHbitmap(bitmap);
             }
@@ -178,9 +215,9 @@ namespace GTCapture
             }
             finally
             {
-                WindowsAPI.DeleteObject(bitmap);
-                WindowsAPI.DeleteDC(memoryDC);
-                WindowsAPI.ReleaseDC(handle, srcDC);
+                WindowNative.DeleteObject(bitmap);
+                WindowNative.DeleteDC(memoryDC);
+                WindowNative.ReleaseDC(handle, srcDC);
             }
 
             return img;
@@ -191,8 +228,8 @@ namespace GTCapture
             using (var g = Graphics.FromHwnd(IntPtr.Zero))
             {
                 IntPtr desktop = g.GetHdc();
-                int logicalScreenHeight = WindowsAPI.GetDeviceCaps(desktop, (int) DeviceCap.VERTRES);
-                int physicalScreenHeight = WindowsAPI.GetDeviceCaps(desktop, (int) DeviceCap.DESKTOPVERTRES);
+                int logicalScreenHeight = WindowNative.GetDeviceCaps(desktop, (int) WindowNative.DeviceCap.VERTRES);
+                int physicalScreenHeight = WindowNative.GetDeviceCaps(desktop, (int) WindowNative.DeviceCap.DESKTOPVERTRES);
                 return (float) physicalScreenHeight / logicalScreenHeight;
             }
         }
@@ -202,19 +239,88 @@ namespace GTCapture
             if (img == null) return;
             try
             {
-                if (!Directory.Exists(Setting.SaveDirectory))
-                {
-                    Directory.CreateDirectory(Setting.SaveDirectory);
-                }
-                string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss"), Setting.SaveImageFormat);
-                string savePath = Path.Combine(Setting.SaveDirectory, fileName);
-                img.Save(savePath, Setting.GetImageFormat());
+                string savePath = GetCaptureSaveFilePath(CaptureSetting.SaveImageFormat);
+                img.Save(savePath, CaptureSetting.GetImageFormat());
                 Clipboard.SetImage(img);
             }
             catch (Exception e)
             {
                 Logger.Error(e);
             }
+        }
+
+        private string GetCaptureSaveFilePath(string extension)
+        {
+            if (!Directory.Exists(CaptureSetting.CaptureSaveDirectory))
+            {
+                Directory.CreateDirectory(CaptureSetting.CaptureSaveDirectory);
+            }
+            string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss"), extension);
+            return Path.Combine(CaptureSetting.CaptureSaveDirectory, fileName);
+        }
+
+        private string GetRecordSaveFilePath(string extension)
+        {
+            if (!Directory.Exists(CaptureSetting.RecordSaveDirectory))
+            {
+                Directory.CreateDirectory(CaptureSetting.RecordSaveDirectory);
+            }
+            string fileName = string.Format("{0}.{1}", DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss"), extension);
+            return Path.Combine(CaptureSetting.RecordSaveDirectory, fileName);
+        }
+        #endregion
+
+        #region Event Handler
+        private void StartRecord(object s, EventArgs ev)
+        {
+            var form = FormUtil.FindForm<RecordForm>();
+            if (form == null) return;
+            if (_ffmpeg != null) return;
+
+            _ffmpeg = new FFmpeg();
+            _ffmpeg.OnRecordCompleted += FFmpegRecordCompleted;
+
+            // FFmpeg.exe check and download
+            if (!_ffmpeg.CheckAndDownloadExecuteFile())
+            {
+                FFmpegRecordCompleted(null, EventArgs.Empty);
+                return;
+            }
+
+            var mode = (form.Mode == CaptureMode.RecordGif) ? FFmpeg.RecordMode.Gif : FFmpeg.RecordMode.Mp4;
+            string savePath = GetRecordSaveFilePath("mp4");
+            if (_ffmpeg.StartRecord(mode, form.RecordRegion, savePath))
+            {
+                form.StartRecord();
+            }
+        }
+
+        private void StopRecord(object sender, EventArgs e)
+        {
+            var form = FormUtil.FindForm<RecordForm>();
+            if (form == null) return;
+            if (_ffmpeg == null) return;
+
+            if (_ffmpeg.StopRecord())
+            {
+                form.StopRecord();
+            }
+        }
+
+        private void FFmpegRecordCompleted(object sender, EventArgs e)
+        {
+            _ffmpeg.OnRecordCompleted -= FFmpegRecordCompleted;
+            _ffmpeg = null;
+        }
+
+        private void CloseRecordForm(object sender, EventArgs e)
+        {
+            var form = sender as RecordForm;
+            if (form == null) return;
+
+            form.OnStart -= StartRecord;
+            form.OnStop -= StopRecord;
+            form.OnClose -= CloseRecordForm;
         }
         #endregion
     }

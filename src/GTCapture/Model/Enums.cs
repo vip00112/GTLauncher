@@ -6,18 +6,25 @@ using System.Threading.Tasks;
 
 namespace GTCapture
 {
-    public enum KeyModifiers
-    {
-        None = 0, Alt = 1, Control = 2, Shift = 4, Windows = 8
-    }
-
     public enum CaptureMode
     {
-        None, FullScreen, ActiveProcess, Region
+        None, FullScreen, ActiveProcess, Region, RecordGif, RecordVideo, RecordStart, RecordStop
     }
 
-    public enum DeviceCap
+    public enum FormActionType
     {
-        VERTRES = 10, DESKTOPVERTRES = 117,
+        None,
+
+        Move,
+
+        ResizeLeft,
+        ResizeTop,
+        ResizeRight,
+        ResizeBottom,
+
+        ResizeTopLeft,
+        ResizeTopRight,
+        ResizeBottomRight,
+        ResizeBottomLeft
     }
 }
