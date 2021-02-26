@@ -1,9 +1,9 @@
 # GTLauncher
 GTLauncher is desktop management GUI application.
 
-## Dependency
+## Required
+ - Windows 10(or higher) 64bit
  - .NET Framework 4.5
- - GTLauncherDependency ([https://github.com/vip00112/GTLauncherDependency](https://github.com/vip00112/GTLauncherDependency))
 
 ## Features
  - Quick start application.
