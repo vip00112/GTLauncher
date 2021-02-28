@@ -72,10 +72,10 @@ namespace GTCapture
             this.label_type.BackColor = System.Drawing.Color.Lime;
             this.label_type.Font = new System.Drawing.Font("굴림", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label_type.ForeColor = System.Drawing.Color.Red;
-            this.label_type.Location = new System.Drawing.Point(25, 0);
+            this.label_type.Location = new System.Drawing.Point(29, 0);
             this.label_type.Margin = new System.Windows.Forms.Padding(0);
             this.label_type.Name = "label_type";
-            this.label_type.Size = new System.Drawing.Size(55, 10);
+            this.label_type.Size = new System.Drawing.Size(63, 10);
             this.label_type.TabIndex = 0;
             this.label_type.Text = "GIF";
             this.label_type.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -85,10 +85,10 @@ namespace GTCapture
             this.label_time.BackColor = System.Drawing.Color.Lime;
             this.label_time.Font = new System.Drawing.Font("굴림", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label_time.ForeColor = System.Drawing.Color.Red;
-            this.label_time.Location = new System.Drawing.Point(25, 10);
+            this.label_time.Location = new System.Drawing.Point(29, 10);
             this.label_time.Margin = new System.Windows.Forms.Padding(0);
             this.label_time.Name = "label_time";
-            this.label_time.Size = new System.Drawing.Size(55, 15);
+            this.label_time.Size = new System.Drawing.Size(63, 15);
             this.label_time.TabIndex = 0;
             this.label_time.Text = "00:00";
             this.label_time.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -102,7 +102,7 @@ namespace GTCapture
             this.label_start.Location = new System.Drawing.Point(0, 0);
             this.label_start.Margin = new System.Windows.Forms.Padding(0);
             this.label_start.Name = "label_start";
-            this.label_start.Size = new System.Drawing.Size(25, 25);
+            this.label_start.Size = new System.Drawing.Size(29, 25);
             this.label_start.TabIndex = 0;
             this.label_start.Text = "●";
             this.label_start.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -110,11 +110,11 @@ namespace GTCapture
             // 
             // RecordForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Red;
             this.ClientSize = new System.Drawing.Size(308, 338);
             this.Controls.Add(this.panel_header);
+            this.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.KeyPreview = true;
             this.MaximizeBox = false;

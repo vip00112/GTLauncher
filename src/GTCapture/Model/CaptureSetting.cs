@@ -18,20 +18,49 @@ namespace GTCapture
         #region Properties
         public static IntPtr Handle { get; set; }
 
+        /// <summary>
+        /// 캡처 단축키
+        /// </summary>
         public static Dictionary<CaptureMode, HotKey> HotKeys { get; set; }
 
+        /// <summary>
+        /// 캡처 전 딜레이
+        /// </summary>
         public static int Timer { get; set; }
 
-        public static string CaptureSaveDirectory { get; set; }
+        /// <summary>
+        /// 전체 화면 캡처 시 모드
+        /// </summary>
+        public static FullScreenMode FullScreenMode { get; set; }
 
+        /// <summary>
+        /// 캡처 이미지 저장시 포맷
+        /// </summary>
         public static string SaveImageFormat { get; set; }
 
+        /// <summary>
+        /// 캡처 파일 저장 경로
+        /// </summary>
+        public static string CaptureSaveDirectory { get; set; }
+
+        /// <summary>
+        /// GIF 녹화시 FPS
+        /// </summary>
         public static int GifFPS { get; set; }
 
+        /// <summary>
+        /// 영상 녹화시 FPS
+        /// </summary>
         public static int VideoFPS { get; set; }
 
+        /// <summary>
+        /// 오디오 녹음 소스
+        /// </summary>
         public static string AudioSource { get; set; }
 
+        /// <summary>
+        /// 녹화 파일 저장 경로
+        /// </summary>
         public static string RecordSaveDirectory { get; set; }
         #endregion
 
@@ -42,8 +71,9 @@ namespace GTCapture
             {
                 var properties = new Dictionary<string, object>();
                 properties.Add("Timer", Timer);
-                properties.Add("CaptureSaveDirectory", CaptureSaveDirectory);
+                properties.Add("FullScreenMode", FullScreenMode.ToString());
                 properties.Add("SaveImageFormat", SaveImageFormat);
+                properties.Add("CaptureSaveDirectory", CaptureSaveDirectory);
                 properties.Add("GifFPS", GifFPS);
                 properties.Add("VideoFPS", VideoFPS);
                 properties.Add("AudioSource", AudioSource);
@@ -84,8 +114,9 @@ namespace GTCapture
                 string json = File.ReadAllText(path);
                 var properties = JsonUtil.FromJson(json);
                 Timer = (int) JsonUtil.GetValue<long>(properties, "Timer");
-                CaptureSaveDirectory = JsonUtil.GetValue<string>(properties, "CaptureSaveDirectory");
+                FullScreenMode = JsonUtil.GetValue<FullScreenMode>(properties, "FullScreenMode");
                 SaveImageFormat = JsonUtil.GetValue<string>(properties, "SaveImageFormat");
+                CaptureSaveDirectory = JsonUtil.GetValue<string>(properties, "CaptureSaveDirectory");
                 GifFPS = (int) JsonUtil.GetValue<long>(properties, "GifFPS");
                 VideoFPS = (int) JsonUtil.GetValue<long>(properties, "VideoFPS");
                 AudioSource = JsonUtil.GetValue<string>(properties, "AudioSource");

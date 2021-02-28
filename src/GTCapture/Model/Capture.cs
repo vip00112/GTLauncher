@@ -132,19 +132,34 @@ namespace GTCapture
         {
             Image img = null;
             IntPtr handle = IntPtr.Zero;
+            Rectangle monitor = Rectangle.Empty;
             switch (mode)
             {
                 case CaptureMode.FullScreen:
                     handle = WindowNative.GetDesktopWindow();
-                    img = CaptureWindow(handle, 0, 0, 0, 0);
+                    if (CaptureSetting.FullScreenMode == FullScreenMode.MainMonitor)
+                    {
+                        monitor = Screen.PrimaryScreen.Bounds;
+                    }
+                    else if (CaptureSetting.FullScreenMode == FullScreenMode.ActiveMonitor)
+                    {
+                        monitor = Screen.GetBounds(Cursor.Position);
+                    }
+                    else if (CaptureSetting.FullScreenMode == FullScreenMode.AllMonitor)
+                    {
+                        monitor = SystemInformation.VirtualScreen;
+                    }
+                    img = CaptureWindow(handle, monitor.X, monitor.Y, monitor.Width, monitor.Height);
                     break;
                 case CaptureMode.ActiveProcess:
                     handle = WindowNative.GetForegroundWindow();
                     img = CaptureWindow(handle, 0, 0, 0, 0);
                     break;
                 case CaptureMode.Region:
-                    var fullSize = new Size(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height);
-                    using (var tmp = CaptureWindow(handle, 0, 0, fullSize.Width, fullSize.Height))
+                    handle = WindowNative.GetDesktopWindow();
+                    monitor = SystemInformation.VirtualScreen;
+
+                    using (var tmp = CaptureWindow(handle, monitor.X, monitor.Y, monitor.Width, monitor.Height))
                     using (var dialog = new CaptureBackgroundDialog(tmp))
                     {
                         dialog.TopMost = true;
@@ -303,7 +318,7 @@ namespace GTCapture
 
             if (_ffmpeg.StopRecord())
             {
-                form.StopRecord();
+                form.ConvertGif();
             }
         }
 
@@ -311,6 +326,9 @@ namespace GTCapture
         {
             _ffmpeg.OnRecordCompleted -= FFmpegRecordCompleted;
             _ffmpeg = null;
+
+            var form = FormUtil.FindForm<RecordForm>();
+            if (form != null) form.StopRecord();
         }
 
         private void CloseRecordForm(object sender, EventArgs e)

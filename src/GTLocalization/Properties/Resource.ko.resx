@@ -134,6 +134,10 @@
   <data name="LayoutSaveConfirmMsg" xml:space="preserve">
     <value>레이아웃을 저장하시겠습니까?</value>
   </data>
+  <data name="NewVersionDownloadConfirmMsg" xml:space="preserve">
+    <value>새로운 버전이 있습니다.
+새로운 버전을 다운로드 하시겠습니까?</value>
+  </data>
   <data name="PageDeleteConfirmMsg" xml:space="preserve">
     <value>페이지를 정말 삭제하시겠습니까?</value>
   </data>

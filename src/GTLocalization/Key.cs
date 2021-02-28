@@ -8,6 +8,8 @@ namespace GTLocalization
 {
     public static class Key
     {
+        public const string NewVersionDownloadConfirmMsg = "NewVersionDownloadConfirmMsg";
+
         public const string DownloadConfirmMsg = "DownloadConfirmMsg";
         public const string DownloadCancelMsg = "DownloadCancelMsg";
 

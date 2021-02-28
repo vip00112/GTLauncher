@@ -28,9 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon();
-            this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.notifyIconMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuItem_about = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItem_goodbyeDPI = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +56,8 @@
             // 
             resources.ApplyResources(this.notifyIconMenu, "notifyIconMenu");
             this.notifyIconMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_about,
+            this.toolStripSeparator1,
             this.toolToolStripMenuItem,
             this.saveFolderToolStripMenuItem,
             this.toolStripSeparator2,
@@ -61,6 +66,17 @@
             this.menuItem_exit});
             this.notifyIconMenu.Name = "notifyIconMenu";
             this.notifyIconMenu.ShowImageMargin = false;
+            // 
+            // menuItem_about
+            // 
+            resources.ApplyResources(this.menuItem_about, "menuItem_about");
+            this.menuItem_about.Name = "menuItem_about";
+            this.menuItem_about.Click += new System.EventHandler(this.menuItem_about_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
             // 
             // toolToolStripMenuItem
             // 
@@ -124,6 +140,7 @@
             this.Name = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.notifyIconMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -142,6 +159,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem saveFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menuItem_about;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

@@ -9,7 +9,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +52,14 @@ namespace GTLauncher
             BuildLayout();
         }
 
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (GeneralSetting.AutoUpdate)
+            {
+                GeneralSetting.CheckVersionAndUpdate();
+            }
+        }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (_goodbyedpiManager != null) _goodbyedpiManager.Kill();
@@ -58,6 +68,14 @@ namespace GTLauncher
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Activate();
+        }
+
+        private void menuItem_about_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new AboutDialog())
+            {
+                dialog.ShowDialog(this);
+            }
         }
 
         private void menuItem_setting_Click(object sender, EventArgs e)

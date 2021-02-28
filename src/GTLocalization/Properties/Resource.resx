@@ -134,6 +134,10 @@ Are you sure want to close?</value>
   <data name="LayoutSaveConfirmMsg" xml:space="preserve">
     <value>Are you sure want to save layout?</value>
   </data>
+  <data name="NewVersionDownloadConfirmMsg" xml:space="preserve">
+    <value>Find new version.
+Are you download ner version?</value>
+  </data>
   <data name="PageDeleteConfirmMsg" xml:space="preserve">
     <value>Are you sure want to delete page?</value>
   </data>

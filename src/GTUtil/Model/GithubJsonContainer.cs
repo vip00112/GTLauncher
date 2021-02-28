@@ -12,6 +12,9 @@ namespace GTUtil
         [JsonProperty("message")]
         public string Message { get; set; }
 
+        [JsonProperty("tag_name")]
+        public string Version { get; set; }
+
         [JsonProperty("assets")]
         public List<GithubJsonAsset> Assets { get; set; }
     }

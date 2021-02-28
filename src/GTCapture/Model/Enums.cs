@@ -11,6 +11,11 @@ namespace GTCapture
         None, FullScreen, ActiveProcess, Region, RecordGif, RecordVideo, RecordStart, RecordStop
     }
 
+    public enum FullScreenMode
+    {
+        MainMonitor, ActiveMonitor, AllMonitor
+    }
+
     public enum FormActionType
     {
         None,

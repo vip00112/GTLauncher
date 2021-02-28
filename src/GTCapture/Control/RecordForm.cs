@@ -21,6 +21,7 @@ namespace GTCapture
 
         private Point _moveLoc;
         private Size _minSize;
+        private bool _isConvertToGif;
 
         #region Constructor
         public RecordForm(CaptureMode mode)
@@ -258,6 +259,15 @@ namespace GTCapture
                     e.Graphics.DrawString(string.Format("{0}x{1}", recordRec.Width, recordRec.Height), Font, b, LineSize + 1, HeaderSize + LineSize + 1);
                 }
             }
+
+            if (_isConvertToGif)
+            {
+                using (var b = new SolidBrush(Color.Red))
+                {
+                    var recordRec = RecordRegion;
+                    e.Graphics.DrawString("Processing\r\nConvert to gif.", Font, b, LineSize + 1, HeaderSize + LineSize + 1);
+                }
+            }
         }
 
         private void label_start_Click(object sender, EventArgs e)
@@ -321,6 +331,14 @@ namespace GTCapture
             label_close.ForeColor = Color.Red;
 
             Close();
+        }
+
+        public void ConvertGif()
+        {
+            if (Mode != CaptureMode.RecordGif) return;
+
+            _isConvertToGif = true;
+            Invalidate();
         }
 
         public void Cancel()

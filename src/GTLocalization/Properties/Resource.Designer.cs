@@ -108,6 +108,16 @@ namespace GTLocalization.Properties {
         }
         
         /// <summary>
+        ///   Find new version.
+        ///Are you download ner version?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NewVersionDownloadConfirmMsg {
+            get {
+                return ResourceManager.GetString("NewVersionDownloadConfirmMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Are you sure want to delete page?과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string PageDeleteConfirmMsg {
