@@ -80,40 +80,43 @@ namespace GTLauncher
             }
         }
 
-        public static void CheckVersionAndUpdate()
+        public static async Task<bool> CheckVersionAndUpdate()
         {
-            Task.Run(() =>
+            var task = Task.Run(() =>
             {
+                System.Threading.Thread.Sleep(2000);
                 var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                var releaseVersion = GithubUtil.GetLastReleaseVersion("vip00112", "GTLauncher");
+                var releaseVersion = GithubUtil.GetLatestVersion("vip00112", "GTLauncher");
                 if (currentVersion >= releaseVersion) return null;
 
-                string url = GithubUtil.GetDownloadUrlForLastReleaseAsset("vip00112", "GTLauncher", "GTLauncher*.zip");
-                return url;
-            })
-            .ContinueWith((result) =>
+                return GithubUtil.GetDownloadUrlForLatestAsset("vip00112", "GTLauncher", "GTLauncher*.zip");
+            });
+
+            var needUpdate = await task.ContinueWith((result) =>
             {
                 string filePath = Path.Combine(Application.StartupPath, "GTAutoUpdate.exe");
-                if (!File.Exists(filePath)) return;
+                if (!File.Exists(filePath)) return false;
 
                 string url = result.Result;
-                if (string.IsNullOrWhiteSpace(url)) return;
+                if (string.IsNullOrWhiteSpace(url)) return false;
 
                 int idx = url.LastIndexOf("/");
-                if (idx == -1) return;
+                if (idx == -1) return false;
 
                 string fileName = url.Substring(idx + 1);
                 string savePath = Path.Combine(Application.StartupPath, fileName);
 
                 string msg = Resource.GetString(Key.NewVersionDownloadConfirmMsg);
-                if (!MessageBoxUtil.Confirm(msg)) return;
+                if (!MessageBoxUtil.Confirm(msg)) return false;
 
                 var proc = new Process();
                 proc.StartInfo.FileName = filePath;
                 proc.StartInfo.Arguments = string.Format("\"{0}\" \"{1}\"", url, savePath);
                 proc.Start();
-                Application.Exit();
+                return true;
             }, TaskScheduler.FromCurrentSynchronizationContext());
+
+            return needUpdate;
         }
         #endregion
 

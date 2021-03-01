@@ -1,5 +1,6 @@
 ﻿using GTCapture;
 using GTControl;
+using GTLocalization;
 using GTUtil;
 using System;
 using System.Collections.Generic;
@@ -116,6 +117,22 @@ namespace GTLauncher
         private void checkBox_autoUpdate_CheckedChanged(object sender, EventArgs e)
         {
             GeneralSetting.AutoUpdate = checkBox_autoUpdate.Checked;
+        }
+
+        private async void button_checkUpdate_Click(object sender, EventArgs e)
+        {
+            button_checkUpdate.Enabled = false;
+
+            var needUpdate = await GeneralSetting.CheckVersionAndUpdate();
+            if (needUpdate)
+            {
+                Application.Exit();
+            }
+            else
+            {
+                button_checkUpdate.Enabled = true;
+                label_updateResult.Text = Resource.GetString(Key.LatestVersionMsg);
+            }
         }
         #endregion
 

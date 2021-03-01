@@ -52,11 +52,12 @@ namespace GTLauncher
             BuildLayout();
         }
 
-        private void MainForm_Shown(object sender, EventArgs e)
+        private async void MainForm_Shown(object sender, EventArgs e)
         {
             if (GeneralSetting.AutoUpdate)
             {
-                GeneralSetting.CheckVersionAndUpdate();
+                var needUpdate = await GeneralSetting.CheckVersionAndUpdate();
+                if (needUpdate) Application.Exit();
             }
         }
 

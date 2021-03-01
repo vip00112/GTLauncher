@@ -12,7 +12,7 @@ namespace GTUtil
     {
         private const string API = "https://api.github.com/repos/{0}/{1}/releases/latest";
 
-        public static Version GetLastReleaseVersion(string userName, string repoName)
+        public static Version GetLatestVersion(string userName, string repoName)
         {
             string url = string.Format(API, userName, repoName);
             using (var wc = new WebClient())
@@ -44,7 +44,7 @@ namespace GTUtil
             }
         }
 
-        public static string GetDownloadUrlForLastReleaseAsset(string userName, string repoName, string findPattern)
+        public static string GetDownloadUrlForLatestAsset(string userName, string repoName, string findPattern)
         {
             string url = string.Format(API, userName, repoName);
             using (var wc = new WebClient())

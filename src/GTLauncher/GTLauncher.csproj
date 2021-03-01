@@ -66,6 +66,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\BitcoinDonateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Control\BitcoinDonateDialog.Designer.cs">
+      <DependentUpon>BitcoinDonateDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Control\AboutDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,8 +93,15 @@
     <Compile Include="Control\SettingDialog.Designer.cs">
       <DependentUpon>SettingDialog.cs</DependentUpon>
     </Compile>
+    <None Include="Resources\donate_bitcoin_qr.png" />
     <None Include="Resources\donate_paypal.png" />
     <None Include="Resources\donate_bitcoin.png" />
+    <EmbeddedResource Include="Control\BitcoinDonateDialog.ko.resx">
+      <DependentUpon>BitcoinDonateDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\BitcoinDonateDialog.resx">
+      <DependentUpon>BitcoinDonateDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Control\AboutDialog.ko.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -114,6 +127,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="bin\Debug\Capture\donate_bitcoin_qr.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

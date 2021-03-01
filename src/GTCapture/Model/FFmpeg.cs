@@ -287,7 +287,7 @@ namespace GTCapture
                 Directory.CreateDirectory(dirPath);
             }
 
-            string url = GithubUtil.GetDownloadUrlForLastReleaseAsset("vip00112", "GTLauncherDependency", "FFmpeg*.zip");
+            string url = GithubUtil.GetDownloadUrlForLatestAsset("vip00112", "GTLauncherDependency", "FFmpeg*.zip");
             if (string.IsNullOrWhiteSpace(url)) return false;
 
             using (var dialog = new DownloadDialog(url, _downloadFilePath))

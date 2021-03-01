@@ -31,7 +31,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingDialog));
             this.tabControl = new GTControl.ThemeTabControl();
             this.tabPage_general = new System.Windows.Forms.TabPage();
+            this.button_checkUpdate = new System.Windows.Forms.Button();
             this.checkBox_autoUpdate = new System.Windows.Forms.CheckBox();
+            this.label_updateResult = new System.Windows.Forms.Label();
+            this.label28 = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
             this.checkBox_runOnStartup = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -111,7 +114,10 @@
             // 
             // tabPage_general
             // 
+            this.tabPage_general.Controls.Add(this.button_checkUpdate);
             this.tabPage_general.Controls.Add(this.checkBox_autoUpdate);
+            this.tabPage_general.Controls.Add(this.label_updateResult);
+            this.tabPage_general.Controls.Add(this.label28);
             this.tabPage_general.Controls.Add(this.label30);
             this.tabPage_general.Controls.Add(this.checkBox_runOnStartup);
             this.tabPage_general.Controls.Add(this.label2);
@@ -120,6 +126,13 @@
             this.tabPage_general.Name = "tabPage_general";
             this.tabPage_general.UseVisualStyleBackColor = true;
             // 
+            // button_checkUpdate
+            // 
+            resources.ApplyResources(this.button_checkUpdate, "button_checkUpdate");
+            this.button_checkUpdate.Name = "button_checkUpdate";
+            this.button_checkUpdate.UseVisualStyleBackColor = true;
+            this.button_checkUpdate.Click += new System.EventHandler(this.button_checkUpdate_Click);
+            // 
             // checkBox_autoUpdate
             // 
             resources.ApplyResources(this.checkBox_autoUpdate, "checkBox_autoUpdate");
@@ -127,6 +140,18 @@
             this.checkBox_autoUpdate.Name = "checkBox_autoUpdate";
             this.checkBox_autoUpdate.UseVisualStyleBackColor = true;
             this.checkBox_autoUpdate.CheckedChanged += new System.EventHandler(this.checkBox_autoUpdate_CheckedChanged);
+            // 
+            // label_updateResult
+            // 
+            resources.ApplyResources(this.label_updateResult, "label_updateResult");
+            this.label_updateResult.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label_updateResult.Name = "label_updateResult";
+            // 
+            // label28
+            // 
+            resources.ApplyResources(this.label28, "label28");
+            this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label28.Name = "label28";
             // 
             // label30
             // 
@@ -671,5 +696,8 @@
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.CheckBox checkBox_autoUpdate;
         private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Button button_checkUpdate;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label_updateResult;
     }
 }

@@ -61,6 +61,16 @@ namespace GTLocalization.Properties {
         }
         
         /// <summary>
+        ///   Developer&apos;s bitcoin wallet address is copied.
+        ///Thanks !! :D과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BitcoinAddressCopiedMsg {
+            get {
+                return ResourceManager.GetString("BitcoinAddressCopiedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Are you sure want to close?과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string CloseConfirmMsg {
@@ -95,6 +105,15 @@ namespace GTLocalization.Properties {
         internal static string GoodbyeDPICloseConfirmMsg {
             get {
                 return ResourceManager.GetString("GoodbyeDPICloseConfirmMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Current version is latest.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string LatestVersionMsg {
+            get {
+                return ResourceManager.GetString("LatestVersionMsg", resourceCulture);
             }
         }
         
