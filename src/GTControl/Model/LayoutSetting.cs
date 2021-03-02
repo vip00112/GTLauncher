@@ -386,27 +386,20 @@ namespace GTControl
         {
             if (img == null) return null;
 
-            byte[] data = null;
             using (var ms = new MemoryStream())
             {
-                img.Save(ms, ImageFormat.Png);
-                data = ms.ToArray();
+                img.Save(ms, img.RawFormat);
+                return Convert.ToBase64String(ms.ToArray());
             }
-            return Convert.ToBase64String(data);
         }
 
         private static Image FromBase64(string base64)
         {
             if (string.IsNullOrWhiteSpace(base64)) return null;
 
-            Image img = null;
-            byte[] data = Convert.FromBase64String(base64.Replace("\n", ""));
-            using (var ms = new MemoryStream(data, 0, data.Length))
-            {
-                ms.Position = 0;
-                img = Image.FromStream(ms, true);
-            }
-            return img;
+            byte[] data = Convert.FromBase64String(base64);
+            var ms = new MemoryStream(data, 0, data.Length);
+            return Image.FromStream(ms, true);
         }
         #endregion
     }

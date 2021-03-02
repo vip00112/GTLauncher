@@ -31,7 +31,8 @@ namespace GTCapture
 
         public enum RecordMode { Gif, Mp4 }
 
-        public EventHandler OnRecordCompleted;
+        public EventHandler OnStartingConvertToGif;
+        public EventHandler OnCompletedRecord;
 
         private Process _proc;
         private BackgroundWorker _recordThread;
@@ -87,7 +88,7 @@ namespace GTCapture
                         ConvertMp4ToGif(outputFilePath);
                     }
 
-                    OnRecordCompleted?.Invoke(this, EventArgs.Empty);
+                    OnCompletedRecord?.Invoke(this, EventArgs.Empty);
                 };
                 _recordThread.RunWorkerAsync();
                 return true;
@@ -268,6 +269,8 @@ namespace GTCapture
 
         private void ConvertMp4ToGif(string srcFilePath)
         {
+            OnStartingConvertToGif?.Invoke(this, EventArgs.Empty);
+
             // gif변환 args
             string dirPath = Path.GetDirectoryName(srcFilePath);
             string fileName = Path.GetFileNameWithoutExtension(srcFilePath) + ".gif";

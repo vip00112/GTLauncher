@@ -24,6 +24,7 @@ namespace GTControl
 
         private string _pageName;
         private Image _backgroundImage;
+        private bool _isCanAnimate;
         private bool _isLoaded;
 
         #region Constructor
@@ -71,6 +72,17 @@ namespace GTControl
             get { return _backgroundImage; }
             set
             {
+                if (_backgroundImage != null)
+                {
+                    ImageAnimator.StopAnimate(_backgroundImage, ImageAnimatorOnFrameChangedHandler);
+                }
+
+                _isCanAnimate = ImageAnimator.CanAnimate(value);
+                if (_isCanAnimate)
+                {
+                    ImageAnimator.Animate(value, ImageAnimatorOnFrameChangedHandler);
+                }
+
                 _backgroundImage = value;
                 Invalidate();
             }
@@ -235,12 +247,16 @@ namespace GTControl
                     e.Graphics.FillRectangle(b, new Rectangle(0, 0, base.Width, base.Height));
                     e.Graphics.DrawRectangle(p, new Rectangle(0, 0, base.Width, base.Height));
                 }
+                OnPaintEventForEdit?.Invoke(this, e);
             }
             if (BackgroundImage != null)
             {
+                if (_isCanAnimate)
+                {
+                    ImageAnimator.UpdateFrames(BackgroundImage);
+                }
                 e.Graphics.DrawImage(BackgroundImage, 0, 0, base.Width, base.Height);
             }
-            OnPaintEventForEdit?.Invoke(this, e);
         }
 
         private void label_MouseEnter(object sender, EventArgs e)
@@ -273,6 +289,13 @@ namespace GTControl
                     OnFolderClickEvent?.Invoke(this, EventArgs.Empty);
                     break;
             }
+        }
+        #endregion
+
+        #region Event Handler
+        private void ImageAnimatorOnFrameChangedHandler(object sender, EventArgs e)
+        {
+            Invalidate();
         }
         #endregion
 

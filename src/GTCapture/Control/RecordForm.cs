@@ -333,7 +333,7 @@ namespace GTCapture
             Close();
         }
 
-        public void ConvertGif()
+        public void StartingConvertToGif()
         {
             if (Mode != CaptureMode.RecordGif) return;
 

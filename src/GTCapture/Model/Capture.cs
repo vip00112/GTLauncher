@@ -293,12 +293,13 @@ namespace GTCapture
             if (_ffmpeg != null) return;
 
             _ffmpeg = new FFmpeg();
-            _ffmpeg.OnRecordCompleted += FFmpegRecordCompleted;
+            _ffmpeg.OnCompletedRecord += FFmpegOnCompletedRecord;
+            _ffmpeg.OnStartingConvertToGif += FFmpegOnStartingConvertToGif;
 
             // FFmpeg.exe check and download
             if (!_ffmpeg.CheckAndDownloadExecuteFile())
             {
-                FFmpegRecordCompleted(null, EventArgs.Empty);
+                FFmpegOnCompletedRecord(null, EventArgs.Empty);
                 return;
             }
 
@@ -316,19 +317,22 @@ namespace GTCapture
             if (form == null) return;
             if (_ffmpeg == null) return;
 
-            if (_ffmpeg.StopRecord())
-            {
-                form.ConvertGif();
-            }
+            _ffmpeg.StopRecord();
         }
 
-        private void FFmpegRecordCompleted(object sender, EventArgs e)
+        private void FFmpegOnCompletedRecord(object sender, EventArgs e)
         {
-            _ffmpeg.OnRecordCompleted -= FFmpegRecordCompleted;
+            _ffmpeg.OnCompletedRecord -= FFmpegOnCompletedRecord;
             _ffmpeg = null;
 
             var form = FormUtil.FindForm<RecordForm>();
             if (form != null) form.StopRecord();
+        }
+
+        private void FFmpegOnStartingConvertToGif(object sender, EventArgs e)
+        {
+            var form = FormUtil.FindForm<RecordForm>();
+            if (form != null) form.StartingConvertToGif();
         }
 
         private void CloseRecordForm(object sender, EventArgs e)

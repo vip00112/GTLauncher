@@ -49,7 +49,7 @@ namespace GTLauncher
 
         private void pictureBox_paypal_Click(object sender, EventArgs e)
         {
-            // TODO : Paypal 기부 링크 연동
+            Process.Start("https://paypal.com/paypalme/DonateToGT");
         }
 
         private void linkLabel_github_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

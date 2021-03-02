@@ -92,6 +92,13 @@ namespace GTControl
 
         private void LayoutSettingForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            string msg = Resource.GetString(Key.LayoutSettingSaveConfirmMsg);
+            if (!MessageBoxUtil.Confirm(msg))
+            {
+                e.Cancel = true;
+                return;
+            }
+
             LayoutSetting.IsEditMode = false;
         }
 
