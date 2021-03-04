@@ -67,7 +67,6 @@ namespace GTControl
                 SizeModeHeight = LayoutSetting.SizeModeHeight,
             };
             propertyGrid_layout.SelectedObject = _layout;
-            propertyGrid_page.BrowsableAttributes = new AttributeCollection(new Attribute[] { new CategoryAttribute("Page Option") });
 
             _pages = LayoutSetting.Pages.ToList();
             _pageItems = LayoutSetting.PageItems.ToList();

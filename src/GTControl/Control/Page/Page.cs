@@ -43,10 +43,6 @@ namespace GTControl
         #endregion
 
         #region Properties
-        new public Color ForeColor { get; }
-
-        new public Color BackColor { get; }
-
         [Category("Page Option"), DefaultValue("Main")]
         public string PageName
         {
@@ -126,10 +122,8 @@ namespace GTControl
             }
         }
 
-        [Browsable(false)]
         public PageBody PageBody { get { return pageBody; } }
 
-        [Browsable(false)]
         public List<PageItem> PageItems { get { return pageBody.Items; } }
         #endregion
 

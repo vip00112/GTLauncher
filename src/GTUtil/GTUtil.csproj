@@ -62,6 +62,7 @@
     <Compile Include="Model\JsonUtil.cs" />
     <Compile Include="Model\Logger.cs" />
     <Compile Include="Model\MessageBoxUtil.cs" />
+    <Compile Include="Model\ReflectionUtil.cs" />
     <Compile Include="Model\Runtime.cs" />
     <Compile Include="Model\StringExtension.cs" />
     <Compile Include="Model\WindowNative.cs" />

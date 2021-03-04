@@ -103,6 +103,7 @@
     <Compile Include="Model\Cell.cs" />
     <Compile Include="Model\Enums.cs" />
     <Compile Include="Model\LayoutSetting.cs" />
+    <Compile Include="Model\PropertyGridObjectWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
