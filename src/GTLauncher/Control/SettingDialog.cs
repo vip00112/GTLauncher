@@ -244,6 +244,7 @@ namespace GTLauncher
         private void LoadGeneralSetting()
         {
             checkBox_runOnStartup.Checked = GeneralSetting.RunOnStartup;
+            checkBox_autoUpdate.Checked = GeneralSetting.AutoUpdate;
         }
 
         private void LoadLayoutSetting()
