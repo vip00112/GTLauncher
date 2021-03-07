@@ -59,11 +59,13 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox_pageName);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CreatePageDialog";
             this.ShowIcon = false;
             this.Load += new System.EventHandler(this.CreatePageDialog_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CreatePageDialog_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

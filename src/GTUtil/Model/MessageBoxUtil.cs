@@ -9,6 +9,15 @@ namespace GTUtil
 {
     public static class MessageBoxUtil
     {
+        public static void Info(string msg, string title = null)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                title = "GTLauncher";
+            }
+            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         public static void Error(string msg, string title = null)
         {
             if (string.IsNullOrWhiteSpace(title))

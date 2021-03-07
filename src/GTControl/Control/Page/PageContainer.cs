@@ -91,6 +91,9 @@ namespace GTControl
             var linkPage = _pages.FirstOrDefault(o => o.PageName == pageName);
             if (linkPage == null) return;
 
+            var otherPages = _pages.Where(o => o.PageName != "Main").ToList();
+            otherPages.ForEach(o => o.Hide());
+
             linkPage.Show();
             linkPage.BringToFront();
         }

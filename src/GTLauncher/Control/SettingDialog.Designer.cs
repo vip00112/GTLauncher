@@ -31,6 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingDialog));
             this.tabControl = new GTControl.ThemeTabControl();
             this.tabPage_general = new System.Windows.Forms.TabPage();
+            this.button_checkUpdate = new System.Windows.Forms.Button();
+            this.checkBox_autoUpdate = new System.Windows.Forms.CheckBox();
+            this.label_updateResult = new System.Windows.Forms.Label();
+            this.label28 = new System.Windows.Forms.Label();
+            this.label30 = new System.Windows.Forms.Label();
             this.checkBox_runOnStartup = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tabPage_layout = new System.Windows.Forms.TabPage();
@@ -40,13 +45,16 @@
             this.button_layout = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.tabPage_capture = new System.Windows.Forms.TabPage();
+            this.comboBox_fullScreenMode = new System.Windows.Forms.ComboBox();
             this.comboBox_imageFormat = new System.Windows.Forms.ComboBox();
             this.button_dirPathCapture = new System.Windows.Forms.Button();
             this.textBox_dirPathCapture = new System.Windows.Forms.TextBox();
             this.numericUpDown_timer = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
+            this.label27 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.tabPage_record = new System.Windows.Forms.TabPage();
@@ -93,12 +101,12 @@
             // 
             // tabControl
             // 
-            resources.ApplyResources(this.tabControl, "tabControl");
             this.tabControl.Controls.Add(this.tabPage_general);
             this.tabControl.Controls.Add(this.tabPage_layout);
             this.tabControl.Controls.Add(this.tabPage_capture);
             this.tabControl.Controls.Add(this.tabPage_record);
             this.tabControl.Controls.Add(this.tabPage_hotKey);
+            resources.ApplyResources(this.tabControl, "tabControl");
             this.tabControl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.tabControl.Multiline = true;
             this.tabControl.Name = "tabControl";
@@ -106,12 +114,50 @@
             // 
             // tabPage_general
             // 
-            resources.ApplyResources(this.tabPage_general, "tabPage_general");
+            this.tabPage_general.Controls.Add(this.button_checkUpdate);
+            this.tabPage_general.Controls.Add(this.checkBox_autoUpdate);
+            this.tabPage_general.Controls.Add(this.label_updateResult);
+            this.tabPage_general.Controls.Add(this.label28);
+            this.tabPage_general.Controls.Add(this.label30);
             this.tabPage_general.Controls.Add(this.checkBox_runOnStartup);
             this.tabPage_general.Controls.Add(this.label2);
             this.tabPage_general.ForeColor = System.Drawing.SystemColors.ControlText;
+            resources.ApplyResources(this.tabPage_general, "tabPage_general");
             this.tabPage_general.Name = "tabPage_general";
             this.tabPage_general.UseVisualStyleBackColor = true;
+            // 
+            // button_checkUpdate
+            // 
+            resources.ApplyResources(this.button_checkUpdate, "button_checkUpdate");
+            this.button_checkUpdate.Name = "button_checkUpdate";
+            this.button_checkUpdate.UseVisualStyleBackColor = true;
+            this.button_checkUpdate.Click += new System.EventHandler(this.button_checkUpdate_Click);
+            // 
+            // checkBox_autoUpdate
+            // 
+            resources.ApplyResources(this.checkBox_autoUpdate, "checkBox_autoUpdate");
+            this.checkBox_autoUpdate.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.checkBox_autoUpdate.Name = "checkBox_autoUpdate";
+            this.checkBox_autoUpdate.UseVisualStyleBackColor = true;
+            this.checkBox_autoUpdate.CheckedChanged += new System.EventHandler(this.checkBox_autoUpdate_CheckedChanged);
+            // 
+            // label_updateResult
+            // 
+            resources.ApplyResources(this.label_updateResult, "label_updateResult");
+            this.label_updateResult.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label_updateResult.Name = "label_updateResult";
+            // 
+            // label28
+            // 
+            resources.ApplyResources(this.label28, "label28");
+            this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label28.Name = "label28";
+            // 
+            // label30
+            // 
+            resources.ApplyResources(this.label30, "label30");
+            this.label30.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label30.Name = "label30";
             // 
             // checkBox_runOnStartup
             // 
@@ -129,13 +175,13 @@
             // 
             // tabPage_layout
             // 
-            resources.ApplyResources(this.tabPage_layout, "tabPage_layout");
             this.tabPage_layout.Controls.Add(this.label1);
             this.tabPage_layout.Controls.Add(this.label3);
             this.tabPage_layout.Controls.Add(this.comboBox_theme);
             this.tabPage_layout.Controls.Add(this.button_layout);
             this.tabPage_layout.Controls.Add(this.label4);
             this.tabPage_layout.ForeColor = System.Drawing.SystemColors.ControlText;
+            resources.ApplyResources(this.tabPage_layout, "tabPage_layout");
             this.tabPage_layout.Name = "tabPage_layout";
             this.tabPage_layout.UseVisualStyleBackColor = true;
             // 
@@ -153,8 +199,8 @@
             // 
             // comboBox_theme
             // 
-            resources.ApplyResources(this.comboBox_theme, "comboBox_theme");
             this.comboBox_theme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            resources.ApplyResources(this.comboBox_theme, "comboBox_theme");
             this.comboBox_theme.FormattingEnabled = true;
             this.comboBox_theme.Name = "comboBox_theme";
             this.comboBox_theme.SelectedIndexChanged += new System.EventHandler(this.comboBox_theme_SelectedIndexChanged);
@@ -175,25 +221,36 @@
             // 
             // tabPage_capture
             // 
-            resources.ApplyResources(this.tabPage_capture, "tabPage_capture");
+            this.tabPage_capture.Controls.Add(this.comboBox_fullScreenMode);
             this.tabPage_capture.Controls.Add(this.comboBox_imageFormat);
             this.tabPage_capture.Controls.Add(this.button_dirPathCapture);
             this.tabPage_capture.Controls.Add(this.textBox_dirPathCapture);
             this.tabPage_capture.Controls.Add(this.numericUpDown_timer);
             this.tabPage_capture.Controls.Add(this.label10);
+            this.tabPage_capture.Controls.Add(this.label27);
             this.tabPage_capture.Controls.Add(this.label9);
             this.tabPage_capture.Controls.Add(this.label8);
+            this.tabPage_capture.Controls.Add(this.label26);
             this.tabPage_capture.Controls.Add(this.label11);
             this.tabPage_capture.Controls.Add(this.label12);
             this.tabPage_capture.ForeColor = System.Drawing.SystemColors.ControlText;
+            resources.ApplyResources(this.tabPage_capture, "tabPage_capture");
             this.tabPage_capture.Name = "tabPage_capture";
             this.tabPage_capture.UseVisualStyleBackColor = true;
             // 
+            // comboBox_fullScreenMode
+            // 
+            this.comboBox_fullScreenMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_fullScreenMode.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBox_fullScreenMode, "comboBox_fullScreenMode");
+            this.comboBox_fullScreenMode.Name = "comboBox_fullScreenMode";
+            this.comboBox_fullScreenMode.SelectedIndexChanged += new System.EventHandler(this.comboBox_fullScreenMode_SelectedIndexChanged);
+            // 
             // comboBox_imageFormat
             // 
-            resources.ApplyResources(this.comboBox_imageFormat, "comboBox_imageFormat");
             this.comboBox_imageFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_imageFormat.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBox_imageFormat, "comboBox_imageFormat");
             this.comboBox_imageFormat.Name = "comboBox_imageFormat";
             this.comboBox_imageFormat.SelectedIndexChanged += new System.EventHandler(this.comboBox_imageFormat_SelectedIndexChanged);
             // 
@@ -229,6 +286,12 @@
             this.label10.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label10.Name = "label10";
             // 
+            // label27
+            // 
+            resources.ApplyResources(this.label27, "label27");
+            this.label27.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label27.Name = "label27";
+            // 
             // label9
             // 
             resources.ApplyResources(this.label9, "label9");
@@ -240,6 +303,12 @@
             resources.ApplyResources(this.label8, "label8");
             this.label8.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label8.Name = "label8";
+            // 
+            // label26
+            // 
+            resources.ApplyResources(this.label26, "label26");
+            this.label26.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label26.Name = "label26";
             // 
             // label11
             // 
@@ -255,7 +324,6 @@
             // 
             // tabPage_record
             // 
-            resources.ApplyResources(this.tabPage_record, "tabPage_record");
             this.tabPage_record.Controls.Add(this.button_dirPathRecord);
             this.tabPage_record.Controls.Add(this.textBox_dirPathRecord);
             this.tabPage_record.Controls.Add(this.label25);
@@ -269,6 +337,7 @@
             this.tabPage_record.Controls.Add(this.label21);
             this.tabPage_record.Controls.Add(this.label22);
             this.tabPage_record.ForeColor = System.Drawing.SystemColors.ControlText;
+            resources.ApplyResources(this.tabPage_record, "tabPage_record");
             this.tabPage_record.Name = "tabPage_record";
             this.tabPage_record.UseVisualStyleBackColor = true;
             // 
@@ -295,9 +364,9 @@
             // 
             // comboBox_sourceAudio
             // 
-            resources.ApplyResources(this.comboBox_sourceAudio, "comboBox_sourceAudio");
             this.comboBox_sourceAudio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_sourceAudio.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBox_sourceAudio, "comboBox_sourceAudio");
             this.comboBox_sourceAudio.Name = "comboBox_sourceAudio";
             this.comboBox_sourceAudio.SelectedIndexChanged += new System.EventHandler(this.comboBox_sourceAudio_SelectedIndexChanged);
             // 
@@ -381,7 +450,6 @@
             // 
             // tabPage_hotKey
             // 
-            resources.ApplyResources(this.tabPage_hotKey, "tabPage_hotKey");
             this.tabPage_hotKey.Controls.Add(this.label13);
             this.tabPage_hotKey.Controls.Add(this.label7);
             this.tabPage_hotKey.Controls.Add(this.textBox_recordStop);
@@ -399,6 +467,7 @@
             this.tabPage_hotKey.Controls.Add(this.label18);
             this.tabPage_hotKey.Controls.Add(this.label19);
             this.tabPage_hotKey.ForeColor = System.Drawing.SystemColors.ControlText;
+            resources.ApplyResources(this.tabPage_hotKey, "tabPage_hotKey");
             this.tabPage_hotKey.Name = "tabPage_hotKey";
             this.tabPage_hotKey.UseVisualStyleBackColor = true;
             // 
@@ -416,8 +485,8 @@
             // 
             // textBox_recordStop
             // 
-            resources.ApplyResources(this.textBox_recordStop, "textBox_recordStop");
             this.textBox_recordStop.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.textBox_recordStop, "textBox_recordStop");
             this.textBox_recordStop.Name = "textBox_recordStop";
             this.textBox_recordStop.ReadOnly = true;
             this.textBox_recordStop.TabStop = false;
@@ -425,8 +494,8 @@
             // 
             // textBox_region
             // 
-            resources.ApplyResources(this.textBox_region, "textBox_region");
             this.textBox_region.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.textBox_region, "textBox_region");
             this.textBox_region.Name = "textBox_region";
             this.textBox_region.ReadOnly = true;
             this.textBox_region.TabStop = false;
@@ -446,8 +515,8 @@
             // 
             // textBox_recordStart
             // 
-            resources.ApplyResources(this.textBox_recordStart, "textBox_recordStart");
             this.textBox_recordStart.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.textBox_recordStart, "textBox_recordStart");
             this.textBox_recordStart.Name = "textBox_recordStart";
             this.textBox_recordStart.ReadOnly = true;
             this.textBox_recordStart.TabStop = false;
@@ -455,8 +524,8 @@
             // 
             // textBox_activeProcess
             // 
-            resources.ApplyResources(this.textBox_activeProcess, "textBox_activeProcess");
             this.textBox_activeProcess.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.textBox_activeProcess, "textBox_activeProcess");
             this.textBox_activeProcess.Name = "textBox_activeProcess";
             this.textBox_activeProcess.ReadOnly = true;
             this.textBox_activeProcess.TabStop = false;
@@ -476,8 +545,8 @@
             // 
             // textBox_recordVideo
             // 
-            resources.ApplyResources(this.textBox_recordVideo, "textBox_recordVideo");
             this.textBox_recordVideo.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.textBox_recordVideo, "textBox_recordVideo");
             this.textBox_recordVideo.Name = "textBox_recordVideo";
             this.textBox_recordVideo.ReadOnly = true;
             this.textBox_recordVideo.TabStop = false;
@@ -485,8 +554,8 @@
             // 
             // textBox_recordGif
             // 
-            resources.ApplyResources(this.textBox_recordGif, "textBox_recordGif");
             this.textBox_recordGif.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.textBox_recordGif, "textBox_recordGif");
             this.textBox_recordGif.Name = "textBox_recordGif";
             this.textBox_recordGif.ReadOnly = true;
             this.textBox_recordGif.TabStop = false;
@@ -494,8 +563,8 @@
             // 
             // textBox_fullScreen
             // 
-            resources.ApplyResources(this.textBox_fullScreen, "textBox_fullScreen");
             this.textBox_fullScreen.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.textBox_fullScreen, "textBox_fullScreen");
             this.textBox_fullScreen.Name = "textBox_fullScreen";
             this.textBox_fullScreen.ReadOnly = true;
             this.textBox_fullScreen.TabStop = false;
@@ -622,5 +691,13 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.ComboBox comboBox_fullScreenMode;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.CheckBox checkBox_autoUpdate;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Button button_checkUpdate;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label label_updateResult;
     }
 }

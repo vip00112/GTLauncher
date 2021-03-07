@@ -1,5 +1,6 @@
 ﻿using GTCapture;
 using GTControl;
+using GTLocalization;
 using GTUtil;
 using System;
 using System.Collections.Generic;
@@ -112,6 +113,27 @@ namespace GTLauncher
         {
             GeneralSetting.RunOnStartup = checkBox_runOnStartup.Checked;
         }
+
+        private void checkBox_autoUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            GeneralSetting.AutoUpdate = checkBox_autoUpdate.Checked;
+        }
+
+        private async void button_checkUpdate_Click(object sender, EventArgs e)
+        {
+            button_checkUpdate.Enabled = false;
+
+            var needUpdate = await GeneralSetting.CheckVersionAndUpdate();
+            if (needUpdate)
+            {
+                Application.Exit();
+            }
+            else
+            {
+                button_checkUpdate.Enabled = true;
+                label_updateResult.Text = Resource.GetString(Key.LatestVersionMsg);
+            }
+        }
         #endregion
 
         #region LayoutSetting
@@ -164,6 +186,12 @@ namespace GTLauncher
         private void numericUpDown_timer_ValueChanged(object sender, EventArgs e)
         {
             CaptureSetting.Timer = (int) numericUpDown_timer.Value;
+        }
+
+        private void comboBox_fullScreenMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isLoaded) return;
+            CaptureSetting.FullScreenMode = (FullScreenMode) comboBox_fullScreenMode.SelectedItem;
         }
 
         private void comboBox_imageFormat_SelectedIndexChanged(object sender, EventArgs e)
@@ -260,6 +288,9 @@ namespace GTLauncher
             numericUpDown_fpsVideo.Value = CaptureSetting.VideoFPS;
             textBox_dirPathRecord.Text = CaptureSetting.RecordSaveDirectory;
             // comboBox_sourceAudio의 값은 listView_SelectedIndexChanged이벤트에서 FFmpeg 체크 후 처리함
+
+            comboBox_fullScreenMode.DataSource = Enum.GetValues(typeof(FullScreenMode));
+            comboBox_fullScreenMode.SelectedItem = CaptureSetting.FullScreenMode;
         }
 
         private List<string> GetAudioSources()

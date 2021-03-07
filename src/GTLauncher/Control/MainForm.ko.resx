@@ -117,9 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="menuItem_about.Text" xml:space="preserve">
+    <value>정보 &amp;&amp; 기부</value>
+  </data>
+  <data name="toolToolStripMenuItem.Text" xml:space="preserve">
+    <value>도구</value>
+  </data>
+  <data name="saveFolderToolStripMenuItem.Text" xml:space="preserve">
+    <value>저장 경로</value>
+  </data>
+  <data name="menuItem_setting.Text" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="menuItem_exit.Text" xml:space="preserve">
+    <value>종료</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="notifyIconMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>101, 104</value>
+    <value>114, 132</value>
   </data>
   <data name="notifyIcon.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -408,50 +423,17 @@
         AAAAAAAAAAAAAAAAAACAAAAAAAAAAcAAAAAAAAAD4AAAAAAAAAc=
 </value>
   </data>
-  <data name="toolToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 22</value>
-  </data>
-  <data name="toolToolStripMenuItem.Text" xml:space="preserve">
-    <value>도구</value>
-  </data>
-  <data name="menuItem_goodbyeDPI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
-  </data>
-  <data name="saveFolderToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 22</value>
-  </data>
-  <data name="saveFolderToolStripMenuItem.Text" xml:space="preserve">
-    <value>저장 경로</value>
-  </data>
   <data name="menuItem_captureFolder.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>98, 22</value>
   </data>
   <data name="menuItem_captureFolder.Text" xml:space="preserve">
     <value>캡처</value>
   </data>
   <data name="menuItem_recordFolder.Size" type="System.Drawing.Size, System.Drawing">
-    <value>180, 22</value>
+    <value>98, 22</value>
   </data>
   <data name="menuItem_recordFolder.Text" xml:space="preserve">
     <value>녹화</value>
-  </data>
-  <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>97, 6</value>
-  </data>
-  <data name="menuItem_setting.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 22</value>
-  </data>
-  <data name="menuItem_setting.Text" xml:space="preserve">
-    <value>설정</value>
-  </data>
-  <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>97, 6</value>
-  </data>
-  <data name="menuItem_exit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 22</value>
-  </data>
-  <data name="menuItem_exit.Text" xml:space="preserve">
-    <value>종료</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

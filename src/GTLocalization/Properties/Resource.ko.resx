@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BitcoinAddressCopiedMsg" xml:space="preserve">
+    <value>개발자의 비트코인 지갑 주소가 복사되었습니다.
+감사합니다 !! :D</value>
+  </data>
   <data name="CloseConfirmMsg" xml:space="preserve">
     <value>정말 종료하시겠습니까?</value>
   </data>
@@ -131,8 +135,19 @@
     <value>'GoodbyeDPI' 가 이미 실행중입니다.
 정말 종료하시겠습니까?</value>
   </data>
+  <data name="LatestVersionMsg" xml:space="preserve">
+    <value>현재 버전이 가장 최신 버전입니다.</value>
+  </data>
   <data name="LayoutSaveConfirmMsg" xml:space="preserve">
     <value>레이아웃을 저장하시겠습니까?</value>
+  </data>
+  <data name="LayoutSettingSaveConfirmMsg" xml:space="preserve">
+    <value>정말 종료하시겠습니까?
+저장하지 않은 변경사항은 적용되지 않습니다.</value>
+  </data>
+  <data name="NewVersionDownloadConfirmMsg" xml:space="preserve">
+    <value>새로운 버전이 있습니다.
+새로운 버전을 다운로드 하시겠습니까?</value>
   </data>
   <data name="PageDeleteConfirmMsg" xml:space="preserve">
     <value>페이지를 정말 삭제하시겠습니까?</value>

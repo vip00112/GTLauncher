@@ -11,20 +11,8 @@ namespace GTCapture
         None, FullScreen, ActiveProcess, Region, RecordGif, RecordVideo, RecordStart, RecordStop
     }
 
-    public enum FormActionType
+    public enum FullScreenMode
     {
-        None,
-
-        Move,
-
-        ResizeLeft,
-        ResizeTop,
-        ResizeRight,
-        ResizeBottom,
-
-        ResizeTopLeft,
-        ResizeTopRight,
-        ResizeBottomRight,
-        ResizeBottomLeft
+        MainMonitor, ActiveMonitor, AllMonitor
     }
 }

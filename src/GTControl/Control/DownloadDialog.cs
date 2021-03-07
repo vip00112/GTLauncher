@@ -17,7 +17,7 @@ namespace GTControl
     public partial class DownloadDialog : Form
     {
         private string _url;
-        private string _filePath;
+        private string _savePath;
         private WebClient _wc;
 
         #region Constructor
@@ -29,7 +29,7 @@ namespace GTControl
         public DownloadDialog(string url, string filePath) : this()
         {
             _url = url;
-            _filePath = filePath;
+            _savePath = filePath;
 
             string fileName = Path.GetFileName(filePath);
             Text += " for " + fileName;
@@ -72,7 +72,7 @@ namespace GTControl
                     _wc = null;
                     if (e.Cancelled)
                     {
-                        File.Delete(_filePath);
+                        File.Delete(_savePath);
                         MessageBoxUtil.Error(Resource.GetString(Key.DownloadCancelMsg));
                         DialogResult = DialogResult.Cancel;
                     }
@@ -87,12 +87,22 @@ namespace GTControl
                     label_title.Text = title;
                     label_per.Text = string.Format("{0}%", e.ProgressPercentage);
                     progressBar.Value = e.ProgressPercentage;
-                    if (e.ProgressPercentage > 0) progressBar.Value = e.ProgressPercentage - 1;
+                    if (e.ProgressPercentage > 0)
+                    {
+                        progressBar.Value = e.ProgressPercentage - 1;
+                        progressBar.Value += 1;
+                    }
                 };
 
                 try
                 {
-                    _wc.DownloadFileAsync(new Uri(_url), _filePath);
+                    if (_url.StartsWith("https://"))
+                    {
+                        ServicePointManager.Expect100Continue = true;
+                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                    }
+                    _wc.DownloadFileAsync(new Uri(_url), _savePath);
                 }
                 catch (Exception e)
                 {

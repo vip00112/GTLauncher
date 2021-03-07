@@ -60,7 +60,7 @@ namespace GTControl
             base.OnMouseLeave(e);
 
             if (LayoutSetting.IsEditMode) return;
-            BackColor = LayoutSetting.GetBackColorCommon(LayoutSetting.Theme);
+            BackColor = Color.Transparent;
             ForeColor = LayoutSetting.GetForeColorCommon(LayoutSetting.Theme);
         }
         #endregion

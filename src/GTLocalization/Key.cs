@@ -8,6 +8,9 @@ namespace GTLocalization
 {
     public static class Key
     {
+        public const string NewVersionDownloadConfirmMsg = "NewVersionDownloadConfirmMsg";
+        public const string LatestVersionMsg = "LatestVersionMsg";
+
         public const string DownloadConfirmMsg = "DownloadConfirmMsg";
         public const string DownloadCancelMsg = "DownloadCancelMsg";
 
@@ -23,5 +26,9 @@ namespace GTLocalization
         public const string GoodbyeDPICloseConfirmMsg = "GoodbyeDPICloseConfirmMsg";
 
         public const string CloseConfirmMsg = "CloseConfirmMsg";
+
+        public const string BitcoinAddressCopiedMsg = "BitcoinAddressCopiedMsg";
+
+        public const string LayoutSettingSaveConfirmMsg = "LayoutSettingSaveConfirmMsg";
     }
 }

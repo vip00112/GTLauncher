@@ -76,7 +76,7 @@ namespace GoodbyeDPI
                 Directory.CreateDirectory(dirPath);
             }
 
-            string url = GithubUtil.GetDownloadUrlForLastReleaseAsset("vip00112", "GTLauncherDependency", "GoodbyeDPI-0.1.6-x64.zip");
+            string url = GithubUtil.GetDownloadUrlForLatestAsset("vip00112", "GTLauncherDependency", "GoodbyeDPI*.zip");
             if (string.IsNullOrWhiteSpace(url)) return false;
 
             using (var dialog = new DownloadDialog(url, _downloadFilePath))

@@ -61,6 +61,16 @@ namespace GTLocalization.Properties {
         }
         
         /// <summary>
+        ///   Developer&apos;s bitcoin wallet address is copied.
+        ///Thanks !! :D과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string BitcoinAddressCopiedMsg {
+            get {
+                return ResourceManager.GetString("BitcoinAddressCopiedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Are you sure want to close?과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string CloseConfirmMsg {
@@ -99,11 +109,40 @@ namespace GTLocalization.Properties {
         }
         
         /// <summary>
+        ///   Current version is latest.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string LatestVersionMsg {
+            get {
+                return ResourceManager.GetString("LatestVersionMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Are you sure want to save layout?과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string LayoutSaveConfirmMsg {
             get {
                 return ResourceManager.GetString("LayoutSaveConfirmMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Are you sure want to close?
+        ///Unsaved changes do not take effect.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string LayoutSettingSaveConfirmMsg {
+            get {
+                return ResourceManager.GetString("LayoutSettingSaveConfirmMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Find new version.
+        ///Are you download ner version?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NewVersionDownloadConfirmMsg {
+            get {
+                return ResourceManager.GetString("NewVersionDownloadConfirmMsg", resourceCulture);
             }
         }
         

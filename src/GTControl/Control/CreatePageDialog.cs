@@ -38,6 +38,11 @@ namespace GTControl
             LayoutSetting.Invalidate(this);
         }
 
+        private void CreatePageDialog_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape) DialogResult = DialogResult.Cancel;
+        }
+
         private void button_create_Click(object sender, EventArgs e)
         {
             string pageName = textBox_pageName.Text;
