@@ -127,6 +127,16 @@ namespace GTLocalization.Properties {
         }
         
         /// <summary>
+        ///   Are you sure want to close?
+        ///Unsaved changes do not take effect.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string LayoutSettingSaveConfirmMsg {
+            get {
+                return ResourceManager.GetString("LayoutSettingSaveConfirmMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Find new version.
         ///Are you download ner version?과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>

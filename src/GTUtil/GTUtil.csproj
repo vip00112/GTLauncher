@@ -56,12 +56,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ControlMoveResizeUtil.cs" />
+    <Compile Include="Model\Enum.cs" />
     <Compile Include="Model\GithubJsonContainer.cs" />
     <Compile Include="Model\GithubUtil.cs" />
     <Compile Include="Model\FormUtil.cs" />
     <Compile Include="Model\JsonUtil.cs" />
     <Compile Include="Model\Logger.cs" />
     <Compile Include="Model\MessageBoxUtil.cs" />
+    <Compile Include="Model\ReflectionUtil.cs" />
     <Compile Include="Model\Runtime.cs" />
     <Compile Include="Model\StringExtension.cs" />
     <Compile Include="Model\WindowNative.cs" />
