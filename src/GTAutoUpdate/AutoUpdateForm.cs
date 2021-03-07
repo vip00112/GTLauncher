@@ -133,6 +133,10 @@ namespace GTAutoUpdate
                         Directory.CreateDirectory(Path.GetDirectoryName(fileName));
                         continue;
                     }
+                    if (entry.Name == "GTAutoUpdate.exe")
+                    {
+                        fileName += ".update.tmp";
+                    }
                     entry.ExtractToFile(fileName, true);
                     AppendLog(string.Format("Extract to '{0}'.", entry.Name));
                 }
