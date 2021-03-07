@@ -51,7 +51,12 @@ namespace GTControl
             {
                 if (_pages != null)
                 {
-                    _pages.ForEach(o => o.Dispose());
+                    foreach (var page in _pages)
+                    {
+                        var items = page.PageItems;
+                        items.ForEach(o => o.Dispose());
+                        page.Dispose();
+                    }
                 }
                 _pages = value;
             }

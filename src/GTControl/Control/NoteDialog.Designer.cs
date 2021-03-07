@@ -44,11 +44,13 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.richTextBox_content);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "NoteDialog";
             this.ShowIcon = false;
             this.Load += new System.EventHandler(this.NoteDialog_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NoteDialog_KeyDown);
             this.ResumeLayout(false);
 
         }

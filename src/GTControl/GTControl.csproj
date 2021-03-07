@@ -64,17 +64,14 @@
     <Compile Include="Control\LayoutSettingDialog.Designer.cs">
       <DependentUpon>LayoutSettingDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Control\Page\PageItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Control\ThemeButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Control\Page\PageContainer.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Control\Page\PageItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Control\Page\PageItem.Designer.cs">
-      <DependentUpon>PageItem.cs</DependentUpon>
     </Compile>
     <Compile Include="Control\NoteDialog.cs">
       <SubType>Form</SubType>
@@ -137,9 +134,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Control\Page\PageContainer.resx">
       <DependentUpon>PageContainer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Control\Page\PageItem.resx">
-      <DependentUpon>PageItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Control\NoteDialog.resx">
       <DependentUpon>NoteDialog.cs</DependentUpon>

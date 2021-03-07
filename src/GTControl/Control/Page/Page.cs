@@ -148,6 +148,22 @@ namespace GTControl
         #endregion
 
         #region Public Method
+        public Page Copy()
+        {
+            var result = new Page();
+            try
+            {
+                var categoryFilter = new string[] { "Page Option" };
+                ReflectionUtil.CopyProperties(this, result, categoryFilter, null);
+                return result;
+            }
+            catch
+            {
+                result.Dispose();
+                return null;
+            }
+        }
+
         public PageItem AddItemAfterCopy(PageItem src)
         {
             var copy = src.Copy();

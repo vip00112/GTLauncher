@@ -15,8 +15,6 @@ namespace GTControl
     public partial class LayoutSettingDialog : Form
     {
         private LayoutProperty _layout;
-        private List<Page> _pages;
-        private List<PageItem> _pageItems;
 
         private Cell _startCell;
         private Cell _endCell;
@@ -25,6 +23,7 @@ namespace GTControl
         private List<PageItem> _copyItems;
         private Page _selectedPage;
         private bool _isPressedCtrl;
+        private bool _isSaved;
 
         #region Constructor
         public LayoutSettingDialog()
@@ -68,34 +67,38 @@ namespace GTControl
             };
             propertyGrid_layout.SelectedObject = _layout;
 
-            _pages = LayoutSetting.Pages.ToList();
-            _pageItems = LayoutSetting.PageItems.ToList();
-            foreach (var p in _pages)
+            var pages = LayoutSetting.Pages.ToList();
+            var pageItems = LayoutSetting.PageItems.ToList();
+            foreach (var p in pages)
             {
                 string pageName = p.PageName;
                 var page = CreatePage(pageName, p);
 
-                var pageItems = _pageItems.Where(o => o.PageName == pageName);
-                foreach (var pageItem in pageItems)
+                var items = pageItems.Where(o => o.PageName == pageName).ToList();
+                items.Reverse();
+                foreach (var item in items)
                 {
-                    CreatePageItem(page, pageItem, pageItem.PageName);
+                    CreatePageItem(page, item, item.PageName);
                 }
             }
 
-            var pages = tabControl_pages.SelectedTab.Controls[0].Controls.OfType<Page>().ToList();
-            if (pages.Count == 0) return;
+            var pagesOfControl = tabControl_pages.SelectedTab.Controls[0].Controls.OfType<Page>().ToList();
+            if (pagesOfControl.Count == 0) return;
 
-            SelectedPage = pages[0];
+            SelectedPage = pagesOfControl[0];
             ResetCells();
         }
 
         private void LayoutSettingForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            string msg = Resource.GetString(Key.LayoutSettingSaveConfirmMsg);
-            if (!MessageBoxUtil.Confirm(msg))
+            if (!_isSaved)
             {
-                e.Cancel = true;
-                return;
+                string msg = Resource.GetString(Key.LayoutSettingSaveConfirmMsg);
+                if (!MessageBoxUtil.Confirm(msg))
+                {
+                    e.Cancel = true;
+                    return;
+                }
             }
 
             LayoutSetting.IsEditMode = false;
@@ -135,6 +138,28 @@ namespace GTControl
             }
         }
 
+        private void menuItem_deletePage_Click(object sender, EventArgs e)
+        {
+            _isPressedCtrl = false;
+
+            if (SelectedPage == null) return;
+            if (!MessageBoxUtil.Confirm(Resource.GetString(Key.PageDeleteConfirmMsg))) return;
+            if (SelectedPage.PageName == "Main")
+            {
+                MessageBoxUtil.Error(Resource.GetString(Key.PageDeleteErrorMsg));
+                return;
+            }
+
+            DeletePage(SelectedPage);
+            SelectedPage = null;
+
+            var tab = tabControl_pages.SelectedTab;
+            if (tab == null) return;
+
+            tabControl_pages.TabPages.Remove(tab);
+            tab.Dispose();
+        }
+
         private void menuItem_addItem_Click(object sender, EventArgs e)
         {
             _isPressedCtrl = false;
@@ -160,32 +185,10 @@ namespace GTControl
             var item = CreatePageItem(SelectedPage, src, SelectedPage.PageName);
             if (item != null) AddAncherItem(item);
 
+            src.Dispose();
+            src = null;
+
             _cells.ForEach(o => o.IsSelected = false);
-        }
-
-        private void menuItem_deletePage_Click(object sender, EventArgs e)
-        {
-            _isPressedCtrl = false;
-
-            if (SelectedPage == null) return;
-            if (!MessageBoxUtil.Confirm(Resource.GetString(Key.PageDeleteConfirmMsg))) return;
-            if (SelectedPage.PageName == "Main")
-            {
-                MessageBoxUtil.Error(Resource.GetString(Key.PageDeleteErrorMsg));
-                return;
-            }
-
-            var items = SelectedPage.PageItems.ToList();
-            foreach (var item in items)
-            {
-                DeletePageItem(SelectedPage, item);
-            }
-
-            var tab = tabControl_pages.SelectedTab;
-            if (tab == null) return;
-
-            tabControl_pages.TabPages.Remove(tab);
-            tab.Dispose();
         }
 
         private void menuItem_deleteItem_Click(object sender, EventArgs e)
@@ -207,13 +210,10 @@ namespace GTControl
         {
             if (!CanCopyPaste()) return;
 
-            ResetCopyItems();
+            _copyItems.Clear();
             foreach (var item in _ancherItems)
             {
-                var copy = item.Copy();
-                if (copy == null) continue;
-
-                _copyItems.Add(copy);
+                _copyItems.Add(item);
             }
         }
 
@@ -228,7 +228,7 @@ namespace GTControl
                 var item = CreatePageItem(SelectedPage, copy, SelectedPage.PageName);
                 if (item != null) AddAncherItem(item);
             }
-            ResetCopyItems();
+            _copyItems.Clear();
         }
 
         private void menuItem_save_Click(object sender, EventArgs e)
@@ -237,30 +237,30 @@ namespace GTControl
 
             if (!MessageBoxUtil.Confirm(Resource.GetString(Key.LayoutSaveConfirmMsg))) return;
 
-            _pages.Clear();
-            _pageItems.Clear();
+            var pages = new List<Page>();
+            var pageItems = new List<PageItem>();
             foreach (TabPage tabPage in tabControl_pages.TabPages)
             {
-                var pages = tabPage.Controls[0].Controls.OfType<Page>().ToList();
-                if (pages.Count == 0) continue;
+                var pagesOfControl = tabPage.Controls[0].Controls.OfType<Page>().ToList();
+                if (pagesOfControl.Count == 0) continue;
 
-                var page = pages[0];
-                _pages.Add(page);
+                var page = pagesOfControl[0];
+                pages.Add(page.Copy());
 
                 var items = page.PageItems;
                 foreach (var item in items)
                 {
-                    _pageItems.Add(item);
+                   pageItems.Add(item.Copy());
                 }
             }
 
             LayoutSetting.DockMode = _layout.DockMode;
             LayoutSetting.SizeModeWidth = _layout.SizeModeWidth;
             LayoutSetting.SizeModeHeight = _layout.SizeModeHeight;
-            LayoutSetting.Pages = _pages;
-            LayoutSetting.PageItems = _pageItems;
-            LayoutSetting.InvalidateAllForms();
+            LayoutSetting.Pages = pages;
+            LayoutSetting.PageItems = pageItems;
 
+            _isSaved = true;
             DialogResult = DialogResult.OK;
         }
 
@@ -294,25 +294,12 @@ namespace GTControl
 
             if (tabControl_pages.SelectedTab == null) return;
 
-            var pages = tabControl_pages.SelectedTab.Controls[0].Controls.OfType<Page>().ToList();
-            if (pages.Count == 0) return;
+            var pagesOfControl = tabControl_pages.SelectedTab.Controls[0].Controls.OfType<Page>().ToList();
+            if (pagesOfControl.Count == 0) return;
 
-            SelectedPage = pages[0];
+            SelectedPage = pagesOfControl[0];
             ResetCells();
-        }
-
-        private void pageItem_Paint(object sender, PaintEventArgs e)
-        {
-            var item = sender as PageItem;
-            if (item == null) return;
-
-            if (_ancherItems.Contains(item))
-            {
-                using (var b = new SolidBrush(Color.FromArgb(100, Color.Red)))
-                {
-                    e.Graphics.FillRectangle(b, 0, 0, item.Width, item.Height);
-                }
-            }
+            ResetAncherItems();
         }
 
         private void pageItem_MouseDown(object sender, MouseEventArgs e)
@@ -322,7 +309,7 @@ namespace GTControl
 
             AddAncherItem(item);
 
-            _cells.ForEach(o => o.IsSelected = false);
+            SelectedPage.PageBody.BringToFront(item);
             SelectedPage.PageBody.Invalidate();
         }
 
@@ -331,13 +318,6 @@ namespace GTControl
             if (SelectedPage == null) return;
 
             ResetCells();
-        }
-
-        private void pageBody_Paint(object sender, PaintEventArgs e)
-        {
-            if (SelectedPage == null) return;
-
-            DrawCell(e.Graphics);
         }
 
         private void pageBody_MouseDown(object sender, MouseEventArgs e)
@@ -355,13 +335,24 @@ namespace GTControl
             tabControl_pages.Focus();
         }
 
+        private void pageBody_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (SelectedPage == null) return;
+            if (_startCell == null) return;
+
+            int x = (e.Location.X > SelectedPage.PageBody.Width) ? SelectedPage.PageBody.Width : e.Location.X;
+            int y = (e.Location.Y > SelectedPage.PageBody.Height) ? SelectedPage.PageBody.Height : e.Location.Y;
+            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(new Point(x, y)));
+            if (_endCell != null) SelectedPage.PageBody.Invalidate();
+        }
+
         private void pageBody_MouseUp(object sender, MouseEventArgs e)
         {
             if (SelectedPage == null) return;
             if (_startCell == null) return;
 
-            int x = e.Location.X > SelectedPage.PageBody.Width ? SelectedPage.PageBody.Width : e.Location.X;
-            int y = e.Location.Y > SelectedPage.PageBody.Height ? SelectedPage.PageBody.Height : e.Location.Y;
+            int x = (e.Location.X > SelectedPage.PageBody.Width) ? SelectedPage.PageBody.Width : e.Location.X;
+            int y = (e.Location.Y > SelectedPage.PageBody.Height) ? SelectedPage.PageBody.Height : e.Location.Y;
             _endCell = _cells.FirstOrDefault(o => o.IsInLocation(new Point(x, y)));
             if (_endCell == null) return;
 
@@ -377,15 +368,31 @@ namespace GTControl
             SelectedPage.PageBody.Invalidate();
         }
 
-        private void pageBody_MouseMove(object sender, MouseEventArgs e)
+        private void pageBody_Paint(object sender, PaintEventArgs e)
         {
             if (SelectedPage == null) return;
-            if (_startCell == null) return;
 
-            int x = e.Location.X > SelectedPage.PageBody.Width ? SelectedPage.PageBody.Width : e.Location.X;
-            int y = e.Location.Y > SelectedPage.PageBody.Height ? SelectedPage.PageBody.Height : e.Location.Y;
-            _endCell = _cells.FirstOrDefault(o => o.IsInLocation(new Point(x, y)));
-            if (_endCell != null) SelectedPage.PageBody.Invalidate();
+            using (var b = new SolidBrush(Color.FromArgb(70, LayoutSetting.GetBackColorHover(LayoutSetting.Theme))))
+            {
+                if (_startCell != null && _endCell != null)
+                {
+                    foreach (var cell in _cells)
+                    {
+                        if (!cell.IsInRange(_startCell, _endCell)) continue;
+
+                        e.Graphics.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
+                    }
+                }
+                else
+                {
+                    foreach (var cell in _cells)
+                    {
+                        if (!cell.IsSelected) continue;
+
+                        e.Graphics.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
+                    }
+                }
+            }
         }
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -459,21 +466,39 @@ namespace GTControl
             return page;
         }
 
+        private void DeletePage(Page page)
+        {
+            if (page == null) return;
+
+            var items = page.PageItems.ToList();
+            foreach (var item in items)
+            {
+                DeletePageItem(page, item);
+            }
+
+            page.PageBody.Resize -= pageBody_Resize;
+            page.PageBody.Paint -= pageBody_Paint;
+            page.PageBody.MouseDown -= pageBody_MouseDown;
+            page.PageBody.MouseMove -= pageBody_MouseMove;
+            page.PageBody.MouseUp -= pageBody_MouseUp;
+            page.Dispose();
+        }
+
         private PageItem CreatePageItem(Page targetPage, PageItem src, string pageName)
         {
             var item = targetPage.AddItemAfterCopy(src);
             if (item != null)
             {
                 item.PageName = pageName;
+                item.OnMouseDownEventForEdit += pageItem_MouseDown;
                 item.BringToFront();
-                targetPage.PageBody.StartEditItem(item, pageItem_MouseDown, pageItem_Paint);
             }
             return item;
         }
 
         private void DeletePageItem(Page targetPage, PageItem item)
         {
-            targetPage.PageBody.StopEditItem(item, pageItem_MouseDown, pageItem_Paint);
+            item.OnMouseDownEventForEdit -= pageItem_MouseDown;
             targetPage.RemoveItem(item);
         }
 
@@ -498,52 +523,13 @@ namespace GTControl
             }
         }
 
-        private void DrawCell(Graphics g)
-        {
-            using (var b = new SolidBrush(Color.FromArgb(70, LayoutSetting.GetBackColorHover(LayoutSetting.Theme))))
-            {
-                if (_startCell != null && _endCell != null)
-                {
-                    foreach (var cell in _cells)
-                    {
-                        if (cell.IsInRange(_startCell, _endCell))
-                        {
-                            g.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var cell in _cells)
-                    {
-                        if (!cell.IsSelected) continue;
-
-                        g.FillRectangle(b, cell.X, cell.Y, cell.Width, cell.Height);
-                    }
-                }
-            }
-        }
-
         private void ResetAncherItems()
         {
             var items = _ancherItems.ToList();
             foreach (var item in items)
             {
                 _ancherItems.Remove(item);
-                if (!item.IsDisposed)
-                {
-                    item.Invalidate();
-                }
-            }
-        }
-
-        private void ResetCopyItems()
-        {
-            var items = _copyItems.ToList();
-            foreach (var item in items)
-            {
-                _copyItems.Remove(item);
-                item.Dispose();
+                item.IsSelected = false;
             }
         }
 
@@ -554,16 +540,19 @@ namespace GTControl
                 if (_ancherItems.Contains(item))
                 {
                     _ancherItems.Remove(item);
+                    item.IsSelected = false;
                 }
                 else
                 {
                     _ancherItems.Add(item);
+                    item.IsSelected = true;
                 }
             }
             else
             {
                 ResetAncherItems();
                 _ancherItems.Add(item);
+                item.IsSelected = true;
             }
 
             if (_ancherItems.Count > 0)
@@ -571,7 +560,6 @@ namespace GTControl
                 propertyGrid_page.SelectedObjects = _ancherItems.ToArray();
             }
 
-            item.Invalidate();
             tabControl_pages.Focus();
         }
 

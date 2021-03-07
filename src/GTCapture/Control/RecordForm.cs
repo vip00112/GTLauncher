@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GTUtil;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,7 +20,7 @@ namespace GTCapture
         public EventHandler OnStop;
         public EventHandler OnClose;
 
-        private Point _moveLoc;
+        private Point _startLoc;
         private Size _minSize;
         private bool _isConvertToGif;
 
@@ -39,7 +40,7 @@ namespace GTCapture
         #endregion
 
         #region Properties
-        private FormActionType FormActionType { get; set; }
+        private MoveResizeAction FormActionType { get; set; }
 
         private int HeaderSize { get { return panel_header.Height; } }
 
@@ -169,46 +170,47 @@ namespace GTCapture
 
         private void CaptureBorderForm_MouseDown(object sender, MouseEventArgs e)
         {
+            _startLoc = e.Location;
+
             if (CenterRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.Move;
-                _moveLoc = e.Location;
+                FormActionType = MoveResizeAction.Move;
             }
             else if (TopLeftRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.ResizeTopLeft;
+                FormActionType = MoveResizeAction.ResizeTopLeft;
             }
             else if (TopRightRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.ResizeTopRight;
+                FormActionType = MoveResizeAction.ResizeTopRight;
             }
             else if (BottomRightRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.ResizeBottomRight;
+                FormActionType = MoveResizeAction.ResizeBottomRight;
             }
             else if (BottomLeftRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.ResizeBottomLeft;
+                FormActionType = MoveResizeAction.ResizeBottomLeft;
             }
             else if (LeftRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.ResizeLeft;
+                FormActionType = MoveResizeAction.ResizeLeft;
             }
             else if (TopRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.ResizeTop;
+                FormActionType = MoveResizeAction.ResizeTop;
             }
             else if (RightRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.ResizeRight;
+                FormActionType = MoveResizeAction.ResizeRight;
             }
             else if (BottomRec.Contains(e.X, e.Y))
             {
-                FormActionType = FormActionType.ResizeBottom;
+                FormActionType = MoveResizeAction.ResizeBottom;
             }
             else
             {
-                FormActionType = FormActionType.None;
+                FormActionType = MoveResizeAction.None;
             }
         }
 
@@ -216,18 +218,16 @@ namespace GTCapture
         {
             switch (FormActionType)
             {
-                case FormActionType.Move:
-                    Location = new Point(Location.X - (_moveLoc.X - e.X), Location.Y - (_moveLoc.Y - e.Y));
-                    break;
-                case FormActionType.ResizeLeft:
-                case FormActionType.ResizeTop:
-                case FormActionType.ResizeRight:
-                case FormActionType.ResizeBottom:
-                case FormActionType.ResizeTopLeft:
-                case FormActionType.ResizeTopRight:
-                case FormActionType.ResizeBottomRight:
-                case FormActionType.ResizeBottomLeft:
-                    ResizeAction();
+                case MoveResizeAction.Move:
+                case MoveResizeAction.ResizeLeft:
+                case MoveResizeAction.ResizeTop:
+                case MoveResizeAction.ResizeRight:
+                case MoveResizeAction.ResizeBottom:
+                case MoveResizeAction.ResizeTopLeft:
+                case MoveResizeAction.ResizeTopRight:
+                case MoveResizeAction.ResizeBottomRight:
+                case MoveResizeAction.ResizeBottomLeft:
+                    Bounds = ControlMoveResizeUtil.CalcBounds(FormActionType, this, _startLoc, e.Location);
                     break;
                 default:
                     ChangeCursor(e.X, e.Y);
@@ -238,7 +238,7 @@ namespace GTCapture
 
         private void CaptureBorderForm_MouseUp(object sender, MouseEventArgs e)
         {
-            FormActionType = FormActionType.None;
+            FormActionType = MoveResizeAction.None;
         }
 
         private void CaptureBorderForm_Paint(object sender, PaintEventArgs e)
@@ -395,54 +395,6 @@ namespace GTCapture
             else
             {
                 Cursor = Cursors.Default;
-            }
-        }
-
-        private void ResizeAction()
-        {
-            int locX = Location.X;
-            int locY = Location.Y;
-            int currentX = Cursor.Position.X;
-            int currentY = Cursor.Position.Y;
-            switch (FormActionType)
-            {
-                case FormActionType.ResizeLeft:
-                    Width = (locX + Width) - currentX;
-                    Left = currentX;
-                    break;
-                case FormActionType.ResizeTop:
-                    currentY -= HeaderSize;
-                    Height = (locY + Height) - currentY;
-                    Top = currentY;
-                    break;
-                case FormActionType.ResizeRight:
-                    Width = currentX - locX;
-                    break;
-                case FormActionType.ResizeBottom:
-                    Height = currentY - locY;
-                    break;
-                case FormActionType.ResizeTopLeft:
-                    currentY -= HeaderSize;
-                    Height = (locY + Height) - currentY;
-                    Top = currentY;
-                    Width = (locX + Width) - currentX;
-                    Left = currentX;
-                    break;
-                case FormActionType.ResizeTopRight:
-                    currentY -= HeaderSize;
-                    Height = (locY + Height) - currentY;
-                    Top = currentY;
-                    Width = currentX - locX;
-                    break;
-                case FormActionType.ResizeBottomRight:
-                    Height = currentY - locY;
-                    Width = currentX - locX;
-                    break;
-                case FormActionType.ResizeBottomLeft:
-                    Height = currentY - locY;
-                    Width = (locX + Width) - currentX;
-                    Left = currentX;
-                    break;
             }
         }
         #endregion

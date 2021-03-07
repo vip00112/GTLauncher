@@ -82,6 +82,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo f | xcopy /y "$(TargetPath)" "$(SolutionDir)\GTLauncher\bin\Debug\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>echo f | xcopy /y "$(TargetPath)" "$(SolutionDir)\GTLauncher\bin\$(ConfigurationName)\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

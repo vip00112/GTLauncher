@@ -1,36 +1,40 @@
-﻿using System;
+﻿using GTUtil;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
-using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
-using System.Collections;
-using System.Diagnostics;
-using GTUtil;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace GTControl
 {
-    public partial class PageItem : UserControl
+    public class PageItem : Panel
     {
+        private const int LineSize = 4;
+
         public MouseEventHandler OnMouseDownEventForEdit;
-        public PaintEventHandler OnPaintEventForEdit;
         public EventHandler OnFolderClickEvent;
 
         private string _pageName;
-        private Image _backgroundImage;
-        private bool _isCanAnimate;
+        private Image _img;
+        private string _text;
+        private ContentAlignment _textAlignment;
+        private Font _textFont;
         private bool _isLoaded;
+        private bool _isSelected;
+        private Point _startLoc;
+        private Point _resizeDiffLoc;
+        private bool _isMouseOver;
+        private bool _disposed;
 
         #region Constructor
         public PageItem()
         {
-            InitializeComponent();
             DoubleBuffered = true;
 
             Padding = new Padding(0);
@@ -42,8 +46,13 @@ namespace GTControl
             BackgroundImage = null;
             TextContent = "Content";
             TextAlign = ContentAlignment.MiddleCenter;
-            TextFont = label.Font;
+            TextFont = Font;
             Cursor = Cursors.Hand;
+        }
+
+        ~PageItem()
+        {
+            Dispose(false);
         }
         #endregion
 
@@ -69,21 +78,20 @@ namespace GTControl
         [Category("Page Option")]
         new public Image BackgroundImage
         {
-            get { return _backgroundImage; }
+            get { return _img; }
             set
             {
-                if (_backgroundImage != null)
+                if (_img != null)
                 {
-                    ImageAnimator.StopAnimate(_backgroundImage, ImageAnimatorOnFrameChangedHandler);
+                    ImageAnimator.StopAnimate(_img, OnFrameChangedHandler);
+                    _img.Dispose();
                 }
 
-                _isCanAnimate = ImageAnimator.CanAnimate(value);
-                if (_isCanAnimate)
+                _img = value;
+                if (ImageAnimator.CanAnimate(_img))
                 {
-                    ImageAnimator.Animate(value, ImageAnimatorOnFrameChangedHandler);
+                    ImageAnimator.Animate(_img, OnFrameChangedHandler);
                 }
-
-                _backgroundImage = value;
                 Invalidate();
             }
         }
@@ -91,22 +99,34 @@ namespace GTControl
         [Category("Page Option"), DefaultValue("Content")]
         public string TextContent
         {
-            get { return label.Text; }
-            set { label.Text = value; }
+            get { return _text; }
+            set
+            {
+                _text = value;
+                Invalidate();
+            }
         }
 
         [Category("Page Option"), DefaultValue(ContentAlignment.TopCenter)]
         public ContentAlignment TextAlign
         {
-            get { return label.TextAlign; }
-            set { label.TextAlign = value; }
+            get { return _textAlignment; }
+            set
+            {
+                _textAlignment = value;
+                Invalidate();
+            }
         }
 
         [Category("Page Option")]
         public Font TextFont
         {
-            get { return label.Font; }
-            set { label.Font = value; }
+            get { return _textFont; }
+            set
+            {
+                _textFont = value;
+                Invalidate();
+            }
         }
 
         [Category("Page Option")]
@@ -217,6 +237,16 @@ namespace GTControl
             }
         }
 
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                _isSelected = value;
+                Invalidate();
+            }
+        }
+
         public Point MinPoint { get; private set; }
 
         public Point MaxPoint { get; private set; }
@@ -225,57 +255,128 @@ namespace GTControl
 
         public Size MaxSize { get; private set; }
 
-        public Control WrapperControl { get { return label; } }
+        private Rectangle ResizeRec
+        {
+            get
+            {
+                int value = LineSize * 4;
+                return new Rectangle(Width - value, Height - value, value, value); 
+            }
+        }        
+
+        private Rectangle MoveRec
+        {
+            get
+            {
+                int value = LineSize * 2;
+                int x = (Width / 2) - (value / 2);
+                int y = (Height / 2) - (value / 2);
+                return new Rectangle(0, 0, value, value);
+            }
+        }
+
+        private MoveResizeAction MoveResizeAction { get; set; }
         #endregion
 
-        #region Control Event
-        private void PageItem_Load(object sender, EventArgs e)
+        #region Event Handler
+        private void OnFrameChangedHandler(object sender, EventArgs e)
         {
-            if (!LayoutSetting.IsEditMode) return;
-
-            CalcLimit();
-            _isLoaded = true;
+            if (BackgroundImage != null) Invalidate();
         }
+        #endregion
 
-        private void PageItem_Paint(object sender, PaintEventArgs e)
+        #region Protected Method
+        protected override void OnHandleCreated(EventArgs e)
         {
+            base.OnHandleCreated(e);
+
             if (LayoutSetting.IsEditMode)
             {
-                using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
-                using (var p = new Pen(Color.Blue, 2))
-                {
-                    e.Graphics.FillRectangle(b, new Rectangle(0, 0, base.Width, base.Height));
-                    e.Graphics.DrawRectangle(p, new Rectangle(0, 0, base.Width, base.Height));
-                }
-                OnPaintEventForEdit?.Invoke(this, e);
+                CalcLimit();
+                _isLoaded = true;
             }
-            if (BackgroundImage != null)
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+
+            _isMouseOver = true;
+            Invalidate();
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+
+            _isMouseOver = false;
+            Invalidate();
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (!LayoutSetting.IsEditMode) return;
+
+            _startLoc = e.Location;
+            if (MoveRec.Contains(e.X, e.Y))
             {
-                if (_isCanAnimate)
-                {
-                    ImageAnimator.UpdateFrames(BackgroundImage);
-                }
-                e.Graphics.DrawImage(BackgroundImage, 0, 0, base.Width, base.Height);
+                MoveResizeAction = MoveResizeAction.Move;
             }
-        }
-
-        private void label_MouseEnter(object sender, EventArgs e)
-        {
-            label.BackColor = Color.FromArgb(50, LayoutSetting.GetBackColorHover(LayoutSetting.Theme));
-        }
-
-        private void label_MouseLeave(object sender, EventArgs e)
-        {
-            label.BackColor = Color.Transparent;
-        }
-
-        private void label_MouseDown(object sender, MouseEventArgs e)
-        {
+            else if (ResizeRec.Contains(e.X, e.Y))
+            {
+                var rec = ResizeRec;
+                int diffX = (rec.X + rec.Width) - _startLoc.X;
+                int diffY = (rec.Y + rec.Height) - _startLoc.Y;
+                _resizeDiffLoc = new Point(diffX, diffY);
+                MoveResizeAction = MoveResizeAction.ResizeBottomRight;
+            }
+            else
+            {
+                MoveResizeAction = MoveResizeAction.None;
+            }
             OnMouseDownEventForEdit?.Invoke(this, e);
         }
 
-        private void label_Click(object sender, EventArgs e)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
+            base.OnMouseMove(e);
+
+            if (!LayoutSetting.IsEditMode) return;
+
+            switch (MoveResizeAction)
+            {
+                case MoveResizeAction.Move:
+                    DoAction(e.Location);
+                    break;
+                case MoveResizeAction.ResizeBottomRight:
+                    int currentX = e.X + _resizeDiffLoc.X;
+                    int currentY = e.Y + _resizeDiffLoc.Y;
+                    DoAction(new Point(currentX, currentY));
+                    break;
+                default:
+                    ChangeCursor(e.X, e.Y);
+                    break;
+            }
+
+            CalcLimit();
+            Invalidate();
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            if (!LayoutSetting.IsEditMode) return;
+
+            MoveResizeAction = MoveResizeAction.None;
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+
             if (LayoutSetting.IsEditMode) return;
 
             switch (ClickMode)
@@ -290,12 +391,72 @@ namespace GTControl
                     break;
             }
         }
-        #endregion
 
-        #region Event Handler
-        private void ImageAnimatorOnFrameChangedHandler(object sender, EventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
-            Invalidate();
+            base.OnPaint(e);
+
+            if (BackgroundImage != null)
+            {
+                ImageAnimator.UpdateFrames(BackgroundImage);
+                e.Graphics.DrawImage(BackgroundImage, 0, 0, Width, Height);
+            }
+
+            // 에디트 모드에서 이미지가 없을시 파란색 표기
+            else if (LayoutSetting.IsEditMode)
+            {
+                using (var b = new SolidBrush(Color.FromArgb(50, Color.Blue)))
+                {
+                    e.Graphics.FillRectangle(b, new Rectangle(0, 0, Width, Height));
+                }
+            }
+
+            // Text 표기
+            if (!string.IsNullOrWhiteSpace(TextContent))
+            {
+                var color = LayoutSetting.GetForeColorCommon(LayoutSetting.Theme);
+                using (var b = new SolidBrush(color))
+                {
+                    e.Graphics.DrawString(TextContent, TextFont, b, ClientRectangle, GetStringFormat());
+                }
+            }
+
+            // 마우스 오버 표기
+            if (_isMouseOver)
+            {
+                var color = Color.FromArgb(50, LayoutSetting.GetBackColorHover(LayoutSetting.Theme));
+                using (var b = new SolidBrush(color))
+                {
+                    e.Graphics.FillRectangle(b, 0, 0, Width, Height);
+                }
+            }
+
+            // 에디트 모드에서 Resize, 선택시 빨간색 표기
+            if (LayoutSetting.IsEditMode)
+            {
+                using (var b = new SolidBrush(Color.Red))
+                using (var p = new Pen(Color.Red, 2))
+                {
+                    var bottom = ResizeRec;
+                    Point[] locs = new Point[]
+                    {
+                        new Point(bottom.X, bottom.Y+bottom.Height),
+                        new Point(bottom.X+bottom.Width, bottom.Y),
+                        new Point(bottom.X+bottom.Width, bottom.Y+bottom.Height)
+                    };
+                    e.Graphics.FillPolygon(b, locs);
+                    e.Graphics.FillRectangle(b, MoveRec);
+                    e.Graphics.DrawRectangle(p, new Rectangle(0, 0, Width, Height));
+                }
+
+                if (IsSelected)
+                {
+                    using (var b = new SolidBrush(Color.FromArgb(100, Color.Red)))
+                    {
+                        e.Graphics.FillRectangle(b, 0, 0, Width, Height);
+                    }
+                }
+            }
         }
         #endregion
 
@@ -340,6 +501,161 @@ namespace GTControl
                 MessageBoxUtil.Error(ex.Message);
             }
         }
+
+        private StringFormat GetStringFormat()
+        {
+            var sf = new StringFormat();
+            switch (TextAlign)
+            {
+                case ContentAlignment.TopLeft:
+                    sf.LineAlignment = StringAlignment.Near;
+                    sf.Alignment = StringAlignment.Near;
+                    break;
+                case ContentAlignment.TopCenter:
+                    sf.LineAlignment = StringAlignment.Near;
+                    sf.Alignment = StringAlignment.Center;
+                    break;
+                case ContentAlignment.TopRight:
+                    sf.LineAlignment = StringAlignment.Near;
+                    sf.Alignment = StringAlignment.Far;
+                    break;
+                case ContentAlignment.MiddleLeft:
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.Alignment = StringAlignment.Near;
+                    break;
+                case ContentAlignment.MiddleCenter:
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.Alignment = StringAlignment.Center;
+                    break;
+                case ContentAlignment.MiddleRight:
+                    sf.LineAlignment = StringAlignment.Center;
+                    sf.Alignment = StringAlignment.Far;
+                    break;
+                case ContentAlignment.BottomLeft:
+                    sf.LineAlignment = StringAlignment.Far;
+                    sf.Alignment = StringAlignment.Near;
+                    break;
+                case ContentAlignment.BottomCenter:
+                    sf.LineAlignment = StringAlignment.Far;
+                    sf.Alignment = StringAlignment.Center;
+                    break;
+                case ContentAlignment.BottomRight:
+                    sf.LineAlignment = StringAlignment.Far;
+                    sf.Alignment = StringAlignment.Far;
+                    break;
+            }
+            return sf;
+        }
+
+        private void ChangeCursor(int x, int y)
+        {
+            if (MoveRec.Contains(x, y))
+            {
+                Cursor = Cursors.SizeAll;
+            }
+            else if (ResizeRec.Contains(x, y))
+            {
+                Cursor = Cursors.SizeNWSE;
+            }
+            else
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+
+        private void DoAction(Point currentLoc)
+        {
+            var bounds = ControlMoveResizeUtil.CalcBounds(MoveResizeAction, this, _startLoc, currentLoc);
+            int diffX = bounds.X % PageBody.Grid;
+            int diffY = bounds.Y % PageBody.Grid;
+            int diffWidth = bounds.Width % PageBody.Grid;
+            int diffHeight = bounds.Height % PageBody.Grid;
+
+            switch (MoveResizeAction)
+            {
+                case MoveResizeAction.Move:
+                    if (diffX != 0) bounds.X -= diffX;
+                    if (diffY != 0) bounds.Y -= diffY;
+                    break;
+                case MoveResizeAction.ResizeLeft:
+                    if (diffX != 0)
+                    {
+                        bounds.X -= diffX;
+                        bounds.Width += diffX;
+                    }
+                    break;
+                case MoveResizeAction.ResizeTop:
+                    if (diffY != 0)
+                    {
+                        bounds.Y -= diffY;
+                        bounds.Height += diffY;
+                    }
+                    break;
+                case MoveResizeAction.ResizeRight:
+                    if (diffWidth != 0) bounds.Width -= diffWidth;
+                    break;
+                case MoveResizeAction.ResizeBottom:
+                    if (diffHeight != 0) bounds.Height -= diffHeight;
+                    break;
+                case MoveResizeAction.ResizeTopLeft:
+                    if (diffY != 0)
+                    {
+                        bounds.Y -= diffY;
+                        bounds.Height += diffY;
+                    }
+                    if (diffX != 0)
+                    {
+                        bounds.X -= diffX;
+                        bounds.Width += diffX;
+                    }
+                    break;
+                case MoveResizeAction.ResizeTopRight:
+                    if (diffY != 0)
+                    {
+                        bounds.Y -= diffY;
+                        bounds.Height += diffY;
+                    }
+                    if (diffWidth != 0) bounds.Width -= diffWidth;
+                    break;
+                case MoveResizeAction.ResizeBottomRight:
+                    if (diffHeight != 0) bounds.Height -= diffHeight;
+                    if (diffWidth != 0) bounds.Width -= diffWidth;
+                    break;
+                case MoveResizeAction.ResizeBottomLeft:
+                    if (diffHeight != 0) bounds.Height -= diffHeight;
+                    if (diffX != 0)
+                    {
+                        bounds.X -= diffX;
+                        bounds.Width += diffX;
+                    }
+                    break;
+            }
+
+            if (bounds.X < MinPoint.X) bounds.X = MinPoint.X;
+            else if (bounds.X > MaxPoint.X) bounds.X = MaxPoint.X;
+
+            if (bounds.Y < MinPoint.Y) bounds.Y = MinPoint.Y;
+            else if (bounds.Y > MaxPoint.Y) bounds.Y = MaxPoint.Y;
+
+            if (bounds.Width < MinSize.Width) bounds.Width = MinSize.Width;
+            else if (bounds.Width > MaxSize.Width) bounds.Width = MaxSize.Width;
+
+            if (bounds.Height < MinSize.Height) bounds.Height = MinSize.Height;
+            else if (bounds.Height > MaxSize.Height) bounds.Height = MaxSize.Height;
+
+            Bounds = bounds;
+        }
+
+        private Image CopyBackgroundImage()
+        {
+            using (var ms = new MemoryStream())
+            {
+                BackgroundImage.Save(ms, BackgroundImage.RawFormat);
+
+                var data = ms.ToArray();
+                return Image.FromStream(new MemoryStream(data, 0, data.Length), true);
+            }
+        }
         #endregion
 
         #region Public Method
@@ -357,31 +673,47 @@ namespace GTControl
 
         public PageItem Copy()
         {
-            var item = new PageItem();
+            var result = new PageItem();
             try
             {
-                item.PageName = PageName;
-                item.BackgroundImage = BackgroundImage;
-                item.TextContent = TextContent;
-                item.TextAlign = TextAlign;
-                item.TextFont = TextFont;
-                item.ClickMode = ClickMode;
-                item.StartWithAdministrator = StartWithAdministrator;
-                item.FilePath = FilePath;
-                item.Arguments = Arguments;
-                item.LinkPageName = LinkPageName;
-                item.X = X;
-                item.Y = Y;
-                item.Width = Width;
-                item.Height = Height;
-                return item;
+                var categoryFilter = new string[] { "Page Option" };
+                var ignorePropertyFilter = new string[] { "BackgroundImage" };
+                ReflectionUtil.CopyProperties(this, result, categoryFilter, ignorePropertyFilter);
+                if (BackgroundImage != null)
+                {
+                    result.BackgroundImage = CopyBackgroundImage();
+                }
+                return result;
             }
             catch
             {
-                item.Dispose();
-                item = null;
+                result.Dispose();
+                return null;
             }
-            return item;
+        }
+        #endregion
+
+        #region IDisposable Method
+        new public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        new protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+
+            if (disposing)
+            {
+                if (BackgroundImage != null)
+                {
+                    BackgroundImage.Dispose();
+                    BackgroundImage = null;
+                }
+            }
+
+            _disposed = true;
         }
         #endregion
     }

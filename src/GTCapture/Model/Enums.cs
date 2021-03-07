@@ -15,21 +15,4 @@ namespace GTCapture
     {
         MainMonitor, ActiveMonitor, AllMonitor
     }
-
-    public enum FormActionType
-    {
-        None,
-
-        Move,
-
-        ResizeLeft,
-        ResizeTop,
-        ResizeRight,
-        ResizeBottom,
-
-        ResizeTopLeft,
-        ResizeTopRight,
-        ResizeBottomRight,
-        ResizeBottomLeft
-    }
 }
