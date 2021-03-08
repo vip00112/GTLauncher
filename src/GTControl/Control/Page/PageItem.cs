@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Design;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -97,6 +99,7 @@ namespace GTControl
         }
 
         [Category("Page Option"), DefaultValue("Content")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string TextContent
         {
             get { return _text; }
@@ -196,6 +199,7 @@ namespace GTControl
         }
 
         [Category("Page Option")]
+        [Browsable(true)] // Control.Width의 Browsable이 false이므로, true로 재정의 해야함
         new public int Width
         {
             get { return base.Width; }
@@ -217,6 +221,7 @@ namespace GTControl
         }
 
         [Category("Page Option")]
+        [Browsable(true)] // Control.Width의 Browsable이 false이므로, true로 재정의 해야함
         new public int Height
         {
             get { return base.Height; }
