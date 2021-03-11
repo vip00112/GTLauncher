@@ -196,7 +196,7 @@ namespace GTControl
                 {
                     var props = new Dictionary<string, object>();
                     props.Add("PageName", pageItem.PageName);
-                    props.Add("BackgroundImage", ToBase64(pageItem.BackgroundImage));
+                    props.Add("BackgroundImage", ImageUtil.ToBase64(pageItem.BackgroundImage));
                     props.Add("TextContent", pageItem.TextContent);
                     props.Add("TextAlign", pageItem.TextAlign.ToString());
 
@@ -279,8 +279,14 @@ namespace GTControl
         {
             if (control is Form)
             {
+                var form = control as Form;
                 bool isDarkMode = Theme == Theme.Dark;
-                WinAPI.SetTitleBarTheme(control.Handle, isDarkMode);
+                WinAPI.SetTitleBarTheme(form.Handle, isDarkMode);
+
+                if (form.FormBorderStyle == FormBorderStyle.None)
+                {
+                    WinAPI.SetFormShadow(form.Handle);
+                }
             }
 
             if (control is Button)
@@ -341,7 +347,7 @@ namespace GTControl
             {
                 var item = new PageItem();
                 item.PageName = JsonUtil.GetValue<string>(props, "PageName");
-                item.BackgroundImage = FromBase64(JsonUtil.GetValue<string>(props, "BackgroundImage"));
+                item.BackgroundImage = ImageUtil.FromBase64(JsonUtil.GetValue<string>(props, "BackgroundImage"));
                 item.TextContent = JsonUtil.GetValue<string>(props, "TextContent");
                 item.TextAlign = JsonUtil.GetValue<ContentAlignment>(props, "TextAlign");
 
@@ -385,26 +391,6 @@ namespace GTControl
             {
                 PageItems = new List<PageItem>();
             }
-        }
-
-        private static string ToBase64(Image img)
-        {
-            if (img == null) return null;
-
-            using (var ms = new MemoryStream())
-            {
-                img.Save(ms, img.RawFormat);
-                return Convert.ToBase64String(ms.ToArray());
-            }
-        }
-
-        private static Image FromBase64(string base64)
-        {
-            if (string.IsNullOrWhiteSpace(base64)) return null;
-
-            byte[] data = Convert.FromBase64String(base64);
-            var ms = new MemoryStream(data, 0, data.Length);
-            return Image.FromStream(ms, true);
         }
         #endregion
     }

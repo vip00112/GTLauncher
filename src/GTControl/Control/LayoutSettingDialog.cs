@@ -93,7 +93,7 @@ namespace GTControl
         {
             if (!_isSaved)
             {
-                string msg = Resource.GetString(Key.LayoutSettingSaveConfirmMsg);
+                string msg = Resource.GetString(Key.CloseWithoutSaveConfirmMsg);
                 if (!MessageBoxUtil.Confirm(msg))
                 {
                     e.Cancel = true;

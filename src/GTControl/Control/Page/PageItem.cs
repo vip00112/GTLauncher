@@ -658,7 +658,7 @@ namespace GTControl
                 BackgroundImage.Save(ms, BackgroundImage.RawFormat);
 
                 var data = ms.ToArray();
-                return Image.FromStream(new MemoryStream(data, 0, data.Length), true);
+                return ImageUtil.FromByteArray(data);
             }
         }
         #endregion

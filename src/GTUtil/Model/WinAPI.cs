@@ -26,7 +26,7 @@ namespace GTUtil
             }
         }
 
-        public static void SetFormShadow(IntPtr handle)
+        public static void SetFormShadow(IntPtr handle, int margin = 1)
         {
             int attr = 2;
             int value = 2;
@@ -34,10 +34,10 @@ namespace GTUtil
 
             var margins = new WindowNative.Margins()
             {
-                bottomHeight = 1,
-                leftWidth = 1,
-                rightWidth = 1,
-                topHeight = 1,
+                bottomHeight = margin,
+                leftWidth = margin,
+                rightWidth = margin,
+                topHeight = margin,
             };
             WindowNative.DwmExtendFrameIntoClientArea(handle, ref margins);
         }

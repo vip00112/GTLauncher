@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\ColorPicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Control\Page\Page.cs">
       <SubType>UserControl</SubType>
     </Compile>

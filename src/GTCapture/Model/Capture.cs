@@ -15,8 +15,6 @@ namespace GTCapture
 {
     public class Capture : NativeWindow
     {
-        public EventHandler OnCaptured;
-
         private BackgroundWorker _captureThread;
         private FFmpeg _ffmpeg;
 
@@ -83,7 +81,6 @@ namespace GTCapture
                             {
                                 if (img == null) return;
 
-                                OnCaptured?.Invoke(this, EventArgs.Empty);
                                 SaveImage(img);
                             }
                         }
@@ -256,7 +253,9 @@ namespace GTCapture
             {
                 string savePath = GetCaptureSaveFilePath(CaptureSetting.SaveImageFormat);
                 img.Save(savePath, CaptureSetting.GetImageFormat());
+
                 Clipboard.SetImage(img);
+                ToastMessageForm.ShowMessage(savePath);
             }
             catch (Exception e)
             {

@@ -42,11 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\Canvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Control\CaptureBackgroundDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Control\CaptureBackgroundDialog.Designer.cs">
       <DependentUpon>CaptureBackgroundDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Control\ImageEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Control\ImageEditForm.Designer.cs">
+      <DependentUpon>ImageEditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Control\RecordForm.cs">
       <SubType>Form</SubType>
@@ -60,10 +69,19 @@
     <Compile Include="Control\CaptureRegionDialog.Designer.cs">
       <DependentUpon>CaptureRegionDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Control\ToastMessageForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Control\ToastMessageForm.Designer.cs">
+      <DependentUpon>ToastMessageForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\Capture.cs" />
+    <Compile Include="Model\DrawCommand.cs" />
+    <Compile Include="Model\DrawLineMemento.cs" />
     <Compile Include="Model\Enums.cs" />
     <Compile Include="Model\FFmpeg.cs" />
     <Compile Include="Model\HotKey.cs" />
+    <Compile Include="Model\IMemento.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\CaptureSetting.cs" />
   </ItemGroup>
@@ -71,11 +89,20 @@
     <EmbeddedResource Include="Control\CaptureBackgroundDialog.resx">
       <DependentUpon>CaptureBackgroundDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Control\ImageEditForm.resx">
+      <DependentUpon>ImageEditForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Control\RecordForm.resx">
       <DependentUpon>RecordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Control\CaptureRegionDialog.resx">
       <DependentUpon>CaptureRegionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\ToastMessageForm.ko.resx">
+      <DependentUpon>ToastMessageForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Control\ToastMessageForm.resx">
+      <DependentUpon>ToastMessageForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

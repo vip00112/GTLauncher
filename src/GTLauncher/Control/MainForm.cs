@@ -41,8 +41,6 @@ namespace GTLauncher
             if (Runtime.DesignMode) return;
 
             _capture = new Capture(Handle);
-            _capture.OnCaptured += OnCaptured;
-
             _goodbyedpiManager = new Manager();
 
             GeneralSetting.Load();
@@ -138,15 +136,6 @@ namespace GTLauncher
             {
                 _goodbyedpiManager.Start();
             }
-        }
-        #endregion
-
-        #region Event Handler
-        private void OnCaptured(object sender, EventArgs e)
-        {
-            notifyIcon.BalloonTipText = "Capture completed.";
-            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-            notifyIcon.ShowBalloonTip(500);
         }
         #endregion
     }
