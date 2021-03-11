@@ -37,5 +37,15 @@ namespace GTUtil
             return result == DialogResult.OK;
         }
 
+        public static DialogResult ConfirmYesNoCancel(string msg, string title = null)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                title = "GTLauncher";
+            }
+            var result = MessageBox.Show(msg, title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            return result;
+        }
+
     }
 }

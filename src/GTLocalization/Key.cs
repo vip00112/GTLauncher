@@ -29,6 +29,7 @@ namespace GTLocalization
 
         public const string BitcoinAddressCopiedMsg = "BitcoinAddressCopiedMsg";
 
-        public const string LayoutSettingSaveConfirmMsg = "LayoutSettingSaveConfirmMsg";
+        public const string CloseWithoutSaveConfirmMsg = "CloseWithoutSaveConfirmMsg";
+        public const string CloseOrSaveConfirmMsg = "CloseOrSaveConfirmMsg";
     }
 }

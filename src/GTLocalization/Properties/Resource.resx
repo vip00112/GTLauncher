@@ -124,6 +124,13 @@ Thanks !! :D</value>
   <data name="CloseConfirmMsg" xml:space="preserve">
     <value>Are you sure want to close?</value>
   </data>
+  <data name="CloseOrSaveConfirmMsg" xml:space="preserve">
+    <value>Do you want to save your changes?</value>
+  </data>
+  <data name="CloseWithoutSaveConfirmMsg" xml:space="preserve">
+    <value>Are you sure want to close?
+Unsaved changes do not take effect.</value>
+  </data>
   <data name="DownloadCancelMsg" xml:space="preserve">
     <value>Download has been cancelled.</value>
   </data>
@@ -140,10 +147,6 @@ Are you sure want to close?</value>
   </data>
   <data name="LayoutSaveConfirmMsg" xml:space="preserve">
     <value>Are you sure want to save layout?</value>
-  </data>
-  <data name="LayoutSettingSaveConfirmMsg" xml:space="preserve">
-    <value>Are you sure want to close?
-Unsaved changes do not take effect.</value>
   </data>
   <data name="NewVersionDownloadConfirmMsg" xml:space="preserve">
     <value>Find new version.

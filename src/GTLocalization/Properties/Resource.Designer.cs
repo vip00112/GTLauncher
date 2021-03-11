@@ -80,6 +80,25 @@ namespace GTLocalization.Properties {
         }
         
         /// <summary>
+        ///   Do you want to save your changes?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string CloseOrSaveConfirmMsg {
+            get {
+                return ResourceManager.GetString("CloseOrSaveConfirmMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Are you sure want to close?
+        ///Unsaved changes do not take effect.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string CloseWithoutSaveConfirmMsg {
+            get {
+                return ResourceManager.GetString("CloseWithoutSaveConfirmMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Download has been cancelled.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string DownloadCancelMsg {
@@ -123,16 +142,6 @@ namespace GTLocalization.Properties {
         internal static string LayoutSaveConfirmMsg {
             get {
                 return ResourceManager.GetString("LayoutSaveConfirmMsg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Are you sure want to close?
-        ///Unsaved changes do not take effect.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        internal static string LayoutSettingSaveConfirmMsg {
-            get {
-                return ResourceManager.GetString("LayoutSettingSaveConfirmMsg", resourceCulture);
             }
         }
         

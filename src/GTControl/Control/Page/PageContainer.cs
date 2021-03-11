@@ -31,8 +31,6 @@ namespace GTControl
             DockMode = DockMode.BottomCenter;
             SizeModeWidth = SizeMode.Small;
             SizeModeHeight = SizeMode.Small;
-
-            WinAPI.SetFormShadow(Handle);
         }
         #endregion
 

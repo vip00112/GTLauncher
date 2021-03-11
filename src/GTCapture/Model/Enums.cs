@@ -15,4 +15,9 @@ namespace GTCapture
     {
         MainMonitor, ActiveMonitor, AllMonitor
     }
+
+    public enum DrawMode 
+    { 
+        Pen, Highlighter 
+    }
 }

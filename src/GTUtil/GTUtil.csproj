@@ -61,6 +61,7 @@
     <Compile Include="Model\GithubJsonContainer.cs" />
     <Compile Include="Model\GithubUtil.cs" />
     <Compile Include="Model\FormUtil.cs" />
+    <Compile Include="Model\ImageUtil.cs" />
     <Compile Include="Model\JsonUtil.cs" />
     <Compile Include="Model\Logger.cs" />
     <Compile Include="Model\MessageBoxUtil.cs" />
