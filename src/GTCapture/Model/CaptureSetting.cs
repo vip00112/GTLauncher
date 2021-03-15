@@ -64,10 +64,19 @@ namespace GTCapture
         /// </summary>
         public static string RecordSaveDirectory { get; set; }
 
+        /// <summary>
+        /// 이미지 편집의 펜 모드
+        /// </summary>
         public static DrawMode EditDrawMode { get; set; }
 
+        /// <summary>
+        /// 이미지 편집의 선 색
+        /// </summary>
         public static Color EditLineColor { get; set; }
 
+        /// <summary>
+        /// 이미지 편집의 선 크기
+        /// </summary>
         public static int EditLineSize { get; set; }
         #endregion
 
@@ -86,7 +95,7 @@ namespace GTCapture
                 properties.Add("AudioSource", AudioSource);
                 properties.Add("RecordSaveDirectory", RecordSaveDirectory);
                 properties.Add("EditDrawMode", EditDrawMode.ToString());
-                properties.Add("EditLineColor", EditLineColor);
+                properties.Add("EditLineColor", ColorTranslator.ToHtml(EditLineColor));
                 properties.Add("EditLineSize", EditLineSize);
 
                 var hotKeyProperties = new List<Dictionary<string, object>>();
@@ -132,7 +141,7 @@ namespace GTCapture
                 AudioSource = JsonUtil.GetValue<string>(properties, "AudioSource");
                 RecordSaveDirectory = JsonUtil.GetValue<string>(properties, "RecordSaveDirectory");
                 EditDrawMode = JsonUtil.GetValue<DrawMode>(properties, "EditDrawMode");
-                EditLineColor = JsonUtil.GetValue<Color>(properties, "EditLineColor");
+                EditLineColor = ColorTranslator.FromHtml(JsonUtil.GetValue<string>(properties, "EditLineColor"));
                 EditLineSize = (int) JsonUtil.GetValue<long>(properties, "EditLineSize");
 
                 LoadHotKeys(properties);

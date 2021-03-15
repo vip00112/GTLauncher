@@ -48,11 +48,16 @@ namespace GTCapture
             {
                 Width = workingArea.Width;
                 Height = workingArea.Height;
+                Location = new Point(workingArea.Left, workingArea.Top);
             }
             else
             {
                 Width = img.Width + 18;
                 Height = img.Height + 64;
+
+                int x = workingArea.Width / 2 - Width / 2;
+                int y = workingArea.Height / 2 - Height / 2;
+                Location = new Point(x, y);
             }
 
             _canvas = new Canvas(img);
@@ -100,6 +105,8 @@ namespace GTCapture
                     }
                 }
             }
+
+            CaptureSetting.Save();
         }
 
         private void canvas_OnDrawAction(object sender, EventArgs e)
@@ -170,7 +177,7 @@ namespace GTCapture
                     {
                         var bitmap = new Bitmap(size, size);
                         using (var g = Graphics.FromImage(bitmap))
-                        using (var brush = new SolidBrush(_canvas.HighlightColor))
+                        using (var brush = new SolidBrush(_canvas.Color))
                         {
                             g.FillEllipse(brush, 0, 0, bitmap.Width, bitmap.Height);
                         }
