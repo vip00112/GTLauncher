@@ -44,8 +44,6 @@ namespace GTCapture
             if (img == null) return;
 
             Rectangle workingArea = Screen.GetWorkingArea(this);
-            Location = new Point(workingArea.Left, workingArea.Top);
-
             if (img.Width >= workingArea.Width - 18 || img.Height >= workingArea.Width - 64)
             {
                 Width = workingArea.Width;
@@ -59,19 +57,19 @@ namespace GTCapture
 
             _canvas = new Canvas(img);
             _canvas.OnDrawAction += canvas_OnDrawAction;
-            _canvas.Mode = DrawMode.Pen;
-            _canvas.Color = Color.Red;
-            _canvas.LineSize = 10;
+            _canvas.Mode = CaptureSetting.EditDrawMode;
+            _canvas.Color = CaptureSetting.EditLineColor;
+            _canvas.LineSize = CaptureSetting.EditLineSize;
             panel_canvas.Controls.Add(_canvas);
             ChangeCanvasCursor();
 
             colorPicker.OnChangedColor += colorPicker_OnChangedColor; 
 
             comboBox_type.DataSource = Enum.GetValues(typeof(DrawMode));
-            comboBox_type.SelectedItem = DrawMode.Pen;
+            comboBox_type.SelectedItem = CaptureSetting.EditDrawMode;
 
-            colorPicker.Color = Color.Red;
-            numericUpDown_size.Value = 10;
+            colorPicker.Color = CaptureSetting.EditLineColor;
+            numericUpDown_size.Value = CaptureSetting.EditLineSize;
 
             _isLoaded = true;
         }
@@ -120,18 +118,21 @@ namespace GTCapture
             if (!_isLoaded) return;
 
             _canvas.Mode = (DrawMode) comboBox_type.SelectedItem;
+            CaptureSetting.EditDrawMode = (DrawMode) comboBox_type.SelectedItem;
             ChangeCanvasCursor();
         }
 
         private void colorPicker_OnChangedColor(object sender, EventArgs e)
         {
             _canvas.Color = colorPicker.Color;
+            CaptureSetting.EditLineColor = colorPicker.Color;
             ChangeCanvasCursor();
         }
 
         private void numericUpDown_size_ValueChanged(object sender, EventArgs e)
         {
             _canvas.LineSize = (int) numericUpDown_size.Value;
+            CaptureSetting.EditLineSize = (int) numericUpDown_size.Value;
             ChangeCanvasCursor();
         }
 

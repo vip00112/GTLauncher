@@ -1,6 +1,7 @@
 ﻿using GTUtil;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -62,6 +63,12 @@ namespace GTCapture
         /// 녹화 파일 저장 경로
         /// </summary>
         public static string RecordSaveDirectory { get; set; }
+
+        public static DrawMode EditDrawMode { get; set; }
+
+        public static Color EditLineColor { get; set; }
+
+        public static int EditLineSize { get; set; }
         #endregion
 
         #region Public Method
@@ -78,6 +85,9 @@ namespace GTCapture
                 properties.Add("VideoFPS", VideoFPS);
                 properties.Add("AudioSource", AudioSource);
                 properties.Add("RecordSaveDirectory", RecordSaveDirectory);
+                properties.Add("EditDrawMode", EditDrawMode.ToString());
+                properties.Add("EditLineColor", EditLineColor);
+                properties.Add("EditLineSize", EditLineSize);
 
                 var hotKeyProperties = new List<Dictionary<string, object>>();
                 foreach (var hotKey in HotKeys.Values)
@@ -121,6 +131,9 @@ namespace GTCapture
                 VideoFPS = (int) JsonUtil.GetValue<long>(properties, "VideoFPS");
                 AudioSource = JsonUtil.GetValue<string>(properties, "AudioSource");
                 RecordSaveDirectory = JsonUtil.GetValue<string>(properties, "RecordSaveDirectory");
+                EditDrawMode = JsonUtil.GetValue<DrawMode>(properties, "EditDrawMode");
+                EditLineColor = JsonUtil.GetValue<Color>(properties, "EditLineColor");
+                EditLineSize = (int) JsonUtil.GetValue<long>(properties, "EditLineSize");
 
                 LoadHotKeys(properties);
             }
@@ -250,6 +263,15 @@ namespace GTCapture
             foreach (var mode in HotKeys.Keys)
             {
                 RegisterHotKey(mode);
+            }
+
+            if (EditLineColor == Color.Empty)
+            {
+                EditLineColor = Color.Red;
+            }
+            if (EditLineSize == 0)
+            {
+                EditLineSize = 10;
             }
         }
         #endregion

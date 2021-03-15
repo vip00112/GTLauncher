@@ -170,6 +170,12 @@ namespace GTCapture
 
         private void CaptureBorderForm_MouseDown(object sender, MouseEventArgs e)
         {
+            if (IsStartedRecord)
+            {
+                Cursor = Cursors.Default;
+                return;
+            }
+
             _startLoc = e.Location;
 
             if (CenterRec.Contains(e.X, e.Y))
@@ -216,6 +222,12 @@ namespace GTCapture
 
         private void CaptureBorderForm_MouseMove(object sender, MouseEventArgs e)
         {
+            if (IsStartedRecord)
+            {
+                Cursor = Cursors.Default;
+                return;
+            }
+
             switch (FormActionType)
             {
                 case MoveResizeAction.Move:
