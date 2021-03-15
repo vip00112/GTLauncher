@@ -44,34 +44,37 @@ namespace GTCapture
             if (img == null) return;
 
             Rectangle workingArea = Screen.GetWorkingArea(this);
-            Location = new Point(workingArea.Left, workingArea.Top);
-
             if (img.Width >= workingArea.Width - 18 || img.Height >= workingArea.Width - 64)
             {
                 Width = workingArea.Width;
                 Height = workingArea.Height;
+                Location = new Point(workingArea.Left, workingArea.Top);
             }
             else
             {
                 Width = img.Width + 18;
                 Height = img.Height + 64;
+
+                int x = workingArea.Width / 2 - Width / 2;
+                int y = workingArea.Height / 2 - Height / 2;
+                Location = new Point(x, y);
             }
 
             _canvas = new Canvas(img);
             _canvas.OnDrawAction += canvas_OnDrawAction;
-            _canvas.Mode = DrawMode.Pen;
-            _canvas.Color = Color.Red;
-            _canvas.LineSize = 10;
+            _canvas.Mode = CaptureSetting.EditDrawMode;
+            _canvas.Color = CaptureSetting.EditLineColor;
+            _canvas.LineSize = CaptureSetting.EditLineSize;
             panel_canvas.Controls.Add(_canvas);
             ChangeCanvasCursor();
 
             colorPicker.OnChangedColor += colorPicker_OnChangedColor; 
 
             comboBox_type.DataSource = Enum.GetValues(typeof(DrawMode));
-            comboBox_type.SelectedItem = DrawMode.Pen;
+            comboBox_type.SelectedItem = CaptureSetting.EditDrawMode;
 
-            colorPicker.Color = Color.Red;
-            numericUpDown_size.Value = 10;
+            colorPicker.Color = CaptureSetting.EditLineColor;
+            numericUpDown_size.Value = CaptureSetting.EditLineSize;
 
             _isLoaded = true;
         }
@@ -102,6 +105,8 @@ namespace GTCapture
                     }
                 }
             }
+
+            CaptureSetting.Save();
         }
 
         private void canvas_OnDrawAction(object sender, EventArgs e)
@@ -120,18 +125,21 @@ namespace GTCapture
             if (!_isLoaded) return;
 
             _canvas.Mode = (DrawMode) comboBox_type.SelectedItem;
+            CaptureSetting.EditDrawMode = (DrawMode) comboBox_type.SelectedItem;
             ChangeCanvasCursor();
         }
 
         private void colorPicker_OnChangedColor(object sender, EventArgs e)
         {
             _canvas.Color = colorPicker.Color;
+            CaptureSetting.EditLineColor = colorPicker.Color;
             ChangeCanvasCursor();
         }
 
         private void numericUpDown_size_ValueChanged(object sender, EventArgs e)
         {
             _canvas.LineSize = (int) numericUpDown_size.Value;
+            CaptureSetting.EditLineSize = (int) numericUpDown_size.Value;
             ChangeCanvasCursor();
         }
 
@@ -169,7 +177,7 @@ namespace GTCapture
                     {
                         var bitmap = new Bitmap(size, size);
                         using (var g = Graphics.FromImage(bitmap))
-                        using (var brush = new SolidBrush(_canvas.HighlightColor))
+                        using (var brush = new SolidBrush(_canvas.Color))
                         {
                             g.FillEllipse(brush, 0, 0, bitmap.Width, bitmap.Height);
                         }

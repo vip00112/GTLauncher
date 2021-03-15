@@ -43,34 +43,27 @@ namespace GTCapture
             // 
             // panel_canvas
             // 
-            this.panel_canvas.AutoScroll = true;
-            this.panel_canvas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_canvas.Location = new System.Drawing.Point(0, 25);
+            resources.ApplyResources(this.panel_canvas, "panel_canvas");
             this.panel_canvas.Name = "panel_canvas";
-            this.panel_canvas.Size = new System.Drawing.Size(284, 236);
-            this.panel_canvas.TabIndex = 1;
             // 
             // panel_menu
             // 
+            resources.ApplyResources(this.panel_menu, "panel_menu");
             this.panel_menu.Controls.Add(this.numericUpDown_size);
             this.panel_menu.Controls.Add(this.themeButton_redo);
             this.panel_menu.Controls.Add(this.themeButton_undo);
             this.panel_menu.Controls.Add(this.colorPicker);
             this.panel_menu.Controls.Add(this.comboBox_type);
-            this.panel_menu.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel_menu.Location = new System.Drawing.Point(0, 0);
             this.panel_menu.Name = "panel_menu";
-            this.panel_menu.Size = new System.Drawing.Size(284, 25);
-            this.panel_menu.TabIndex = 2;
             // 
             // numericUpDown_size
             // 
+            resources.ApplyResources(this.numericUpDown_size, "numericUpDown_size");
             this.numericUpDown_size.Increment = new decimal(new int[] {
             5,
             0,
             0,
             0});
-            this.numericUpDown_size.Location = new System.Drawing.Point(174, 3);
             this.numericUpDown_size.Maximum = new decimal(new int[] {
             50,
             0,
@@ -82,8 +75,6 @@ namespace GTCapture
             0,
             0});
             this.numericUpDown_size.Name = "numericUpDown_size";
-            this.numericUpDown_size.Size = new System.Drawing.Size(50, 21);
-            this.numericUpDown_size.TabIndex = 0;
             this.numericUpDown_size.TabStop = false;
             this.numericUpDown_size.Value = new decimal(new int[] {
             10,
@@ -94,64 +85,43 @@ namespace GTCapture
             // 
             // themeButton_redo
             // 
+            resources.ApplyResources(this.themeButton_redo, "themeButton_redo");
             this.themeButton_redo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.themeButton_redo.Enabled = false;
             this.themeButton_redo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.themeButton_redo.Location = new System.Drawing.Point(25, 0);
-            this.themeButton_redo.Margin = new System.Windows.Forms.Padding(0);
             this.themeButton_redo.Name = "themeButton_redo";
-            this.themeButton_redo.Size = new System.Drawing.Size(25, 25);
-            this.themeButton_redo.TabIndex = 0;
-            this.themeButton_redo.Text = "▶";
-            this.themeButton_redo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.themeButton_redo.Click += new System.EventHandler(this.themeButton_redo_Click);
             // 
             // themeButton_undo
             // 
+            resources.ApplyResources(this.themeButton_undo, "themeButton_undo");
             this.themeButton_undo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.themeButton_undo.Enabled = false;
             this.themeButton_undo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.themeButton_undo.Location = new System.Drawing.Point(0, 0);
-            this.themeButton_undo.Margin = new System.Windows.Forms.Padding(0);
             this.themeButton_undo.Name = "themeButton_undo";
-            this.themeButton_undo.Size = new System.Drawing.Size(25, 25);
-            this.themeButton_undo.TabIndex = 0;
-            this.themeButton_undo.Text = "◀";
-            this.themeButton_undo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.themeButton_undo.Click += new System.EventHandler(this.themeButton_undo_Click);
             // 
             // colorPicker
             // 
+            resources.ApplyResources(this.colorPicker, "colorPicker");
             this.colorPicker.Color = System.Drawing.Color.Red;
             this.colorPicker.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.colorPicker.Location = new System.Drawing.Point(55, 3);
-            this.colorPicker.Margin = new System.Windows.Forms.Padding(0);
             this.colorPicker.Name = "colorPicker";
-            this.colorPicker.Size = new System.Drawing.Size(20, 20);
-            this.colorPicker.TabIndex = 0;
             // 
             // comboBox_type
             // 
+            resources.ApplyResources(this.comboBox_type, "comboBox_type");
             this.comboBox_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_type.FormattingEnabled = true;
-            this.comboBox_type.Location = new System.Drawing.Point(78, 3);
             this.comboBox_type.Name = "comboBox_type";
-            this.comboBox_type.Size = new System.Drawing.Size(90, 20);
-            this.comboBox_type.TabIndex = 0;
             this.comboBox_type.TabStop = false;
             this.comboBox_type.SelectedIndexChanged += new System.EventHandler(this.comboBox_type_SelectedIndexChanged);
             // 
             // ImageEditForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
             this.Controls.Add(this.panel_canvas);
             this.Controls.Add(this.panel_menu);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImageEditForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Image Edit";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImageEditForm_FormClosing);
             this.Load += new System.EventHandler(this.ImageEditForm_Load);
             this.panel_menu.ResumeLayout(false);

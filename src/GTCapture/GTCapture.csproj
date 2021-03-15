@@ -89,6 +89,9 @@
     <EmbeddedResource Include="Control\CaptureBackgroundDialog.resx">
       <DependentUpon>CaptureBackgroundDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Control\ImageEditForm.ko.resx">
+      <DependentUpon>ImageEditForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Control\ImageEditForm.resx">
       <DependentUpon>ImageEditForm.cs</DependentUpon>
     </EmbeddedResource>
