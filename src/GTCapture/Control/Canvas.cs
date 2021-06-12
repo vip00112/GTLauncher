@@ -11,11 +11,15 @@ namespace GTCapture
 {
     public class Canvas : PictureBox
     {
+        enum HoldMode { None, Horizontal, Vertical }
+
         public EventHandler OnDrawAction;
 
-        private Image _img;
         private DrawCommand _command;
         private DrawLineMemento _drawLine;
+
+        private Point _startLoc;
+        private HoldMode _holdMode;
 
         #region Constructor
         private Canvas()
@@ -34,7 +38,6 @@ namespace GTCapture
 
         public Canvas(Image img) : this()
         {
-            _img = img;
             Width = img.Width;
             Height = img.Height;
             Image = img;
@@ -50,6 +53,8 @@ namespace GTCapture
 
         public DrawMode Mode { get; set; }
 
+        public bool IsPressedShiftKey { get; set; }
+
         public bool CanUndo { get { return _command.CanUndo; } }
 
         public bool CanRedo { get { return _command.CanRedo; } }
@@ -61,6 +66,10 @@ namespace GTCapture
             base.OnMouseDown(e);
 
             if (e.Button != MouseButtons.Left) return;
+
+            _startLoc = e.Location;
+            _holdMode = HoldMode.None;
+
             switch (Mode)
             {
                 case DrawMode.Pen:
@@ -83,7 +92,16 @@ namespace GTCapture
                 case DrawMode.Highlighter:
                     if (_drawLine != null)
                     {
-                        _drawLine.AddLocation(e.Location);
+                        var loc = e.Location;
+                        if (IsPressedShiftKey && _holdMode == HoldMode.None)
+                        {
+                            _holdMode = CalcHoldMode(e.Location);
+                        }
+
+                        if (_holdMode == HoldMode.Horizontal) loc.Y = _startLoc.Y;
+                        else if (_holdMode == HoldMode.Vertical) loc.X = _startLoc.X;
+
+                        _drawLine.AddLocation(loc);
                     }
                     break;
             }
@@ -95,6 +113,9 @@ namespace GTCapture
             base.OnMouseUp(e);
 
             if (e.Button != MouseButtons.Left) return;
+
+            _holdMode = HoldMode.None;
+
             switch (Mode)
             {
                 case DrawMode.Pen:
@@ -129,6 +150,16 @@ namespace GTCapture
         {
             _command.AddMemento(memento.Clone());
             OnDrawAction?.Invoke(this, EventArgs.Empty);
+        }
+
+        private HoldMode CalcHoldMode(Point loc)
+        {
+            int diffX = Math.Abs(loc.X - _startLoc.X);
+            int diffY = Math.Abs(loc.Y - _startLoc.Y);
+
+            if (diffX == diffY) return HoldMode.Horizontal;
+            if (diffX > diffY) return HoldMode.Horizontal;
+            else  return HoldMode.Vertical;
         }
         #endregion
 

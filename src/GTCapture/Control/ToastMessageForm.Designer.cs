@@ -68,6 +68,7 @@ namespace GTCapture
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ToastMessageForm_FormClosing);
             this.Load += new System.EventHandler(this.ToastMessageForm_Load);
             this.Shown += new System.EventHandler(this.ToastMessageForm_Shown);
+            this.Click += new System.EventHandler(this.ToastMessageForm_Click);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ToastMessageForm_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);

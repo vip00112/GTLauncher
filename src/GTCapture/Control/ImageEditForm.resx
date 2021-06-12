@@ -117,149 +117,266 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="colorPicker.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>0, 0, 0, 0</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="panel_canvas.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="panel_canvas.AutoScroll" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="themeButton_redo.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;panel_canvas.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="panel_canvas.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="comboBox_type.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 20</value>
+  <data name="panel_canvas.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 25</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>ImageEditForm</value>
+  <data name="panel_canvas.Size" type="System.Drawing.Size, System.Drawing">
+    <value>284, 236</value>
   </data>
-  <data name="themeButton_redo.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="panel_canvas.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;panel_canvas.Name" xml:space="preserve">
     <value>panel_canvas</value>
   </data>
-  <data name="themeButton_undo.Text" xml:space="preserve">
-    <value>◀</value>
+  <data name="&gt;&gt;panel_canvas.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="panel_canvas.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="&gt;&gt;panel_canvas.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="&gt;&gt;themeButton_undo.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="themeButton_undo.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;numericUpDown_size.Type" xml:space="preserve">
-    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_type.Parent" xml:space="preserve">
-    <value>panel_menu</value>
-  </data>
-  <data name="panel_canvas.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 25</value>
-  </data>
-  <data name="&gt;&gt;themeButton_redo.Parent" xml:space="preserve">
-    <value>panel_menu</value>
-  </data>
-  <data name="panel_menu.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterScreen</value>
-  </data>
-  <data name="themeButton_redo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>25, 0</value>
-  </data>
-  <data name="themeButton_undo.TabIndex" type="System.Int32, mscorlib">
+  <data name="&gt;&gt;panel_canvas.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="&gt;&gt;numericUpDown_size.Name" xml:space="preserve">
     <value>numericUpDown_size</value>
   </data>
-  <data name="&gt;&gt;panel_menu.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="&gt;&gt;numericUpDown_size.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="themeButton_redo.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleCenter</value>
-  </data>
-  <data name="comboBox_type.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;colorPicker.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="numericUpDown_size.Location" type="System.Drawing.Point, System.Drawing">
-    <value>174, 3</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>7, 12</value>
-  </data>
-  <data name="&gt;&gt;comboBox_type.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;panel_menu.Name" xml:space="preserve">
+  <data name="&gt;&gt;numericUpDown_size.Parent" xml:space="preserve">
     <value>panel_menu</value>
-  </data>
-  <data name="&gt;&gt;colorPicker.Name" xml:space="preserve">
-    <value>colorPicker</value>
-  </data>
-  <data name="&gt;&gt;themeButton_redo.Name" xml:space="preserve">
-    <value>themeButton_redo</value>
-  </data>
-  <data name="&gt;&gt;themeButton_undo.Parent" xml:space="preserve">
-    <value>panel_menu</value>
-  </data>
-  <data name="themeButton_undo.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>0, 0, 0, 0</value>
-  </data>
-  <data name="&gt;&gt;themeButton_redo.Type" xml:space="preserve">
-    <value>GTControl.ThemeButton, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="themeButton_undo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>25, 25</value>
-  </data>
-  <data name="&gt;&gt;themeButton_undo.Name" xml:space="preserve">
-    <value>themeButton_undo</value>
-  </data>
-  <data name="&gt;&gt;colorPicker.Parent" xml:space="preserve">
-    <value>panel_menu</value>
-  </data>
-  <data name="themeButton_undo.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleCenter</value>
-  </data>
-  <data name="numericUpDown_size.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
   </data>
   <data name="&gt;&gt;numericUpDown_size.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;themeButton_undo.Type" xml:space="preserve">
+  <data name="&gt;&gt;themeButton_redo.Name" xml:space="preserve">
+    <value>themeButton_redo</value>
+  </data>
+  <data name="&gt;&gt;themeButton_redo.Type" xml:space="preserve">
     <value>GTControl.ThemeButton, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;panel_menu.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="panel_menu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>284, 25</value>
-  </data>
-  <data name="colorPicker.Size" type="System.Drawing.Size, System.Drawing">
-    <value>20, 20</value>
-  </data>
-  <data name="&gt;&gt;comboBox_type.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;themeButton_redo.Parent" xml:space="preserve">
+    <value>panel_menu</value>
   </data>
   <data name="&gt;&gt;themeButton_redo.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="panel_canvas.Size" type="System.Drawing.Size, System.Drawing">
-    <value>284, 236</value>
+  <data name="&gt;&gt;themeButton_undo.Name" xml:space="preserve">
+    <value>themeButton_undo</value>
+  </data>
+  <data name="&gt;&gt;themeButton_undo.Type" xml:space="preserve">
+    <value>GTControl.ThemeButton, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;themeButton_undo.Parent" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;themeButton_undo.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;colorPicker.Name" xml:space="preserve">
+    <value>colorPicker</value>
+  </data>
+  <data name="&gt;&gt;colorPicker.Type" xml:space="preserve">
+    <value>GTControl.ColorPicker, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;colorPicker.Parent" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;colorPicker.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;comboBox_type.Name" xml:space="preserve">
+    <value>comboBox_type</value>
+  </data>
+  <data name="&gt;&gt;comboBox_type.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;comboBox_type.Parent" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;comboBox_type.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="panel_menu.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="panel_menu.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="panel_menu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>284, 25</value>
+  </data>
+  <data name="panel_menu.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;panel_menu.Name" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;panel_menu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel_menu.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;panel_menu.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="numericUpDown_size.Location" type="System.Drawing.Point, System.Drawing">
+    <value>174, 3</value>
+  </data>
+  <data name="numericUpDown_size.Size" type="System.Drawing.Size, System.Drawing">
+    <value>50, 21</value>
+  </data>
+  <data name="numericUpDown_size.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;numericUpDown_size.Name" xml:space="preserve">
+    <value>numericUpDown_size</value>
+  </data>
+  <data name="&gt;&gt;numericUpDown_size.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;numericUpDown_size.Parent" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;numericUpDown_size.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="themeButton_redo.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="themeButton_redo.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="themeButton_redo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>25, 0</value>
+  </data>
+  <data name="themeButton_redo.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="themeButton_redo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>25, 25</value>
+  </data>
+  <data name="themeButton_redo.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="themeButton_redo.Text" xml:space="preserve">
+    <value>▶</value>
+  </data>
+  <data name="themeButton_redo.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleCenter</value>
+  </data>
+  <data name="&gt;&gt;themeButton_redo.Name" xml:space="preserve">
+    <value>themeButton_redo</value>
+  </data>
+  <data name="&gt;&gt;themeButton_redo.Type" xml:space="preserve">
+    <value>GTControl.ThemeButton, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;themeButton_redo.Parent" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;themeButton_redo.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="themeButton_undo.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="themeButton_undo.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="themeButton_undo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="themeButton_undo.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="themeButton_undo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>25, 25</value>
+  </data>
+  <data name="themeButton_undo.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="themeButton_undo.Text" xml:space="preserve">
+    <value>◀</value>
+  </data>
+  <data name="themeButton_undo.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleCenter</value>
+  </data>
+  <data name="&gt;&gt;themeButton_undo.Name" xml:space="preserve">
+    <value>themeButton_undo</value>
+  </data>
+  <data name="&gt;&gt;themeButton_undo.Type" xml:space="preserve">
+    <value>GTControl.ThemeButton, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;themeButton_undo.Parent" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;themeButton_undo.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="colorPicker.Location" type="System.Drawing.Point, System.Drawing">
+    <value>55, 3</value>
+  </data>
+  <data name="colorPicker.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 0, 0, 0</value>
+  </data>
+  <data name="colorPicker.Size" type="System.Drawing.Size, System.Drawing">
+    <value>20, 20</value>
+  </data>
+  <data name="colorPicker.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;colorPicker.Name" xml:space="preserve">
+    <value>colorPicker</value>
+  </data>
+  <data name="&gt;&gt;colorPicker.Type" xml:space="preserve">
+    <value>GTControl.ColorPicker, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;colorPicker.Parent" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;colorPicker.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="comboBox_type.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 3</value>
+  </data>
+  <data name="comboBox_type.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 20</value>
+  </data>
+  <data name="comboBox_type.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;comboBox_type.Name" xml:space="preserve">
+    <value>comboBox_type</value>
+  </data>
+  <data name="&gt;&gt;comboBox_type.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;comboBox_type.Parent" xml:space="preserve">
+    <value>panel_menu</value>
+  </data>
+  <data name="&gt;&gt;comboBox_type.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>7, 12</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>284, 261</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -548,67 +665,16 @@
         AAAAAAAAAAAAAAAAAACAAAAAAAAAAcAAAAAAAAAD4AAAAAAAAAc=
 </value>
   </data>
-  <data name="comboBox_type.Location" type="System.Drawing.Point, System.Drawing">
-    <value>78, 3</value>
-  </data>
-  <data name="&gt;&gt;panel_menu.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="themeButton_redo.Text" xml:space="preserve">
-    <value>▶</value>
-  </data>
-  <data name="colorPicker.Location" type="System.Drawing.Point, System.Drawing">
-    <value>55, 3</value>
-  </data>
-  <data name="panel_menu.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Top</value>
-  </data>
-  <data name="&gt;&gt;comboBox_type.Name" xml:space="preserve">
-    <value>comboBox_type</value>
-  </data>
-  <data name="&gt;&gt;colorPicker.Type" xml:space="preserve">
-    <value>GTControl.ColorPicker, GTControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="numericUpDown_size.Size" type="System.Drawing.Size, System.Drawing">
-    <value>50, 21</value>
-  </data>
-  <data name="colorPicker.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;numericUpDown_size.Parent" xml:space="preserve">
-    <value>panel_menu</value>
-  </data>
-  <data name="panel_canvas.AutoScroll" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterScreen</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Image Edit</value>
   </data>
-  <data name="themeButton_redo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>25, 25</value>
-  </data>
-  <data name="&gt;&gt;panel_canvas.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="themeButton_redo.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>0, 0, 0, 0</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>284, 261</value>
-  </data>
-  <data name="&gt;&gt;panel_canvas.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>ImageEditForm</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="panel_menu.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="themeButton_undo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
 </root>

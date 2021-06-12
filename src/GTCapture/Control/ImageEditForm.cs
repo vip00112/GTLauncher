@@ -190,5 +190,21 @@ namespace GTCapture
             }
         }
         #endregion
+
+        private void ImageEditForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ShiftKey)
+            {
+                _canvas.IsPressedShiftKey = true;
+            }
+        }
+
+        private void ImageEditForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ShiftKey)
+            {
+                _canvas.IsPressedShiftKey = false;
+            }
+        }
     }
 }
