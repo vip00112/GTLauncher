@@ -48,22 +48,22 @@ namespace GTCapture
             // 
             // panel_menu
             // 
-            resources.ApplyResources(this.panel_menu, "panel_menu");
             this.panel_menu.Controls.Add(this.numericUpDown_size);
             this.panel_menu.Controls.Add(this.themeButton_redo);
             this.panel_menu.Controls.Add(this.themeButton_undo);
             this.panel_menu.Controls.Add(this.colorPicker);
             this.panel_menu.Controls.Add(this.comboBox_type);
+            resources.ApplyResources(this.panel_menu, "panel_menu");
             this.panel_menu.Name = "panel_menu";
             // 
             // numericUpDown_size
             // 
-            resources.ApplyResources(this.numericUpDown_size, "numericUpDown_size");
             this.numericUpDown_size.Increment = new decimal(new int[] {
             5,
             0,
             0,
             0});
+            resources.ApplyResources(this.numericUpDown_size, "numericUpDown_size");
             this.numericUpDown_size.Maximum = new decimal(new int[] {
             50,
             0,
@@ -85,32 +85,32 @@ namespace GTCapture
             // 
             // themeButton_redo
             // 
-            resources.ApplyResources(this.themeButton_redo, "themeButton_redo");
             this.themeButton_redo.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.themeButton_redo, "themeButton_redo");
             this.themeButton_redo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.themeButton_redo.Name = "themeButton_redo";
             this.themeButton_redo.Click += new System.EventHandler(this.themeButton_redo_Click);
             // 
             // themeButton_undo
             // 
-            resources.ApplyResources(this.themeButton_undo, "themeButton_undo");
             this.themeButton_undo.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.themeButton_undo, "themeButton_undo");
             this.themeButton_undo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.themeButton_undo.Name = "themeButton_undo";
             this.themeButton_undo.Click += new System.EventHandler(this.themeButton_undo_Click);
             // 
             // colorPicker
             // 
-            resources.ApplyResources(this.colorPicker, "colorPicker");
             this.colorPicker.Color = System.Drawing.Color.Red;
             this.colorPicker.Cursor = System.Windows.Forms.Cursors.Hand;
+            resources.ApplyResources(this.colorPicker, "colorPicker");
             this.colorPicker.Name = "colorPicker";
             // 
             // comboBox_type
             // 
-            resources.ApplyResources(this.comboBox_type, "comboBox_type");
             this.comboBox_type.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_type.FormattingEnabled = true;
+            resources.ApplyResources(this.comboBox_type, "comboBox_type");
             this.comboBox_type.Name = "comboBox_type";
             this.comboBox_type.TabStop = false;
             this.comboBox_type.SelectedIndexChanged += new System.EventHandler(this.comboBox_type_SelectedIndexChanged);
@@ -121,9 +121,12 @@ namespace GTCapture
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel_canvas);
             this.Controls.Add(this.panel_menu);
+            this.KeyPreview = true;
             this.Name = "ImageEditForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImageEditForm_FormClosing);
             this.Load += new System.EventHandler(this.ImageEditForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ImageEditForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ImageEditForm_KeyUp);
             this.panel_menu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_size)).EndInit();
             this.ResumeLayout(false);

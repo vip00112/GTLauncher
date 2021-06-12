@@ -16,7 +16,7 @@ namespace GTCapture
 {
     public partial class ToastMessageForm : Form
     {
-        private bool _isRunning;
+        private bool _isEditMode;
         private bool _isMouseEnter;
         private readonly string _filePath;
 
@@ -82,7 +82,7 @@ namespace GTCapture
                 return;
             }
 
-            _isRunning = true;
+            _isEditMode = false;
             await StartCloseTimer();
 
             if (IsDisposed || !IsHandleCreated) return;
@@ -96,7 +96,7 @@ namespace GTCapture
 
             pictureBox.Image.Dispose();
 
-            if (!_isRunning)
+            if (_isEditMode)
             {
                 var editForm = new ImageEditForm(_filePath);
                 editForm.Show();
@@ -123,7 +123,12 @@ namespace GTCapture
 
         private void pictureBox_Click(object sender, EventArgs e)
         {
-            _isRunning = false;
+            _isEditMode = true;
+            Close();
+        }
+
+        private void ToastMessageForm_Click(object sender, EventArgs e)
+        {
             Close();
         }
 
@@ -140,7 +145,10 @@ namespace GTCapture
 
             try
             {
-                var form = new ToastMessageForm(filePath);
+                var form = FormUtil.FindForm<ToastMessageForm>();
+                if (form != null) form.Close();
+
+                form = new ToastMessageForm(filePath);
                 form.Show();
             }
             catch (Exception e)
@@ -155,8 +163,8 @@ namespace GTCapture
         {
             await Task.Run(() =>
             {
-                int delay = 300;
-                while (_isRunning && delay > 0)
+                int delay = 200;
+                while (!_isEditMode && delay > 0)
                 {
                     Thread.Sleep(10);
                     if (!_isMouseEnter) delay--;
