@@ -233,7 +233,7 @@ namespace GTCapture
 
         private static void SetDefault()
         {
-            if (string.IsNullOrWhiteSpace(CaptureSaveDirectory))
+            if (string.IsNullOrWhiteSpace(CaptureSaveDirectory) || !Directory.Exists(CaptureSaveDirectory))
             {
                 CaptureSaveDirectory = Path.Combine(Application.StartupPath, "Capture");
             }
@@ -253,7 +253,7 @@ namespace GTCapture
             {
                 AudioSource = FFmpeg.DefaultAudioSource;
             }
-            if (string.IsNullOrWhiteSpace(RecordSaveDirectory))
+            if (string.IsNullOrWhiteSpace(RecordSaveDirectory) || !Directory.Exists(RecordSaveDirectory))
             {
                 RecordSaveDirectory = Path.Combine(Application.StartupPath, "Capture");
             }
