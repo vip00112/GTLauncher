@@ -114,9 +114,11 @@ namespace GTControl
                 {
                     case PageCloseMode.Hide:
                         pageButton_back.Text = "◀";
+                        pageButton_back.Dock = DockStyle.Left;
                         break;
                     case PageCloseMode.Dispose:
                         pageButton_back.Text = "ⓧ";
+                        pageButton_back.Dock = DockStyle.Right;
                         break;
                 }
             }
