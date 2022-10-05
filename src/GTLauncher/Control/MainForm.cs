@@ -110,6 +110,7 @@ namespace GTLauncher
         {
             string dirPath = CaptureSetting.CaptureSaveDirectory;
             if (string.IsNullOrWhiteSpace(dirPath)) return;
+            if (!Directory.Exists(dirPath)) return;
 
             Process.Start(dirPath);
         }
@@ -118,6 +119,7 @@ namespace GTLauncher
         {
             string dirPath = CaptureSetting.RecordSaveDirectory;
             if (string.IsNullOrWhiteSpace(dirPath)) return;
+            if (!Directory.Exists(dirPath)) return;
 
             Process.Start(dirPath);
         }

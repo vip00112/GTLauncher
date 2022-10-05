@@ -12,14 +12,18 @@ namespace GTCapture
 {
     public partial class CaptureBackgroundDialog : Form
     {
+        private Point _loc;
+
         #region Constructor
-        public CaptureBackgroundDialog(Image img)
+        public CaptureBackgroundDialog(Point loc, Image img)
         {
             InitializeComponent();
 
             DoubleBuffered = true;
             Size = img.Size;
             BackgroundImage = img;
+
+            _loc = loc;
         }
         #endregion
 
@@ -28,6 +32,11 @@ namespace GTCapture
         #endregion
 
         #region Control Event
+        private void CaptureBackgroundDialog_Load(object sender, EventArgs e)
+        {
+            Location = _loc;
+        }
+
         private void CaptureBackgroundDialog_Shown(object sender, EventArgs e)
         {
             using (var dialog = new CaptureRegionDialog())

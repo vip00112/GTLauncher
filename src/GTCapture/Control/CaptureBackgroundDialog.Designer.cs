@@ -47,6 +47,7 @@
             this.Text = "Select region";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CaptureBackgroundDialog_FormClosing);
+            this.Load += new System.EventHandler(this.CaptureBackgroundDialog_Load);
             this.Shown += new System.EventHandler(this.CaptureBackgroundDialog_Shown);
             this.ResumeLayout(false);
 
