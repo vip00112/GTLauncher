@@ -157,7 +157,7 @@ namespace GTCapture
                     monitor = SystemInformation.VirtualScreen;
 
                     using (var tmp = CaptureWindow(handle, monitor.X, monitor.Y, monitor.Width, monitor.Height))
-                    using (var dialog = new CaptureBackgroundDialog(tmp))
+                    using (var dialog = new CaptureBackgroundDialog(new Point(monitor.X, monitor.Y), tmp))
                     {
                         dialog.TopMost = true;
                         dialog.BringToFront();
