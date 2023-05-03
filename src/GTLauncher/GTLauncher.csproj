@@ -149,10 +149,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GoodbyeDPI\GoodbyeDPI.csproj">
-      <Project>{9c758ff2-1514-4250-bebc-7a37ca20e8d9}</Project>
-      <Name>GoodbyeDPI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GTCapture\GTCapture.csproj">
       <Project>{b47c9b70-2295-428b-a006-e3aa9c08d8fd}</Project>
       <Name>GTCapture</Name>
