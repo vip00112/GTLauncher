@@ -24,8 +24,6 @@ namespace GTLauncher
     /// </summary>
     public partial class MainForm : PageContainer
     {
-        private Capture _capture;
-
         #region Constructor
         public MainForm()
         {
@@ -38,8 +36,7 @@ namespace GTLauncher
         {
             if (Runtime.DesignMode) return;
 
-            _capture = new Capture(Handle);
-
+            GTCapture.Capture.Regist(Handle);
             GeneralSetting.Load();
             LayoutSetting.Load();
             CaptureSetting.Load();

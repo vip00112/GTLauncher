@@ -87,13 +87,15 @@ namespace GTLauncher
                 System.Threading.Thread.Sleep(2000);
                 var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
                 var releaseVersion = GithubUtil.GetLatestVersion("vip00112", "GTLauncher");
-                if (currentVersion >= releaseVersion) return null;
+                if (releaseVersion == null || currentVersion >= releaseVersion) return null;
 
                 return GithubUtil.GetDownloadUrlForLatestAsset("vip00112", "GTLauncher", "GTLauncher*.zip");
             });
 
             var needUpdate = await task.ContinueWith((result) =>
             {
+                if (result == null || string.IsNullOrWhiteSpace(result.Result)) return false;
+
                 string filePath = Path.Combine(Application.StartupPath, "GTAutoUpdate.exe");
                 if (!File.Exists(filePath)) return false;
 
