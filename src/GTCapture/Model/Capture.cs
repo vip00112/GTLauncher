@@ -19,7 +19,7 @@ namespace GTCapture
         private FFmpeg _ffmpeg;
 
         #region Constructor
-        public Capture(IntPtr hWnd)
+        private Capture(IntPtr hWnd)
         {
             // WndProc 이벤트가 발생하도록 핸들 등록
             AssignHandle(hWnd);
@@ -34,6 +34,13 @@ namespace GTCapture
             if (FindHotKey(m)) return;
 
             base.WndProc(ref m);
+        }
+        #endregion
+
+        #region Static Method
+        public static void Regist(IntPtr hWnd)
+        {
+            new Capture(hWnd);
         }
         #endregion
 
