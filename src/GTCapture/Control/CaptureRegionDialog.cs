@@ -68,7 +68,15 @@ namespace GTCapture
             if (_isDown && _isMove)
             {
                 SelectedRegion = CalcRectangle();
-                DialogResult = DialogResult.OK;
+                if (SelectedRegion.Width > 0 && SelectedRegion.Height > 0)
+                {
+
+                    DialogResult = DialogResult.OK;
+                }
+                else
+                {
+                    DialogResult = DialogResult.Cancel;
+                }
             }
             else
             {

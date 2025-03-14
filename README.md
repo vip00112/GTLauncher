@@ -3,7 +3,7 @@ GTLauncher is desktop management GUI application.
 
 ## Required
  - Windows 10(or higher) 64bit
- - .NET Framework 4.5
+ - .NET Framework 4.8
 
 ## Features
  - Quick start application.

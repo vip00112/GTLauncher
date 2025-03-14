@@ -15,13 +15,13 @@ namespace GTCapture
         private Point _loc;
 
         #region Constructor
-        public CaptureBackgroundDialog(Point loc, Image img)
+        public CaptureBackgroundDialog(Point loc, Image backgroundImg)
         {
             InitializeComponent();
 
             DoubleBuffered = true;
-            Size = img.Size;
-            BackgroundImage = img;
+            Size = backgroundImg.Size;
+            BackgroundImage = backgroundImg;
 
             _loc = loc;
         }
