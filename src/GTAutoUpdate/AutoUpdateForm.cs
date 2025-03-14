@@ -44,11 +44,11 @@ namespace GTAutoUpdate
         #region Control Event
         private async void AutoUpdateForm_Shown(object sender, EventArgs e)
         {
-            // GTLauncher 종료 대기
-            await Task.Delay(500);
-
             if (_url == "RESTART")
             {
+                // GTLauncher 종료 대기
+                await Task.Delay(500);
+
                 StartApplication();
                 return;
             }
@@ -139,19 +139,23 @@ namespace GTAutoUpdate
             string dirPath = Path.GetDirectoryName(_savePath);
             using (ZipArchive archive = ZipFile.OpenRead(_savePath))
             {
+                string rootFolder = FindCommonRootFolder(archive);
+
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    string fileName = Path.Combine(dirPath, entry.FullName);
+                    string relativePath = entry.FullName.StartsWith(rootFolder) ? entry.FullName.Substring(rootFolder.Length).TrimStart('/') : entry.FullName;
+                    string targetPath = Path.Combine(dirPath, relativePath);
                     if (entry.Name == "")
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+                        Directory.CreateDirectory(targetPath);
                         continue;
                     }
+
                     if (entry.Name == "GTAutoUpdate.exe")
                     {
-                        fileName += ".update.tmp";
+                        targetPath += ".update.tmp";
                     }
-                    entry.ExtractToFile(fileName, true);
+                    entry.ExtractToFile(targetPath, true);
                     AppendLog(string.Format("Extract to '{0}'.", entry.Name));
                 }
             }
@@ -166,6 +170,17 @@ namespace GTAutoUpdate
 
             Process.Start(filePath);
             Application.Exit();
+        }
+
+        private string FindCommonRootFolder(ZipArchive archive)
+        {
+            var rootFolders = archive.Entries
+                .Where(e => e.FullName.Contains("/") || e.FullName.Contains("\\"))
+                .Select(e => e.FullName.Split(new char[] { '/', '\\' })[0])
+                .Distinct()
+                .ToList();
+
+            return rootFolders.Count == 1 ? rootFolders[0] + "/" : "";
         }
 
         private void AppendLog(string log)
