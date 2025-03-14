@@ -38,10 +38,10 @@ namespace GTAutoUpdate
             this.button_cancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // progressBar1
+            // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(12, 35);
-            this.progressBar.Name = "progressBar1";
+            this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(476, 23);
             this.progressBar.TabIndex = 0;
             // 

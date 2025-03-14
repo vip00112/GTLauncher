@@ -35,12 +35,26 @@ namespace GTAutoUpdate
             label_bytes.Tag = label_bytes.Text;
             string title = string.Format(label_bytes.Tag as string, 0, 0);
             label_bytes.Text = title;
+
+            WindowState = FormWindowState.Minimized;
+            ShowInTaskbar = false;
         }
         #endregion
 
         #region Control Event
-        private void AutoUpdateForm_Shown(object sender, EventArgs e)
+        private async void AutoUpdateForm_Shown(object sender, EventArgs e)
         {
+            // GTLauncher 종료 대기
+            await Task.Delay(500);
+
+            if (_url == "RESTART")
+            {
+                StartApplication();
+                return;
+            }
+
+            WindowState = FormWindowState.Normal;
+            ShowInTaskbar = true;
             StartDownload();
         }
 
