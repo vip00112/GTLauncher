@@ -130,7 +130,7 @@
     </Compile>
     <None Include="bin\Debug\Capture\donate_bitcoin_qr.png" />
     <Content Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Control\SettingDialog.resx">
       <DependentUpon>SettingDialog.cs</DependentUpon>
