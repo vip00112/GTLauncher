@@ -43,14 +43,22 @@ namespace GTLauncher
             
             BuildLayout();
 
-            // 업데이트 tmp 파일 삭제
+            // 업데이트 tmp 파일 복사
             var di = new DirectoryInfo(Application.StartupPath);
-            var fis = di.GetFiles("*.update.tmp");
+            var fis = di.GetFiles("*.update.tmp", SearchOption.AllDirectories);
             foreach (var fi in fis)
             {
-                string filePath = fi.FullName.Replace(".update.tmp", "");
-                fi.CopyTo(filePath, true);
-                fi.Delete();
+                try
+                {
+                    string fileName = Path.GetFileName(fi.Name).Replace(".update.tmp", "");
+                    string filePath = Path.Combine(Application.StartupPath, fileName);
+                    fi.CopyTo(filePath, true);
+                    fi.Delete();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
             }
         }
 
