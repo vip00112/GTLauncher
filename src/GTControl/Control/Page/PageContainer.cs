@@ -55,7 +55,9 @@ namespace GTControl
             set
             {
                 _sizeModeWidth = value;
-                Width = LayoutSetting.GetWidth(value);
+
+                var scale = WinAPI.GetMonitorScale();
+                Width = (int)(LayoutSetting.GetWidth(value) * scale);
                 BuildLocation();
             }
         }
@@ -67,7 +69,9 @@ namespace GTControl
             set
             {
                 _sizeModeHeight = value;
-                Height = LayoutSetting.GetHeight(value);
+
+                var scale = WinAPI.GetMonitorScale();
+                Height = (int)(LayoutSetting.GetHeight(value) * scale);
                 BuildLocation();
             }
         }
@@ -187,7 +191,9 @@ namespace GTControl
         {
             if (Runtime.DesignMode) return;
 
-            var screen = Screen.AllScreens[0];
+            var screen = Screen.AllScreens.FirstOrDefault(o => o.Primary);
+            if (screen == null) screen = Screen.AllScreens[0];
+
             int top = 20;
             int middel = (screen.WorkingArea.Height / 2) - (Height / 2);
             int bottom = screen.WorkingArea.Height - Height - 20;
