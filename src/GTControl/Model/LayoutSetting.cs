@@ -300,6 +300,15 @@ namespace GTControl
                 ToolStripManager.Renderer = new ThemeToolStripRenderer();
             }
 
+            var scale = WinAPI.GetMonitorScale();
+            if (control is Form == false && !IsEditMode)
+            {
+                control.Left = (int)(control.Left * scale);
+                control.Top = (int)(control.Top * scale);
+                control.Width = (int)(control.Width * scale);
+                control.Height = (int)(control.Height * scale);
+            }
+
             var backColor = (control is Label) ? Color.Transparent : GetBackColorCommon(Theme);
             control.BackColor = backColor;
             control.ForeColor = GetForeColorCommon(Theme);

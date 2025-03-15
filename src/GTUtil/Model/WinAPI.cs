@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace GTUtil
 {
@@ -40,6 +41,19 @@ namespace GTUtil
                 topHeight = margin,
             };
             WindowNative.DwmExtendFrameIntoClientArea(handle, ref margins);
+        }
+
+        public static float GetMonitorScale()
+        {
+            var screen = Screen.AllScreens.FirstOrDefault(o => o.Primary);
+            if (screen == null) screen = Screen.AllScreens[0];
+
+            IntPtr hMonitor = WindowNative.MonitorFromPoint(screen.Bounds.Location, 2);
+            if (WindowNative.GetDpiForMonitor(hMonitor, 0, out uint dpiX, out _) == 0)
+            {
+                return dpiX / 96f;
+            }
+            return 1.0f;
         }
         #endregion
 
