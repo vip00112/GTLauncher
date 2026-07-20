@@ -51,11 +51,6 @@ namespace GTControl
             TextFont = Font;
             Cursor = Cursors.Hand;
         }
-
-        ~PageItem()
-        {
-            Dispose(false);
-        }
         #endregion
 
         #region Properties
@@ -421,8 +416,9 @@ namespace GTControl
             {
                 var color = LayoutSetting.GetForeColorCommon(LayoutSetting.Theme);
                 using (var b = new SolidBrush(color))
+                using (var sf = GetStringFormat())
                 {
-                    e.Graphics.DrawString(TextContent, TextFont, b, ClientRectangle, GetStringFormat());
+                    e.Graphics.DrawString(TextContent, TextFont, b, ClientRectangle, sf);
                 }
             }
 
@@ -470,8 +466,9 @@ namespace GTControl
         {
             try
             {
-                // SpecialFolder 경로 취득
-                var matches = Regex.Matches(FilePath, @"\{(.*?)\}");
+                // SpecialFolder 토큰 치환 (원본 FilePath는 보존)
+                string filePath = FilePath;
+                var matches = Regex.Matches(filePath, @"\{(.*?)\}");
                 foreach (Match m in matches)
                 {
                     string origin = m.Groups[0].ToString();
@@ -479,14 +476,14 @@ namespace GTControl
                     Environment.SpecialFolder folder;
                     if (!Enum.TryParse(m.Groups[1].ToString(), true, out folder)) continue;
                     string realPath = Environment.GetFolderPath(folder);
-                    FilePath = FilePath.Replace(origin, realPath);
+                    filePath = filePath.Replace(origin, realPath);
                 }
 
                 var si = new ProcessStartInfo();
-                si.FileName = FilePath;
+                si.FileName = filePath;
 
-                // 네트워크 연결
-                if (!FilePath.Contains("://"))
+                // 네트워크(URL)가 아니면 로컬 실행 옵션 설정
+                if (!filePath.Contains("://"))
                 {
                     if (StartWithAdministrator)
                     {
@@ -494,12 +491,14 @@ namespace GTControl
                         si.Verb = "runas";
                     }
                     si.Arguments = Arguments;
-                    si.WorkingDirectory = Path.GetDirectoryName(FilePath);
+                    si.WorkingDirectory = Path.GetDirectoryName(filePath);
                 }
 
-                var proc = new Process();
-                proc.StartInfo = si;
-                proc.Start();
+                using (var proc = new Process())
+                {
+                    proc.StartInfo = si;
+                    proc.Start();
+                }
             }
             catch (Exception ex)
             {
@@ -699,26 +698,20 @@ namespace GTControl
         #endregion
 
         #region IDisposable Method
-        new public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        new protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed) return;
-
-            if (disposing)
+            if (!_disposed)
             {
-                if (BackgroundImage != null)
+                if (disposing && _img != null)
                 {
-                    BackgroundImage.Dispose();
-                    BackgroundImage = null;
+                    ImageAnimator.StopAnimate(_img, OnFrameChangedHandler);
+                    _img.Dispose();
+                    _img = null;
                 }
+                _disposed = true;
             }
 
-            _disposed = true;
+            base.Dispose(disposing);
         }
         #endregion
     }

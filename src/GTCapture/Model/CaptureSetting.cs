@@ -110,8 +110,7 @@ namespace GTCapture
                 properties.Add("HotKeyProperties", hotKeyProperties);
 
                 string path = Path.Combine(Application.StartupPath, SaveFileName);
-                string json = JsonUtil.FromProperties(properties);
-                File.WriteAllText(path, json);
+                JsonUtil.SaveToFile(path, properties);
             }
             catch (Exception e)
             {
@@ -216,7 +215,7 @@ namespace GTCapture
             if (!properties.ContainsKey("HotKeyProperties")) return;
 
             var hotKeyProperties = JsonUtil.FromJArray(properties["HotKeyProperties"]);
-            if (hotKeyProperties == null && hotKeyProperties.Count == 0) return;
+            if (hotKeyProperties == null || hotKeyProperties.Count == 0) return;
 
             HotKeys = new Dictionary<CaptureMode, HotKey>();
             foreach (var props in hotKeyProperties)

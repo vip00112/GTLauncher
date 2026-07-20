@@ -23,8 +23,6 @@ namespace GTLocalization
 
         public const string LayoutSaveConfirmMsg = "LayoutSaveConfirmMsg";
 
-        public const string GoodbyeDPICloseConfirmMsg = "GoodbyeDPICloseConfirmMsg";
-
         public const string CloseConfirmMsg = "CloseConfirmMsg";
 
         public const string BitcoinAddressCopiedMsg = "BitcoinAddressCopiedMsg";

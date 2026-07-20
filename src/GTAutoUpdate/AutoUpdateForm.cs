@@ -81,21 +81,36 @@ namespace GTAutoUpdate
                     _wc = null;
                     if (e.Cancelled)
                     {
-                        File.Delete(_savePath);
-                        MessageBox.Show("Download canceld.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        try { File.Delete(_savePath); } catch { }
+                        MessageBox.Show("Download cancelled.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Application.Exit();
+                        return;
+                    }
+                    if (e.Error != null)
+                    {
+                        try { File.Delete(_savePath); } catch { }
+                        MessageBox.Show("Download failed.\r\n" + e.Error.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Application.Exit();
                         return;
                     }
 
-                    AppendLog("Download completed.");
+                    try
+                    {
+                        AppendLog("Download completed.");
 
-                    AppendLog("Start extract zip file.");
-                    StartExtract();
-                    AppendLog("Extract completed.");
-                    Thread.Sleep(1000);
+                        AppendLog("Start extract zip file.");
+                        StartExtract();
+                        AppendLog("Extract completed.");
+                        Thread.Sleep(1000);
 
-                    AppendLog("Start Application.");
-                    StartApplication();
+                        AppendLog("Start Application.");
+                        StartApplication();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Update failed.\r\n" + ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Application.Exit();
+                    }
                 };
                 _wc.DownloadProgressChanged += delegate (object sender, DownloadProgressChangedEventArgs e)
                 {
@@ -118,8 +133,8 @@ namespace GTAutoUpdate
                     if (_url.StartsWith("https://"))
                     {
                         ServicePointManager.Expect100Continue = true;
-                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                        // TLS 1.2 이상만 사용하고 인증서 검증은 우회하지 않는다.
+                        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
                     }
                     _wc.DownloadFileAsync(new Uri(_url), _savePath);
                     AppendLog("Start download file.");
@@ -137,6 +152,8 @@ namespace GTAutoUpdate
             if (!File.Exists(_savePath)) return;
 
             string dirPath = Path.GetDirectoryName(_savePath);
+            // Zip Slip(경로 순회) 방어를 위한 대상 폴더 기준 경로
+            string destRoot = Path.GetFullPath(dirPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar);
             using (ZipArchive archive = ZipFile.OpenRead(_savePath))
             {
                 string rootFolder = FindCommonRootFolder(archive);
@@ -147,6 +164,11 @@ namespace GTAutoUpdate
                     string targetPath = Path.Combine(dirPath, relativePath);
                     if (entry.Name == "")
                     {
+                        if (IsUnsafePath(targetPath, destRoot))
+                        {
+                            AppendLog(string.Format("Skip unsafe entry '{0}'.", entry.FullName));
+                            continue;
+                        }
                         Directory.CreateDirectory(targetPath);
                         continue;
                     }
@@ -155,6 +177,16 @@ namespace GTAutoUpdate
                     {
                         targetPath += ".update.tmp";
                     }
+
+                    // 압축 엔트리가 대상 폴더 밖을 가리키면 건너뛴다.
+                    if (IsUnsafePath(targetPath, destRoot))
+                    {
+                        AppendLog(string.Format("Skip unsafe entry '{0}'.", entry.FullName));
+                        continue;
+                    }
+
+                    // 상위 폴더 엔트리가 없어도 안전하게 추출되도록 보장
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
                     entry.ExtractToFile(targetPath, true);
                     AppendLog(string.Format("Extract to '{0}'.", entry.Name));
                 }
@@ -170,6 +202,13 @@ namespace GTAutoUpdate
 
             Process.Start(filePath);
             Application.Exit();
+        }
+
+        // 추출 대상 경로가 지정한 루트 폴더 밖(경로 순회)인지 검사한다.
+        private bool IsUnsafePath(string targetPath, string destRoot)
+        {
+            string fullTarget = Path.GetFullPath(targetPath);
+            return !fullTarget.StartsWith(destRoot, StringComparison.OrdinalIgnoreCase);
         }
 
         private string FindCommonRootFolder(ZipArchive archive)

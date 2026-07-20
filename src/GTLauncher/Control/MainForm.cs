@@ -57,7 +57,7 @@ namespace GTLauncher
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    Logger.Error(ex);
                 }
             }
         }
@@ -74,6 +74,20 @@ namespace GTLauncher
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Activate();
+        }
+
+        /// <summary>
+        /// 다른 인스턴스가 실행을 시도했을 때 현재 창을 복원하고 앞으로 가져온다.
+        /// </summary>
+        public void ActivateFromOtherInstance()
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                WindowState = FormWindowState.Normal;
+            }
+            if (!Visible) Show();
+            Activate();
+            BringToFront();
         }
 
         private void menuItem_about_Click(object sender, EventArgs e)

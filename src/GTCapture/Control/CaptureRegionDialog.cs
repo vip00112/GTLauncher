@@ -40,7 +40,7 @@ namespace GTCapture
 
         private void CaptureRegionForm_KeyDown(object sender, KeyEventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
+            if (e.KeyCode == Keys.Escape) DialogResult = DialogResult.Cancel;
         }
 
         private void CaptureRegionForm_MouseDown(object sender, MouseEventArgs e)

@@ -39,8 +39,7 @@ namespace GTLauncher
                 properties.Add("AutoUpdate", AutoUpdate);
 
                 string path = Path.Combine(Application.StartupPath, SaveFileName);
-                string json = JsonUtil.FromProperties(properties);
-                File.WriteAllText(path, json);
+                JsonUtil.SaveToFile(path, properties);
 
 #if DEBUG
 #else

@@ -180,14 +180,16 @@ namespace GTCapture
 
         public byte[] GetImageData()
         {
-            var bitmap = new Bitmap(Width, Height);
-            using (var g = Graphics.FromImage(bitmap))
+            using (var bitmap = new Bitmap(Width, Height))
             {
-                g.DrawImage(Image, 0, 0);
-                _command.Draw(g);
-            }
+                using (var g = Graphics.FromImage(bitmap))
+                {
+                    g.DrawImage(Image, 0, 0);
+                    _command.Draw(g);
+                }
 
-            return ImageUtil.ToByteArray(bitmap, Image.RawFormat);
+                return ImageUtil.ToByteArray(bitmap, Image.RawFormat);
+            }
         }
         #endregion
     }

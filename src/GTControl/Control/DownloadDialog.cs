@@ -98,9 +98,7 @@ namespace GTControl
                 {
                     if (_url.StartsWith("https://"))
                     {
-                        ServicePointManager.Expect100Continue = true;
-                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                        NetworkUtil.EnsureSecureProtocol();
                     }
                     _wc.DownloadFileAsync(new Uri(_url), _savePath);
                 }

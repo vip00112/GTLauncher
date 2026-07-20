@@ -39,6 +39,8 @@ namespace GTCapture
         private string _downloadFilePath;
         private string _executeFilePath;
         private StringBuilder _output;
+        private readonly object _outputLock = new object();
+        private volatile bool _isConverting;
 
         #region Constructor
         public FFmpeg()
@@ -77,17 +79,25 @@ namespace GTCapture
                 {
                     string args = CreateFFmpegArgs(mode, recordRegion, outputFilePath);
                     Excute(args);
+
+                    // Gif 모드는 녹화 종료 후 mp4 -> gif 변환을 수행한다.
+                    // UI 스레드가 아닌 워커 스레드에서 처리하여 변환 중 화면 멈춤을 방지한다.
+                    if (mode == RecordMode.Gif)
+                    {
+                        _isConverting = true;
+                        try
+                        {
+                            ConvertMp4ToGif(outputFilePath);
+                        }
+                        finally
+                        {
+                            _isConverting = false;
+                        }
+                    }
                 };
                 _recordThread.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
                 {
                     _recordThread = null;
-
-                    // Gif 모드일 경우 컨버팅(mp4 -> gif) 작업 추가
-                    if (mode == RecordMode.Gif)
-                    {
-                        ConvertMp4ToGif(outputFilePath);
-                    }
-
                     OnCompletedRecord?.Invoke(this, EventArgs.Empty);
                 };
                 _recordThread.RunWorkerAsync();
@@ -104,9 +114,8 @@ namespace GTCapture
         {
             if (_proc == null) return false;
 
-            // _proc이 살아있으나, _recordThread가 죽은상태 : 녹화 완료 후 gif 변환중
-            // gif 변환중에는 취소할 수 없다.
-            if (_recordThread == null) return false;
+            // gif 변환중에는 중지 신호가 변환 프로세스를 중단시키므로 취소를 막는다.
+            if (_isConverting) return false;
 
             try
             {
@@ -117,6 +126,26 @@ namespace GTCapture
             {
                 Logger.Error(e);
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 앱 종료 등으로 즉시 녹화를 중단해야 할 때 ffmpeg 프로세스를 강제 종료한다.
+        /// 정상 종료 신호('q')를 보낼 수 없는 상황에서 프로세스가 고아로 남는 것을 방지한다.
+        /// </summary>
+        public void ForceStop()
+        {
+            try
+            {
+                var proc = _proc;
+                if (proc != null && !proc.HasExited)
+                {
+                    proc.Kill();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
@@ -133,7 +162,8 @@ namespace GTCapture
             string args = "-list_devices true -f dshow -i dummy";
             Excute(args);
 
-            string result = _output.ToString();
+            string result;
+            lock (_outputLock) { result = _output.ToString(); }
             if (string.IsNullOrWhiteSpace(result)) return deviceNames;
 
             bool isVideoDevices = false;
@@ -228,7 +258,7 @@ namespace GTCapture
             try
             {
                 // 기존 CommandLine 출력 값 초기화
-                _output.Clear();
+                lock (_outputLock) { _output.Clear(); }
 
                 using (_proc = new Process())
                 {
@@ -310,7 +340,7 @@ namespace GTCapture
         private void FFmpegCommandLineReceive(object sender, DataReceivedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.Data)) return;
-            _output.AppendLine(e.Data);
+            lock (_outputLock) { _output.AppendLine(e.Data); }
         }
         #endregion
     }
