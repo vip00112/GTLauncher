@@ -138,10 +138,6 @@ Unsaved changes do not take effect.</value>
     <value>Can't find '{0}'.
 Are you download '{0}'?</value>
   </data>
-  <data name="GoodbyeDPICloseConfirmMsg" xml:space="preserve">
-    <value>'GoodbyeDPI' is already started.
-Are you sure want to close?</value>
-  </data>
   <data name="LatestVersionMsg" xml:space="preserve">
     <value>Current version is latest.</value>
   </data>

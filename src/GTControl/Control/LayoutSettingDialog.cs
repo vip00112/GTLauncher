@@ -419,11 +419,27 @@ namespace GTControl
                     break;
                 case "PageName":
                     var tab = tabControl_pages.SelectedTab;
-                    if (tab == null) return;
+                    if (tab == null || SelectedPage == null) return;
 
                     string pageName = e.ChangedItem.Value as string;
-                    if (string.IsNullOrWhiteSpace(pageName)) return;
-                    if (pageName == "Main") return;
+                    string oldName = e.OldValue as string;
+
+                    // 빈 이름/예약어('Main')/다른 페이지와 중복되는 이름은 되돌린다.
+                    if (string.IsNullOrWhiteSpace(pageName) || pageName == "Main" || IsDuplicatePageName(pageName))
+                    {
+                        if (!string.IsNullOrWhiteSpace(pageName) && pageName != "Main")
+                        {
+                            MessageBoxUtil.Error(Resource.GetString(Key.PageNameAlreadyErrorMsg));
+                        }
+                        if (!string.IsNullOrWhiteSpace(oldName))
+                        {
+                            SelectedPage.PageName = oldName;
+                            SelectedPage.PageItems.ForEach(o => o.PageName = oldName);
+                            tab.Text = oldName;
+                        }
+                        propertyGrid_page.Refresh();
+                        return;
+                    }
 
                     tab.Text = pageName;
                     SelectedPage.PageName = pageName;
@@ -434,6 +450,18 @@ namespace GTControl
         #endregion
 
         #region Private Method
+        // 현재 선택된 페이지를 제외하고 같은 이름을 가진 다른 페이지가 있는지 검사한다.
+        private bool IsDuplicatePageName(string pageName)
+        {
+            foreach (TabPage tabPage in tabControl_pages.TabPages)
+            {
+                var page = tabPage.Controls[0].Controls.OfType<Page>().FirstOrDefault();
+                if (page == null || page == SelectedPage) continue;
+                if (page.PageName == pageName) return true;
+            }
+            return false;
+        }
+
         private Page CreatePage(string pageName, Page src)
         {
             var tabPage = new TabPage();

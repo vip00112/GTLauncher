@@ -17,9 +17,7 @@ namespace GTUtil
             string url = string.Format(API, userName, repoName);
             using (var wc = new WebClient())
             {
-                ServicePointManager.Expect100Continue = true;
-                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                NetworkUtil.EnsureSecureProtocol();
 
                 try
                 {
@@ -49,9 +47,7 @@ namespace GTUtil
             string url = string.Format(API, userName, repoName);
             using (var wc = new WebClient())
             {
-                ServicePointManager.Expect100Continue = true;
-                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                NetworkUtil.EnsureSecureProtocol();
 
                 try
                 {

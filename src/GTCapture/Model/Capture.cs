@@ -25,6 +25,14 @@ namespace GTCapture
             AssignHandle(hWnd);
 
             CaptureSetting.Handle = hWnd;
+
+            // 녹화 중 앱이 종료되면 ffmpeg 프로세스가 고아로 남지 않도록 정리한다.
+            Application.ApplicationExit += OnApplicationExit;
+        }
+
+        private void OnApplicationExit(object sender, EventArgs e)
+        {
+            if (_ffmpeg != null) _ffmpeg.ForceStop();
         }
         #endregion
 
@@ -209,10 +217,14 @@ namespace GTCapture
                     }
                 }
 
-                // 해상도 스케일에 의한 크기 변경
+                // 해상도 스케일에 의한 좌표/크기 변경
+                // 원점(x, y)과 크기(width, height)를 동일 배율로 스케일해야
+                // 보조 모니터/영역 캡처에서 올바른 영역이 캡처된다.
                 float scale = CalcScale();
                 if (scale > 1)
                 {
+                    x = (int) (x * scale);
+                    y = (int) (y * scale);
                     width = (int) (width * scale);
                     height = (int) (height * scale);
                 }

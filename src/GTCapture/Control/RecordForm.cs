@@ -349,6 +349,13 @@ namespace GTCapture
         {
             if (Mode != CaptureMode.RecordGif) return;
 
+            // gif 변환은 워커 스레드에서 통지되므로 UI 스레드로 마샬링한다.
+            if (InvokeRequired)
+            {
+                BeginInvoke((MethodInvoker) StartingConvertToGif);
+                return;
+            }
+
             _isConvertToGif = true;
             Invalidate();
         }

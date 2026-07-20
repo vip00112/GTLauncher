@@ -8,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,9 +17,13 @@ namespace GTCapture
 {
     public partial class ImageEditForm : Form
     {
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool DestroyIcon(IntPtr handle);
+
         private bool _isLoaded;
         private Canvas _canvas;
         private readonly string _filePath;
+        private IntPtr _cursorIconHandle = IntPtr.Zero;
 
         #region Constructor
         private ImageEditForm()
@@ -37,14 +42,29 @@ namespace GTCapture
         {
             LayoutSetting.Invalidate(this);
 
-            var data = File.ReadAllBytes(_filePath);
-            if (data == null) return;
+            Image img = null;
+            try
+            {
+                if (File.Exists(_filePath))
+                {
+                    var data = File.ReadAllBytes(_filePath);
+                    img = ImageUtil.FromByteArray(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
 
-            var img = ImageUtil.FromByteArray(data);
-            if (img == null) return;
+            // 파일이 없거나 손상되어 이미지를 만들 수 없으면 편집 창을 열지 않고 닫는다.
+            if (img == null)
+            {
+                BeginInvoke((MethodInvoker) Close);
+                return;
+            }
 
             Rectangle workingArea = Screen.GetWorkingArea(this);
-            if (img.Width >= workingArea.Width - 18 || img.Height >= workingArea.Width - 64)
+            if (img.Width >= workingArea.Width - 18 || img.Height >= workingArea.Height - 64)
             {
                 Width = workingArea.Width;
                 Height = workingArea.Height;
@@ -81,7 +101,7 @@ namespace GTCapture
 
         private void ImageEditForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_canvas.CanUndo)
+            if (_canvas != null && _canvas.CanUndo)
             {
                 var result = MessageBoxUtil.ConfirmYesNoCancel(Resource.GetString(Key.CloseOrSaveConfirmMsg));
                 if (result == DialogResult.Cancel)
@@ -95,18 +115,23 @@ namespace GTCapture
                     try
                     {
                         byte[] data = _canvas.GetImageData();
-                        if (data == null) return;
-
-                        File.WriteAllBytes(_filePath, data);
+                        if (data != null) File.WriteAllBytes(_filePath, data);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex);
+                        Logger.Error(ex);
                     }
                 }
             }
 
             CaptureSetting.Save();
+
+            // 커스텀 커서용 아이콘 핸들 정리
+            if (_cursorIconHandle != IntPtr.Zero)
+            {
+                DestroyIcon(_cursorIconHandle);
+                _cursorIconHandle = IntPtr.Zero;
+            }
         }
 
         private void canvas_OnDrawAction(object sender, EventArgs e)
@@ -117,7 +142,17 @@ namespace GTCapture
             byte[] data = _canvas.GetImageData();
             if (data == null) return;
 
-            Clipboard.SetImage(ImageUtil.FromByteArray(data));
+            try
+            {
+                using (var img = ImageUtil.FromByteArray(data))
+                {
+                    if (img != null) Clipboard.SetImage(img);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
         }
 
         private void comboBox_type_SelectedIndexChanged(object sender, EventArgs e)
@@ -160,34 +195,42 @@ namespace GTCapture
             int size = _canvas.LineSize;
             if (size == 0) return;
 
+            Cursor newCursor;
+            IntPtr newIconHandle = IntPtr.Zero;
+
             switch (_canvas.Mode)
             {
                 case DrawMode.Pen:
-                    {
-                        var bitmap = new Bitmap(size, size);
-                        using (var g = Graphics.FromImage(bitmap))
-                        using (var brush = new SolidBrush(_canvas.Color))
-                        {
-                            g.FillEllipse(brush, 0, 0, bitmap.Width, bitmap.Height);
-                        }
-                        _canvas.Cursor = new Cursor(bitmap.GetHicon());
-                    }
-                    break;
                 case DrawMode.Highlighter:
+                    using (var bitmap = new Bitmap(size, size))
                     {
-                        var bitmap = new Bitmap(size, size);
                         using (var g = Graphics.FromImage(bitmap))
                         using (var brush = new SolidBrush(_canvas.Color))
                         {
                             g.FillEllipse(brush, 0, 0, bitmap.Width, bitmap.Height);
                         }
-                        _canvas.Cursor = new Cursor(bitmap.GetHicon());
+                        newIconHandle = bitmap.GetHicon();
+                        newCursor = new Cursor(newIconHandle);
                     }
                     break;
                 default:
-                    _canvas.Cursor = Cursors.Default;
+                    newCursor = Cursors.Default;
                     break;
             }
+
+            var oldCursor = _canvas.Cursor;
+            _canvas.Cursor = newCursor;
+
+            // 이전에 만든 커스텀 커서의 아이콘 핸들과 Cursor 객체를 정리한다.
+            if (_cursorIconHandle != IntPtr.Zero)
+            {
+                DestroyIcon(_cursorIconHandle);
+            }
+            if (oldCursor != null && oldCursor != Cursors.Default && oldCursor != newCursor)
+            {
+                oldCursor.Dispose();
+            }
+            _cursorIconHandle = newIconHandle;
         }
         #endregion
 

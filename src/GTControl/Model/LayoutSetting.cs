@@ -221,8 +221,7 @@ namespace GTControl
                 properties.Add("PageItemProperties", pageItemProperties);
 
                 string path = Path.Combine(Application.StartupPath, SaveFileName);
-                string json = JsonUtil.FromProperties(properties);
-                File.WriteAllText(path, json);
+                JsonUtil.SaveToFile(path, properties);
             }
             catch (Exception e)
             {
@@ -277,6 +276,19 @@ namespace GTControl
 
         public static void Invalidate(Control control)
         {
+            Invalidate(control, false);
+        }
+
+        /// <summary>
+        /// 컨트롤 트리에 테마를 재귀 적용한다.
+        /// </summary>
+        /// <param name="scaleControls">
+        /// true일 때만 컨트롤 좌표/크기에 모니터 배율을 1회 적용한다.
+        /// 테마 갱신 경로에서 반복 적용되면 컨트롤이 호출마다 계속 확대되므로,
+        /// 레이아웃을 새로 구성하는 BuildLayout 경로에서만 true로 호출해야 한다.
+        /// </param>
+        public static void Invalidate(Control control, bool scaleControls)
+        {
             if (control is Form)
             {
                 var form = control as Form;
@@ -300,9 +312,9 @@ namespace GTControl
                 ToolStripManager.Renderer = new ThemeToolStripRenderer();
             }
 
-            var scale = WinAPI.GetMonitorScale();
-            if (control is Form == false && !IsEditMode)
+            if (scaleControls && control is Form == false && !IsEditMode)
             {
+                var scale = WinAPI.GetMonitorScale();
                 control.Left = (int)(control.Left * scale);
                 control.Top = (int)(control.Top * scale);
                 control.Width = (int)(control.Width * scale);
@@ -316,7 +328,7 @@ namespace GTControl
 
             foreach (Control child in control.Controls)
             {
-                Invalidate(child);
+                Invalidate(child, scaleControls);
             }
         }
         #endregion
@@ -328,7 +340,7 @@ namespace GTControl
             if (!properties.ContainsKey("PageProperties")) return;
 
             var pageProperties = JsonUtil.FromJArray(properties["PageProperties"]);
-            if (pageProperties == null && pageProperties.Count == 0) return;
+            if (pageProperties == null || pageProperties.Count == 0) return;
 
             Pages = new List<Page>();
             foreach (var props in pageProperties)
@@ -349,7 +361,7 @@ namespace GTControl
             if (!properties.ContainsKey("PageItemProperties")) return;
 
             var pageItemProperties = JsonUtil.FromJArray(properties["PageItemProperties"]);
-            if (pageItemProperties == null && pageItemProperties.Count == 0) return;
+            if (pageItemProperties == null || pageItemProperties.Count == 0) return;
 
             PageItems = new List<PageItem>();
             foreach (var props in pageItemProperties)

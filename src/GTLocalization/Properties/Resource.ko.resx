@@ -138,10 +138,6 @@
     <value>'{0}' 파일을 찾을 수 없습니다.
 '{0}' 파일을 다운로드 하시겠습니까?</value>
   </data>
-  <data name="GoodbyeDPICloseConfirmMsg" xml:space="preserve">
-    <value>'GoodbyeDPI' 가 이미 실행중입니다.
-정말 종료하시겠습니까?</value>
-  </data>
   <data name="LatestVersionMsg" xml:space="preserve">
     <value>현재 버전이 가장 최신 버전입니다.</value>
   </data>

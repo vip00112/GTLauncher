@@ -118,16 +118,6 @@ namespace GTLocalization.Properties {
         }
         
         /// <summary>
-        ///   &apos;GoodbyeDPI&apos; is already started.
-        ///Are you sure want to close?과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        internal static string GoodbyeDPICloseConfirmMsg {
-            get {
-                return ResourceManager.GetString("GoodbyeDPICloseConfirmMsg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Current version is latest.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string LatestVersionMsg {
